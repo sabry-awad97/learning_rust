@@ -10,7 +10,7 @@ Finally, Rust is designed to be fast, with a focus on performance and efficiency
 
 Overall, Rust is a powerful and flexible language that is well-suited for a wide range of systems programming tasks. Its emphasis on safety, concurrency, and performance make it an attractive choice for many systems programmers.
 
-Here is some code in C
+Here is some code in C:
 
 ```c
 int main(int argc, char **argv) {
@@ -32,3 +32,20 @@ fn main() {
 ```
 
 - Like in C, this code defines an array `a` of size `1` and attempts to assign a value to the fourth element of the array, which is out of bounds. In Rust, this will result in a runtime panic and the program will **terminate**.
+
+## Comparison between C and Rust:
+
+- One major difference between Rust and C is the level of type safety and memory safety provided by each language. C is a relatively low-level language that does not have a strong type system and does not perform any runtime checking of memory accesses. This can make it prone to certain types of bugs, such as null or dangling pointer references, which can be difficult to detect and debug. In contrast, Rust has a statically-typed, borrow-checked type system that is designed to prevent these types of errors. As a result, Rust code is often considered to be safer and more robust than equivalent C code.
+
+- Another difference between the two languages is their support for concurrency. C does not have any built-in support for concurrency, so developers must use external libraries or manually implement concurrency mechanisms such as mutexes and semaphores. Rust, on the other hand, has a built-in concurrency model based on the idea of "ownership" and "borrowing," which allows for safe, concurrent execution of code.
+
+- Finally, Rust and C differ in terms of their performance and efficiency. C is generally considered to be a very fast language, with code that is often as fast as or faster than equivalent code written in other languages. Rust is also designed to be fast, with a focus on performance and efficiency, and Rust code is often as fast as or faster than equivalent C code.
+
+Here is the summary between C and Rust:
+
+| Feature       | Rust     | C                                  |
+| ------------- | -------- | ---------------------------------- |
+| Type safety   | Strong   | Weak                               |
+| Memory safety | Strong   | Weak                               |
+| Concurrency   | Built-in | None (external libraries required) |
+| Performance   | Fast     | Fast                               |
