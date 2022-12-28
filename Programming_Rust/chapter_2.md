@@ -94,3 +94,30 @@ mockito = "0.23"
 ```
 
 The `[package]` section specifies metadata about the project, such as the name and version. The `[dependencies]` section lists the crates that the project depends on. These crates will be automatically downloaded and compiled when the project is built. The `[dev-dependencies]` section lists crates that are only needed for development and testing, and they will not be included in the final binary produced by the project.
+
+## Hello World Program
+
+```rust
+fn main() {
+    println!("Hello, world!");
+}
+```
+
+- The `fn main()` is the entry point of every Rust program. It is the first function that is executed when the program runs.
+
+- The `println!` macro is used to print a message to the console. It takes a string as an argument and prints it to the console, followed by a newline.
+
+- The `!` after println indicates that it is a macro, rather than a function. Macros are a way to generate code at compile-time, rather than running code at runtime. They are often used for tasks such as printing messages or creating repetitive code.
+
+Overall, this program is a simple example of how to use Rust to print a message to the console.
+
+Here is an explanation of the syntax used in this Rust program:
+
+| Syntax Element    | Purpose                                                                                                                                       |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fn`              | Defines a function in Rust.                                                                                                                   |
+| `main`            | The name of the function. The `main` function is the entry point of every Rust program.                                                       |
+| `()`              | Enclose the parameters of the function. In this case, the `main` function does not take any arguments.                                        |
+| `{` and `}`       | Enclose the body of the function. The body of a function is the code that is executed when the function is called.                            |
+| `println!`        | A macro that is used to print a message to the console. It takes a string as an argument and prints it to the console, followed by a newline. |
+| `"Hello, world!"` | A string literal that represents the message to be printed. It is enclosed in double quotes.                                                  |
