@@ -197,3 +197,5 @@ Here is an ultra-summary of the steps in the function
 | Swap | Inside the loop, check if `m` is less than `n`. If it is, swap the values of `n` and `m`. |
 | Update | Update the value of `m` to be the remainder of `m` divided by `n`. |
 | Return | The loop ends when `m` becomes zero. At this point, `n` is returned as the result. |
+
+This function has a time complexity of O(log(n)), which means that the number of steps required to compute the GCD grows at most logarithmically with the size of the input numbers. This makes the function efficient for calculating the GCD of large numbers.
