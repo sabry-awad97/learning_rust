@@ -55,3 +55,16 @@ Here is the summary between C and Rust:
 Stuxnet was a sophisticated computer worm that was discovered in 2010 and is believed to have been developed by a state-sponsored hacking group. It was specifically designed to target industrial control systems (ICS), such as those used in nuclear facilities, power plants, and other critical infrastructure.
 
 Rust is a programming language that is designed to be fast, safe, and concurrent. It has features such as static typing, ownership and borrowing, and support for concurrency, which can help improve the security and reliability of applications. While Rust cannot directly prevent a cyber attack like Stuxnet, its emphasis on safety and security can make it a good choice for developing applications that need to be resistant to such attacks.
+
+## Parallel Programming Is Tamed
+
+. In C, concurrency is usually implemented using threads, which are units of execution that can run concurrently. C provides a standard library called "pthreads" (POSIX threads) for creating and managing threads. However, C does not provide any built-in mechanisms for synchronizing or communicating between threads, so developers must use other techniques such as mutexes, semaphores, and condition variables to coordinate access to shared resources.
+
+. Rust, on the other hand, has a built-in concurrency model based on lightweight threads that can execute in parallel. It also provides a number of tools and features to help developers write correct and efficient concurrent code, such as ownership and borrowing, channels, and atomic reference counting.
+
+| Feature                              | C                                                              | Rust                                                                                                                                      |
+| ------------------------------------ | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Concurrency model                    | Threads (pthreads library)                                     | Built-in concurrency model based on lightweight threads                                                                                   |
+| Synchronization mechanisms           | Mutexes, semaphores, condition variables (no built-in support) | Ownership and borrowing, channels, atomic reference counting                                                                              |
+| Error prevention                     | None (developers must use explicit synchronization mechanisms) | Ownership and borrowing can help prevent common problems such as race conditions and data races                                           |
+| Complexity of concurrent programming | High (developers must use explicit synchronization mechanisms) | Lower (built-in support for concurrency and ownership and borrowing can help prevent common problems and simplify concurrent programming) |
