@@ -561,3 +561,30 @@ println!("{:?}", numbers);
 ```
 
 This will double each element in the `numbers` vector and then print `[2, 4, 6]`. The `*` operator dereferences the mutable reference to the element and allows you to modify the element itself.
+
+## Concurrency
+
+- In Rust, the relationship between a mutex and the data it protects is enforced by the borrow checker. When you want to access data that is protected by a mutex, you must first acquire the lock on the mutex. This is done using the `lock` method on the `Mutex` type. The `lock` method returns a `MutexGuard`, which is an RAII (Resource Acquisition Is Initialization) type that represents the locked state of the mutex. When the `MutexGuard` goes out of scope, it will automatically release the lock on the mutex.
+
+  Here's an example of using a mutex to protect a shared data structure in Rust:
+
+  ```rust
+  use std::sync::Mutex;
+
+  // Declare a mutex to protect a shared data structure
+  let data = Mutex::new(0);
+
+  // Spawn a new thread to make a change to the data
+  let handle = std::thread::spawn(move || {
+      // Acquire the lock on the mutex
+      let mut data = data.lock().unwrap();
+      // Make a change to the data
+      *data += 1;
+  });
+
+  // The lock is automatically released when the `MutexGuard` goes out of scope
+  ```
+
+  In this example, the spawned thread acquires the lock on the mutex using the `lock` method. It then makes a change to the data by dereferencing the `MutexGuard` and incrementing the value. When the `MutexGuard` goes out of scope, the lock on the mutex is automatically released.
+
+  In C and C++, the relationship between a mutex and the data it protects is not enforced by the language. It is up to the programmer to ensure that the mutex is correctly used to protect the data. This can be error-prone, as it is easy to forget to acquire or release the lock, or to release the lock in the wrong order. In contrast, Rust's borrow checker helps to ensure that mutexes are used correctly and helps to prevent data races. C++ does not have a borrow checker like Rust's, so it is up to the programmer to ensure that the mutex is used correctly.
