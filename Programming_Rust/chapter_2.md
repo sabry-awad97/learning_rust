@@ -761,3 +761,18 @@ Here's a detailed description to display an image of the Mandelbrot set:
    The function uses `find` method on the string `s` to find the index of the first occurrence of the separator character. If the separator character is not found, the function returns `None`.
 
    If the separator character is found, the function uses Rust's pattern matching to try to parse the two substrings separated by the separator character into values of type `T` using the `from_str` method. If both parses are successful, the function returns a `Some` variant containing the tuple of the parsed values. If either parse fails, the function returns `None`.
+
+   To test it
+
+   ```rust
+   #[test]
+   fn test_parse_pair() {
+       assert_eq!(parse_pair::<i32>("", ','), None);
+       assert_eq!(parse_pair::<i32>("10,", ','), None);
+       assert_eq!(parse_pair::<i32>(",10", ','), None);
+       assert_eq!(parse_pair::<i32>("10,20", ','), Some((10, 20)));
+       assert_eq!(parse_pair::<i32>("10,20xy", ','), None);
+       assert_eq!(parse_pair::<f64>("0.5x", 'x'), None);
+       assert_eq!(parse_pair::<f64>("0.5x1.5", 'x'), Some((0.5, 1.5)));
+   }
+   ```
