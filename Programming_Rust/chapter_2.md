@@ -70,3 +70,27 @@ Here is a summary of the `rustup` and `cargo` commands in a table format:
 | `cargo test`                   | Run the tests for the current project                                                    |
 | `cargo doc`                    | Generate documentation for the current project                                           |
 | `cargo publish`                | Publish the current project to [crates.io](https://crates.io), the Rust package registry |
+
+### Cargo.toml
+
+The `Cargo.toml` file is the main configuration file for a Rust project managed by `cargo`. It specifies the `name`, `version`, and `dependencies` of the project, as well as other build and development settings.
+
+Here is an example of a simple Cargo.toml file:
+
+```rust
+[package]
+name = "my-project"
+version = "0.1.0"
+authors = ["Your Name <your@email.com>"]
+
+# See more keys and their definitions at
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+somecrate = "1.2.3"
+
+[dev-dependencies]
+mockito = "0.23"
+```
+
+The `[package]` section specifies metadata about the project, such as the name and version. The `[dependencies]` section lists the crates that the project depends on. These crates will be automatically downloaded and compiled when the project is built. The `[dev-dependencies]` section lists crates that are only needed for development and testing, and they will not be included in the final binary produced by the project.
