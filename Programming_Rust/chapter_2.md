@@ -248,6 +248,22 @@ Attributes are a powerful feature in Rust and are used extensively in the Rust e
 
 To handle command-line arguments in Rust, you can use the `std::env::args` function, which returns an iterator over the arguments passed to the program.
 
+```rust
+use std::env;
+
+fn main() {
+    let args: Vec<String> = env::args().collect();
+
+    if args.len() != 2 {
+        println!("Usage: cargo run <filename>");
+        return;
+    }
+
+    let filename = &args[1];
+    println!("Reading file {}", filename);
+}
+```
+
 Here is a summary of the code, with each step explained in more detail:
 
 | Step                                          | Code                                                                        | Explanation                                                                                                                                                                                                                                                                                                                            |
