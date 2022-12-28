@@ -33,7 +33,7 @@ fn main() {
 
 - Like in C, this code defines an array `a` of size `1` and attempts to assign a value to the fourth element of the array, which is out of bounds. In Rust, this will result in a runtime panic and the program will **terminate**.
 
-## Comparison between C and Rust:
+## Comparison between C and Rust
 
 - One major difference between Rust and C is the level of type safety and memory safety provided by each language. C is a relatively low-level language that does not have a strong type system and does not perform any runtime checking of memory accesses. This can make it prone to certain types of bugs, such as null or dangling pointer references, which can be difficult to detect and debug. In contrast, Rust has a statically-typed, borrow-checked type system that is designed to prevent these types of errors. As a result, Rust code is often considered to be safer and more robust than equivalent C code.
 
@@ -104,8 +104,8 @@ Here is a summary of the main ways that C++ and Rust follow the zero-overhead pr
 
 - To summarize:
 
-| Feature | Rust |
-|----------------------------|--------------------------------------|
-| Emphasis on safety | Statically-typed, borrow-checked type system |
-| Support for code review | Inline documentation, Rustfmt tool |
-| Strong community | Online forums, meetups, conferences |
+| Feature                 | Rust                                         |
+| ----------------------- | -------------------------------------------- |
+| Emphasis on safety      | Statically-typed, borrow-checked type system |
+| Support for code review | Inline documentation, Rustfmt tool           |
+| Strong community        | Online forums, meetups, conferences          |
