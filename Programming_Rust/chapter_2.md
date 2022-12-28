@@ -514,7 +514,6 @@ fn main() {
     });
     println!("PATH: {}", path);
 }
-
 ```
 
 In this example, the `args` function is used to iterate over the command line arguments, and the `var` function is used to get the value of the `PATH` environment variable. If the `var` function returns an error, it is printed to the standard error stream and the program exits with a non-zero exit code.
