@@ -121,3 +121,79 @@ Here is an explanation of the syntax used in this Rust program:
 | `{` and `}`       | Enclose the body of the function. The body of a function is the code that is executed when the function is called.                            |
 | `println!`        | A macro that is used to print a message to the console. It takes a string as an argument and prints it to the console, followed by a newline. |
 | `"Hello, world!"` | A string literal that represents the message to be printed. It is enclosed in double quotes.                                                  |
+
+## GCD Euclidean Algorithm
+
+```rust
+fn gcd(mut n: u64, mut m: u64) -> u64 {
+    assert!(n != 0 && m != 0);
+    while m != 0 {
+        if m < n {
+            let t = m;
+            m = n;
+            n = t;
+        }
+        m = m % n;
+    }
+    n
+}
+```
+
+This code defines a function called greatest common divisor (`GCD`) that takes two arguments: `n` and `m`, both of which are unsigned 64-bit integers (`u64`). The function returns a value of type `u64`, which is the `GCD` of `n` and `m`.
+
+Here is a breakdown of the function into smaller parts, with a description of what each part does:
+
+### Part 1: Check for zero values
+
+```rust
+assert!(n != 0 && m != 0);
+```
+
+This part checks if either `n` or `m` is zero, and if either is zero, it causes the program to panic. The `assert!` macro is used to perform this check. It will only execute if the condition (`n != 0 && m != 0)` is not met. This check is important because the GCD of two numbers is not defined if either number is zero.
+
+### Part 2: Initialize loop
+
+```rust
+while m != 0 {
+    // Loop body goes here
+}
+```
+
+This part initializes a while loop that continues until `m` becomes zero. The loop condition is `m != 0`, which means the loop will continue as long as `m` is not equal to zero. The loop body, which contains the remaining steps of the function, goes between the curly braces (`{}`).
+
+### Part 3: Swap values of n and m if necessary
+
+```rust
+if m < n {
+    let t = m;
+    m = n;
+    n = t;
+}
+```
+
+This part checks if `m` is less than `n`, and if it is, the values of `n` and `m` are swapped. This is done using a `let` statement to declare a temporary variable `t`, which is set to the value of `m`. The values of `m` and `n` are then swapped using the temporary variable. This step ensures that n is always the smaller of the two numbers.
+
+### Part 4: Update value of m
+
+```rust
+m = m % n;
+```
+
+This part updates the value of m to be the remainder of `m` divided by `n`. It uses the modulo operator (`%`) to calculate the remainder. For example, if m is 7 and n is 3, then `m` would be updated to be 1 (the remainder of 7 divided by 3).
+
+### Part 5: Return result
+
+```rust
+n
+```
+
+This is the final part of the function, and it simply returns `n` as the result. The GCD of `n` and `m` is the value of `n` when the loop terminates, because this is the largest number that can divide both `n` and m without leaving a remainder.
+
+Here is an ultra-summary of the steps in the function
+| Name | Description |
+|---------|--------------------------------------------------------------------------------------------------|
+| Check | Check if either `n` or `m` is zero and return zero if either is zero. |
+| Loop | Initialize a loop that continues until `m` becomes zero. |
+| Swap | Inside the loop, check if `m` is less than `n`. If it is, swap the values of `n` and `m`. |
+| Update | Update the value of `m` to be the remainder of `m` divided by `n`. |
+| Return | The loop ends when `m` becomes zero. At this point, `n` is returned as the result. |
