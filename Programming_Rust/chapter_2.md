@@ -248,6 +248,8 @@ Attributes are a powerful feature in Rust and are used extensively in the Rust e
 
 To handle command-line arguments in Rust, you can use the `std::env::args` function, which returns an iterator over the arguments passed to the program.
 
+> Basic Structure
+
 ```rust
 use std::env;
 
@@ -325,3 +327,95 @@ Here is the the ultra-summarized version without the step labels:
 | `if args.len() != 2 {  println!("Usage: cargo run <filename>");  return; }` | If the number of arguments is not equal to 2, the program prints a usage message and returns. |
 | `let filename = &args[1]; println!("Reading file {}", filename);` | If the number of arguments is equal to 2, the program reads the specified file and prints a message indicating this. |
 | (end of `main` function) | The program execution is complete. |
+
+> GCD command line program
+
+```rust
+use std::str::FromStr;
+use std::env;
+
+fn main() {
+    // Parse command line arguments
+    let mut numbers = Vec::new();
+    for arg in env::args().skip(1) {
+        // Attempt to parse each argument as a u64
+        numbers.push(u64::from_str(&arg)
+            .expect("error parsing argument"));
+    }
+
+    // Handle empty input
+    if numbers.len() == 0 {
+        eprintln!("Usage: gcd NUMBER ...");
+        std::process::exit(1);
+    }
+
+    // Calculate the GCD
+    let mut d = numbers[0];
+    for m in &numbers[1..] {
+        d = gcd(d, *m);
+    }
+
+    // Print the result
+    println!("The greatest common divisor of {:?} is {}", numbers, d);
+}
+```
+
+Here is a breakdown of the code with explanations for each part:
+
+### Parsing command line arguments
+
+Copy code
+
+`let mut numbers = Vec::new();
+for arg in env::args().skip(1) {
+    numbers.push(u64::from_str(&arg)
+    .expect("error parsing argument"));
+}`
+
+This code creates a new empty vector called `numbers`, and then iterates over the command line arguments (skipping the first one, which is the name of the program itself). For each argument, it attempts to parse it as a `u64` using the `FromStr` trait's `from_str` method. If the parsing succeeds, the number is added to the `numbers` vector. If the parsing fails, the program calls the `expect` method, which will cause the program to panic and print the provided message (in this case, "error parsing argument").
+
+### Handling empty input
+
+Copy code
+
+`if numbers.len() == 0 {
+    eprintln!("Usage: gcd NUMBER ...");
+    std::process::exit(1);
+}`
+
+This code checks if the `numbers` vector is empty. If it is, the program prints a usage message using the `eprintln!` macro (which is similar to `println!`, but prints to the standard error stream instead of the standard output stream) and then exits the program with a non-zero exit code using the `exit` function from the `std::process` module. The exit code of 1 is a convention that indicates that the program encountered an error.
+
+### Calculating the GCD
+
+Copy code
+
+`let mut d = numbers[0];
+for m in &numbers[1..] {
+    d = gcd(d, *m);
+}`
+
+This code initializes a variable `d` with the first element of the `numbers` vector, and then iterates over the rest of the elements. At each iteration, it updates `d` to the GCD of `d` and the current element using the `gcd` function (which is not defined in this code snippet).
+
+### Printing the result
+
+Copy code
+
+`println!("The greatest common divisor of {:?} is {}", numbers, d);`
+
+This code prints the result of the GCD calculation using the `println!` macro. The `{:?}` syntax is a placeholder for the `numbers` vector, which will be printed using the `Debug` trait. The `{}` syntax is a placeholder for the value of `d`.
+
+Here is a table explaining the syntax elements in the code in more detail:
+
+| Syntax element                                                        | Description                                                                           |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `use std::str::FromStr;`                                              | Imports `FromStr` trait for parsing strings.                                          |
+| `use std::env;`                                                       | Imports `env` module for interacting with environment.                                |
+| `for arg in env::args().skip(1)`                                      | Iterates over command line arguments, starting from second.                           |
+| `numbers.push(u64::from_str(&arg).expect("error parsing argument"));` | Parses argument as `u64` and adds to `numbers` vector.                                |
+| `if numbers.len() == 0`                                               | Checks if `numbers` vector is empty.                                                  |
+| `eprintln!("Usage: gcd NUMBER ...");`                                 | Prints usage message to standard error stream.                                        |
+| `std::process::exit(1);`                                              | Exits with non-zero exit code.                                                        |
+| `let mut d = numbers[0];`                                             | Declares mutable variable `d` and initializes with first element of `numbers` vector. |
+| `for m in &numbers[1..]`                                              | Iterates over elements of `numbers` vector, starting from second element.             |
+| `d = gcd(d, *m);`                                                     | Updates `d` to GCD of `d` and current element `m`.                                    |
+| `println!("The greatest common divisor of {:?} is {}", numbers, d);`  | Prints result of GCD calculation.                                                     |
