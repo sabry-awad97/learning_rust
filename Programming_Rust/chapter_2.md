@@ -364,43 +364,43 @@ Here is a breakdown of the code with explanations for each part:
 
 ### Parsing command line arguments
 
-Copy code
-
-`let mut numbers = Vec::new();
+```rust
+let mut numbers = Vec::new();
 for arg in env::args().skip(1) {
     numbers.push(u64::from_str(&arg)
     .expect("error parsing argument"));
-}`
+}
+```
 
 This code creates a new empty vector called `numbers`, and then iterates over the command line arguments (skipping the first one, which is the name of the program itself). For each argument, it attempts to parse it as a `u64` using the `FromStr` trait's `from_str` method. If the parsing succeeds, the number is added to the `numbers` vector. If the parsing fails, the program calls the `expect` method, which will cause the program to panic and print the provided message (in this case, "error parsing argument").
 
 ### Handling empty input
 
-Copy code
-
-`if numbers.len() == 0 {
+```rust
+if numbers.len() == 0 {
     eprintln!("Usage: gcd NUMBER ...");
     std::process::exit(1);
-}`
+}
+```
 
 This code checks if the `numbers` vector is empty. If it is, the program prints a usage message using the `eprintln!` macro (which is similar to `println!`, but prints to the standard error stream instead of the standard output stream) and then exits the program with a non-zero exit code using the `exit` function from the `std::process` module. The exit code of 1 is a convention that indicates that the program encountered an error.
 
 ### Calculating the GCD
 
-Copy code
-
-`let mut d = numbers[0];
+```rust
+let mut d = numbers[0];
 for m in &numbers[1..] {
     d = gcd(d, *m);
-}`
+}
+```
 
 This code initializes a variable `d` with the first element of the `numbers` vector, and then iterates over the rest of the elements. At each iteration, it updates `d` to the GCD of `d` and the current element using the `gcd` function (which is not defined in this code snippet).
 
 ### Printing the result
 
-Copy code
-
-`println!("The greatest common divisor of {:?} is {}", numbers, d);`
+```rust
+println!("The greatest common divisor of {:?} is {}", numbers, d);
+```
 
 This code prints the result of the GCD calculation using the `println!` macro. The `{:?}` syntax is a placeholder for the `numbers` vector, which will be printed using the `Debug` trait. The `{}` syntax is a placeholder for the value of `d`.
 
