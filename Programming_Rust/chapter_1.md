@@ -49,3 +49,9 @@ Here is the summary between C and Rust:
 | Memory safety | Strong   | Weak                               |
 | Concurrency   | Built-in | None (external libraries required) |
 | Performance   | Fast     | Fast                               |
+
+## Rust Shoulders the Load
+
+Stuxnet was a sophisticated computer worm that was discovered in 2010 and is believed to have been developed by a state-sponsored hacking group. It was specifically designed to target industrial control systems (ICS), such as those used in nuclear facilities, power plants, and other critical infrastructure.
+
+Rust is a programming language that is designed to be fast, safe, and concurrent. It has features such as static typing, ownership and borrowing, and support for concurrency, which can help improve the security and reliability of applications. While Rust cannot directly prevent a cyber attack like Stuxnet, its emphasis on safety and security can make it a good choice for developing applications that need to be resistant to such attacks.
