@@ -675,3 +675,46 @@ mask = np.abs(z) <= 2
 plt.imshow(mask, extent=(-2, 1, -1, 1))
 plt.show()
 ```
+
+To generate the mandelbrot set as image
+
+Here's a detailed description to display an image of the Mandelbrot set:
+
+1. Define the `Complex` struct and implement the `Add` and `Mul` traits for it, as well as the `new` associated function and the `norm` method:
+
+```rust
+struct Complex {
+    real: f64,
+    imag: f64,
+}
+
+impl Complex {
+    fn new(real: f64, imag: f64) -> Self {
+        Self { real, imag }
+    }
+
+    fn norm(&self) -> f64 {
+        (self.real * self.real + self.imag * self.imag).sqrt()
+    }
+}
+
+impl std::ops::Add for Complex {
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self {
+        Self::new(self.real + other.real, self.imag + other.imag)
+    }
+}
+
+impl std::ops::Mul for Complex {
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self {
+        Self::new(
+            self.real * other.real - self.imag * other.imag,
+            self.real * other.imag + self.imag * other.real,
+        )
+    }
+}`
+
+The `Complex` struct represents a complex number with a real and an imaginary component. The `Add` and `Mul` traits are implemented for `Complex` to allow addition and multiplication of complex numbers, respectively. The `new` associated function creates a new `Complex` instance with the given real and imaginary components, and the `norm` method calculates the magnitude of the complex number.
