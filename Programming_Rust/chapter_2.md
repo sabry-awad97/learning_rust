@@ -643,3 +643,35 @@ This will double each element in the `numbers` vector and then print `[2, 4, 6]`
   ```
 
   In the C or C++ , the `send_data_to_other_thread` function passes a pointer to the `data` structure to the `do_something` function, which is executed by the `other_thread`. The current thread still has access to the `data` structure and could potentially modify it if it is not careful. It is up to the programmer to ensure that the data is accessed and modified safely in a multithreaded environment.
+
+## What the Mandelbrot Set Actually Is ?
+
+The Mandelbrot set is defined as the set of complex numbers c for which the function f(z) = z^2 + c does not diverge when iterated from z = 0, i.e., for which the sequence f(0), f(f(0)), etc., remains bounded in absolute value. In other words, the Mandelbrot set is the set of complex numbers for which the corresponding function does not "explode" to infinity when iterated.
+
+Here is a simple way to visualize the Mandelbrot set using Python:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Set the size of the image to be plotted
+size = 400
+
+# Create a grid of complex numbers
+real_values = np.linspace(-2, 1, size)
+imag_values = np.linspace(-1, 1, size)
+real_values, imag_values = np.meshgrid(real_values, imag_values)
+c = real_values + 1j * imag_values
+
+# Iterate the function f(z) = z^2 + c
+z = c
+for i in range(100):
+    z = z**2 + c
+
+# Create a mask for the points that are in the Mandelbrot set
+mask = np.abs(z) <= 2
+
+# Plot the mask using matplotlib
+plt.imshow(mask, extent=(-2, 1, -1, 1))
+plt.show()
+```
