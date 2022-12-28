@@ -9,3 +9,26 @@ Another key feature of Rust is its support for concurrent programming. Rust has 
 Finally, Rust is designed to be fast, with a focus on performance and efficiency. Rust code is often as fast as equivalent code written in languages like C or C++, making it a good choice for high-performance systems programming tasks.
 
 Overall, Rust is a powerful and flexible language that is well-suited for a wide range of systems programming tasks. Its emphasis on safety, concurrency, and performance make it an attractive choice for many systems programmers.
+
+Here is some code in C
+
+```c
+int main(int argc, char **argv) {
+    unsigned long a[1];
+    a[3] = 0x7ffff7b36cebUL;
+    return 0;
+}
+```
+
+- This code defines an array `a` of size `1` and attempts to assign a value to the fourth element of the array, which is _out of bounds_. Accessing array elements outside of the bounds of the array can lead to **undefined behavior** and may result in a segmentation fault or other runtime error.
+
+Here is the equivalent code in Rust:
+
+```rust
+fn main() {
+    let mut a: [u64; 1] = [0; 1];
+    a[3] = 0x7ffff7b36cebu64;
+}
+```
+
+- Like in C, this code defines an array `a` of size `1` and attempts to assign a value to the fourth element of the array, which is out of bounds. In Rust, this will result in a runtime panic and the program will **terminate**.
