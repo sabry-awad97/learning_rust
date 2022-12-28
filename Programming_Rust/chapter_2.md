@@ -199,3 +199,30 @@ Here is an ultra-summary of the steps in the function
 | Return | The loop ends when `m` becomes zero. At this point, `n` is returned as the result. |
 
 This function has a time complexity of O(log(n)), which means that the number of steps required to compute the GCD grows at most logarithmically with the size of the input numbers. This makes the function efficient for calculating the GCD of large numbers.
+
+## Writing and Running Unit Tests
+
+To test this function, you can define some test cases and then use assertions to check that the function returns the expected results for those test cases. Here is an example of how you could do this in Rust:
+
+```rust
+#[test]
+fn test_gcd() {
+    assert_eq!(gcd(14, 21), 7);
+    assert_eq!(gcd(49, 14), 7);
+    assert_eq!(gcd(1, 100), 1);
+    assert_eq!(gcd(6, 9), 3);
+    assert_eq!(gcd(0, 5), 5);
+}
+```
+
+| Input values | Expected output |
+| ------------ | --------------- |
+| (14, 21)     | 7               |
+| (49, 14)     | 7               |
+| (1, 100)     | 1               |
+| (6, 9)       | 3               |
+| (0, 5)       | 5               |
+
+This defines a test function test_gcd that contains five test cases. The assert_eq! macro checks that the value returned by the gcd function is equal to the expected result. If any of the assertions fails, the test function will produce an error.
+
+To run the tests, you can use a testing framework such as cargo test. This will execute all the test functions in your project and report any errors that occur.
