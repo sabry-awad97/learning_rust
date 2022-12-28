@@ -419,3 +419,61 @@ Here is a table explaining the syntax elements in the code in more detail:
 | `for m in &numbers[1..]`                                              | Iterates over elements of `numbers` vector, starting from second element.             |
 | `d = gcd(d, *m);`                                                     | Updates `d` to GCD of `d` and current element `m`.                                    |
 | `println!("The greatest common divisor of {:?} is {}", numbers, d);`  | Prints result of GCD calculation.                                                     |
+
+### FromStr Trait
+
+A trait is a collection of methods that types can implement.
+The `FromStr` trait is a Rust trait that provides a method for parsing a string as a value of a specific type.
+It is defined in the `std::str` module, and it can be implemented for any type that can be constructed from a string.
+Any type that implements the `FromStr` trait has a `from_str` method that tries to parse a value of that type from a
+string.
+
+Here is the definition of the `FromStr` trait:
+
+```rust
+pub trait FromStr: Sized {
+    type Err;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err>;
+}
+```
+
+The `from_str` method takes a `&str` as input and returns a `Result` with the parsed value or an error value of type `Self::Err`. The `Sized` trait indicates that the type implementing `FromStr` must have a fixed size.
+
+Here is the example of implementing the `FromStr` trait for the `Point` type:
+
+```rust
+use std::str::FromStr;
+
+#[derive(Debug)]
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+impl FromStr for Point {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let coords: Vec<&str> = s.split(',').collect();
+        if coords.len() != 2 {
+            return Err(format!("Error parsing point: {}", s));
+        }
+        let x = coords[0].parse::<i32>().map_err(|e| e.to_string())?;
+        let y = coords[1].parse::<i32>().map_err(|e| e.to_string())?;
+        Ok(Point { x, y })
+    }
+}
+
+fn main() {
+    let p: Point = "1,2".parse().unwrap();
+    println!("{:?}", p); // prints "Point { x: 1, y: 2 }"
+
+    let q: Result<Point, String> = "3,4,5".parse();
+    println!("{:?}", q); // prints "Err("Error parsing point: 3,4,5")"
+}
+```
+
+In this example, the `Point` type has two fields, `x` and `y`, which represent the coordinates of a point on a 2D plane. The `FromStr` trait is implemented for `Point` by defining a `from_str` method that splits the input string on the `','` character and tries to parse the resulting strings as `i32` values. If the input string doesn't have exactly two parts, the method returns an error. Otherwise, it constructs a new `Point` value with the parsed coordinates and returns it as an `Ok` variant of the `Result`.
+
+You can then use the `parse` method on a string to parse it as a value of the type that implements `FromStr`. The `parse` method returns a `Result` with the parsed value or an error value, so you can use it in a `match` expression or the `?` operator to handle the possible error cases.
