@@ -521,3 +521,43 @@ fn main() {
 ```
 
 In this example, the `args` function is used to iterate over the command line arguments, and the `var` function is used to get the value of the `PATH` environment variable. If the `var` function returns an error, it is printed to the standard error stream and the program exits with a non-zero exit code.
+
+## Iterate Over Rust Vector
+
+When you iterate over a vector in Rust, you can use the `for` loop syntax to automatically borrow each element of the vector for the duration of the loop. This means that the ownership of the vector remains with the original owner (in this case, the `numbers` variable) and the elements are borrowed and passed to the loop body as immutable references. Here's an example of how you can use the `for` loop to iterate over a vector:
+
+```rust
+let numbers = vec![1, 2, 3];
+
+for n in &numbers {
+    println!("{}", n);
+}
+```
+
+This will print out the numbers `1`, `2`, and `3` on separate lines. The `&` operator before the `numbers` variable in the loop declaration borrows the vector and allows you to iterate over its elements.
+
+You can also use the `iter` method to create an iterator over the elements of the vector and then use the `for` loop syntax to iterate over the iterator. This is useful if you want to perform some additional operations on the iterator before consuming it in the loop.
+
+```rust
+let numbers = vec![1, 2, 3];
+
+for n in numbers.iter() {
+    println!("{}", n);
+}
+```
+
+This code will produce the same output as the previous example.
+
+It's important to note that when you borrow a value, you cannot modify the borrowed value. If you need to modify the values in the vector, you can use the `iter_mut` method to create an iterator over mutable references to the elements of the vector and then use the `for` loop syntax to iterate over the iterator.
+
+```rust
+let mut numbers = vec![1, 2, 3];
+
+for n in numbers.iter_mut() {
+    *n *= 2;
+}
+
+println!("{:?}", numbers);
+```
+
+This will double each element in the `numbers` vector and then print `[2, 4, 6]`. The `*` operator dereferences the mutable reference to the element and allows you to modify the element itself.
