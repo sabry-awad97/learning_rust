@@ -718,3 +718,24 @@ impl std::ops::Mul for Complex {
 }`
 
 The `Complex` struct represents a complex number with a real and an imaginary component. The `Add` and `Mul` traits are implemented for `Complex` to allow addition and multiplication of complex numbers, respectively. The `new` associated function creates a new `Complex` instance with the given real and imaginary components, and the `norm` method calculates the magnitude of the complex number.
+
+2.  Define constants `IMAGE_WIDTH` and `IMAGE_HEIGHT` that determine the size of the image:
+
+```
+
+1. Define the `escape_time` function that takes a complex number `c` and a limit as input and returns the number of iterations it takes for the magnitude of the complex number to exceed `4.0` when it is repeatedly transformed by the Mandelbrot set formula:
+
+```rust
+fn escape_time(c: Complex, limit: usize) -> Option<usize> {
+    let mut z = Complex::new(0.0, 0.0);
+    for i in 0..limit {
+        z = z * z + c;
+        if z.norm() > 4.0 {
+            return Some(i);
+        }
+    }
+    None
+}
+```
+
+The `escape_time` function uses the Mandelbrot set formula to transform the complex number `z` and checks if its magnitude exceeds `4.0` after each iteration. If the magnitude exceeds `4.0`, the function returns the number of iterations it took. If the magnitude does not exceed `4.0` within the specified number of iterations, the function returns `None`.
