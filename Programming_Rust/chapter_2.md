@@ -682,60 +682,82 @@ Here's a detailed description to display an image of the Mandelbrot set:
 
 1. Define the `Complex` struct and implement the `Add` and `Mul` traits for it, as well as the `new` associated function and the `norm` method:
 
-```rust
-struct Complex {
-    real: f64,
-    imag: f64,
-}
+   ```rust
+   #[derive(Copy, Clone)]
+   struct Complex {
+       real: f64,
+       imag: f64,
+   }
 
-impl Complex {
-    fn new(real: f64, imag: f64) -> Self {
-        Self { real, imag }
-    }
+   impl Complex {
+       fn new(real: f64, imag: f64) -> Self {
+           Self { real, imag }
+       }
 
-    fn norm(&self) -> f64 {
-        (self.real * self.real + self.imag * self.imag).sqrt()
-    }
-}
+       fn norm(&self) -> f64 {
+           (self.real * self.real + self.imag * self.imag).sqrt()
+       }
+   }
 
-impl std::ops::Add for Complex {
-    type Output = Self;
+   impl std::ops::Add for Complex {
+       type Output = Self;
 
-    fn add(self, other: Self) -> Self {
-        Self::new(self.real + other.real, self.imag + other.imag)
-    }
-}
+       fn add(self, other: Self) -> Self {
+           Self::new(self.real + other.real, self.imag + other.imag)
+       }
+   }
 
-impl std::ops::Mul for Complex {
-    type Output = Self;
+   impl std::ops::Mul for Complex {
+       type Output = Self;
 
-    fn mul(self, other: Self) -> Self {
-        Self::new(
-            self.real * other.real - self.imag * other.imag,
-            self.real * other.imag + self.imag * other.real,
-        )
-    }
-}`
+       fn mul(self, other: Self) -> Self {
+           Self::new(
+               self.real * other.real - self.imag * other.imag,
+               self.real * other.imag + self.imag * other.real,
+           )
+       }
+   }
+   ```
 
-The `Complex` struct represents a complex number with a real and an imaginary component. The `Add` and `Mul` traits are implemented for `Complex` to allow addition and multiplication of complex numbers, respectively. The `new` associated function creates a new `Complex` instance with the given real and imaginary components, and the `norm` method calculates the magnitude of the complex number.
-
-2.  Define constants `IMAGE_WIDTH` and `IMAGE_HEIGHT` that determine the size of the image:
-
-```
+   The `Complex` struct represents a complex number with a real and an imaginary component. The `Add` and `Mul` traits are implemented for `Complex` to allow addition and multiplication of complex numbers, respectively. The `new` associated function creates a new `Complex` instance with the given real and imaginary components, and the `norm` method calculates the magnitude of the complex number.
 
 1. Define the `escape_time` function that takes a complex number `c` and a limit as input and returns the number of iterations it takes for the magnitude of the complex number to exceed `4.0` when it is repeatedly transformed by the Mandelbrot set formula:
 
-```rust
-fn escape_time(c: Complex, limit: usize) -> Option<usize> {
-    let mut z = Complex::new(0.0, 0.0);
-    for i in 0..limit {
-        z = z * z + c;
-        if z.norm() > 4.0 {
-            return Some(i);
-        }
-    }
-    None
-}
-```
+   ```rust
+   fn escape_time(c: Complex, limit: usize) -> Option<usize> {
+       let mut z = Complex::new(0.0, 0.0);
+       for i in 0..limit {
+           z = z * z + c;
+           if z.norm() > 4.0 {
+               return Some(i);
+           }
+       }
+       None
+   }
+   ```
 
-The `escape_time` function uses the Mandelbrot set formula to transform the complex number `z` and checks if its magnitude exceeds `4.0` after each iteration. If the magnitude exceeds `4.0`, the function returns the number of iterations it took. If the magnitude does not exceed `4.0` within the specified number of iterations, the function returns `None`.
+   The `escape_time` function uses the Mandelbrot set formula to transform the complex number `z` and checks if its magnitude exceeds `4.0` after each iteration. If the magnitude exceeds `4.0`, the function returns the number of iterations it took. If the magnitude does not exceed `4.0` within the specified number of iterations, the function returns `None`.
+
+1. Define the `parse_pairs` function:
+
+   This is a Rust function that takes a string `s` and a separator character `separator` as inputs. It tries to parse the string `s` into a tuple of two values of type `T`, where `T` is a generic type parameter that implements the `FromStr` trait.
+
+   ```rust
+   use std::str::FromStr;
+
+   fn parse_pair<T: FromStr>(s: &str, separator: char) -> Option<(T, T)> {
+       match s.find(separator) {
+           None => None,
+           Some(index) => {
+               match (T::from_str(&s[..index]), T::from_str(&s[index + 1..])) {
+                   (Ok(l), Ok(r)) => Some((l, r)),
+                   _ => None
+               }
+           }
+       }
+   }
+   ```
+
+   The function uses `find` method on the string `s` to find the index of the first occurrence of the separator character. If the separator character is not found, the function returns `None`.
+
+   If the separator character is found, the function uses Rust's pattern matching to try to parse the two substrings separated by the separator character into values of type `T` using the `from_str` method. If both parses are successful, the function returns a `Some` variant containing the tuple of the parsed values. If either parse fails, the function returns `None`.
