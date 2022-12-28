@@ -588,3 +588,27 @@ This will double each element in the `numbers` vector and then print `[2, 4, 6]`
   In this example, the spawned thread acquires the lock on the mutex using the `lock` method. It then makes a change to the data by dereferencing the `MutexGuard` and incrementing the value. When the `MutexGuard` goes out of scope, the lock on the mutex is automatically released.
 
   In C and C++, the relationship between a mutex and the data it protects is not enforced by the language. It is up to the programmer to ensure that the mutex is correctly used to protect the data. This can be error-prone, as it is easy to forget to acquire or release the lock, or to release the lock in the wrong order. In contrast, Rust's borrow checker helps to ensure that mutexes are used correctly and helps to prevent data races. C++ does not have a borrow checker like Rust's, so it is up to the programmer to ensure that the mutex is used correctly.
+
+- In Rust, you can use the `std::sync::Arc` type to share data between threads safely. `Arc` stands for "atomic reference count," and it is a type of smart pointer that allows multiple threads to have read-only access to the data it points to.
+
+  To share data using `Arc`, you first need to wrap the data in an `Arc` object using the `Arc::new` function. You can then pass the `Arc` object to the threads that need access to the data. The `Arc` object will keep track of how many threads are using the data and ensure that the data is not destroyed until all the threads are finished with it.
+
+  Here's an example of how to use `Arc` to share data between threads in Rust:
+
+  ```rust
+  use std::sync::Arc;
+  use std::thread;
+
+  let data = Arc::new(vec![1, 2, 3]);
+
+  for i in 0..3 {
+      let data = data.clone();
+      thread::spawn(move || {
+          println!("Thread {}: {:?}", i, data);
+      });
+  }
+  ```
+
+  In this example, the vector `[1, 2, 3]` is wrapped in an `Arc` object and then passed to three separate threads. Each thread reads the data and prints it to the console. The `clone` method is used to create additional references to the data that can be passed to the threads.
+
+  It's important to note that `Arc` only allows multiple threads to have read-only access to the data. If you want to modify the data from multiple threads, you will need to use a different type of synchronization mechanism, such as a mutex or a atomic data type.
