@@ -58,9 +58,9 @@ Rust is a programming language that is designed to be fast, safe, and concurrent
 
 ## Parallel Programming Is Tamed
 
-. In C, concurrency is usually implemented using threads, which are units of execution that can run concurrently. C provides a standard library called "pthreads" (POSIX threads) for creating and managing threads. However, C does not provide any built-in mechanisms for synchronizing or communicating between threads, so developers must use other techniques such as mutexes, semaphores, and condition variables to coordinate access to shared resources.
+- In C, concurrency is usually implemented using threads, which are units of execution that can run concurrently. C provides a standard library called "pthreads" (POSIX threads) for creating and managing threads. However, C does not provide any built-in mechanisms for synchronizing or communicating between threads, so developers must use other techniques such as mutexes, semaphores, and condition variables to coordinate access to shared resources.
 
-. Rust, on the other hand, has a built-in concurrency model based on lightweight threads that can execute in parallel. It also provides a number of tools and features to help developers write correct and efficient concurrent code, such as ownership and borrowing, channels, and atomic reference counting.
+- Rust, on the other hand, has a built-in concurrency model based on lightweight threads that can execute in parallel. It also provides a number of tools and features to help developers write correct and efficient concurrent code, such as ownership and borrowing, channels, and atomic reference counting.
 
 | Feature                              | C                                                              | Rust                                                                                                                                      |
 | ------------------------------------ | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
@@ -68,3 +68,28 @@ Rust is a programming language that is designed to be fast, safe, and concurrent
 | Synchronization mechanisms           | Mutexes, semaphores, condition variables (no built-in support) | Ownership and borrowing, channels, atomic reference counting                                                                              |
 | Error prevention                     | None (developers must use explicit synchronization mechanisms) | Ownership and borrowing can help prevent common problems such as race conditions and data races                                           |
 | Complexity of concurrent programming | High (developers must use explicit synchronization mechanisms) | Lower (built-in support for concurrency and ownership and borrowing can help prevent common problems and simplify concurrent programming) |
+
+## And Yet Rust Is Still Fast
+
+Rust is a programming language that is designed to be both safe and fast. It achieves high performance through a variety of techniques, including static typing, low-level control, and aggressive optimization.
+
+| Feature                 | Description                                                                                                                                                 |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Static typing           | Rust's static type system allows the compiler to generate more efficient code, as it knows the exact size and layout of all values at compile time.         |
+| Low-level control       | Rust provides low-level control through features such as raw pointers and unsafe code, which allows developers to write code that is close to the hardware. |
+| Aggressive optimization | Rust's compiler uses techniques such as inlining, constant propagation, and dead code elimination to generate highly efficient machine code.                |
+
+> ### Zero-overhead principle
+>
+> > The zero-overhead principle is a principle in computer science that states that "what you don't use, you don't pay for." In other words, an implementation should not impose any unnecessary overhead or performance penalties on the programmer.
+
+- In C++, the zero-overhead principle is reflected in the language's support for low-level control and optimization. C++ provides features such as manual memory management, templates, and inline functions, which can help developers write efficient code that is close to the hardware. However, C++ also has a number of features that can potentially introduce overhead, such as virtual functions and exception handling.
+
+- Rust, on the other hand, takes a different approach to the zero-overhead principle. It aims to provide a high-level, safe, and concurrent programming language that is still efficient. Rust achieves this through a combination of static typing, ownership and borrowing, and aggressive optimization. Its static type system and ownership model can help eliminate common sources of overhead, such as null or dangling pointer references, while its aggressive optimizer can help generate efficient machine code.
+
+- Here is a summary of the main ways that C++ and Rust follow the zero-overhead principle:
+
+  | Language | Features                                                                                                                                                                                                            |
+  | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | C++      | Low-level control and optimization features such as manual memory management, templates, and inline functions. Some features, such as virtual functions and exception handling, can potentially introduce overhead. |
+  | Rust     | Static typing, ownership and borrowing, and aggressive optimization help eliminate common sources of overhead and generate efficient code.                                                                          |
