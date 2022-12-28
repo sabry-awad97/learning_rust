@@ -477,3 +477,44 @@ fn main() {
 In this example, the `Point` type has two fields, `x` and `y`, which represent the coordinates of a point on a 2D plane. The `FromStr` trait is implemented for `Point` by defining a `from_str` method that splits the input string on the `','` character and tries to parse the resulting strings as `i32` values. If the input string doesn't have exactly two parts, the method returns an error. Otherwise, it constructs a new `Point` value with the parsed coordinates and returns it as an `Ok` variant of the `Result`.
 
 You can then use the `parse` method on a string to parse it as a value of the type that implements `FromStr`. The `parse` method returns a `Result` with the parsed value or an error value, so you can use it in a `match` expression or the `?` operator to handle the possible error cases.
+
+A trait must be in scope in order to use its methods.
+
+### `std::env`
+
+The `std::env` module in Rust provides functions for interacting with the environment in which a program is run. It allows you to access various properties of the environment, such as the command line arguments, the current working directory, and the environment variables.
+
+Here is a table with a summary of the most commonly functions in the `std::env` module:
+
+| Function          | Description                                                                |
+| ----------------- | -------------------------------------------------------------------------- |
+| `args`            | Returns an iterator over the command line arguments passed to the program. |
+| `current_dir`     | Returns the current working directory as a `PathBuf`.                      |
+| `set_current_dir` | Sets the current working directory to the provided path.                   |
+| `var`             | Gets the value of an environment variable as a string.                     |
+| `var_os`          | Gets the value of an environment variable as an `OsString`.                |
+| `set_var`         | Sets the value of an environment variable.                                 |
+| `remove_var`      | Removes an environment variable.                                           |
+
+Here is an example of using some of these functions to print the command line arguments and the value of an environment variable:
+
+```rust
+use std::env;
+
+fn main() {
+    // Print the command line arguments
+    for arg in env::args() {
+        println!("{}", arg);
+    }
+
+    // Get the value of the "PATH" environment variable
+    let path = env::var("PATH").unwrap_or_else(|e| {
+        eprintln!("Error getting PATH: {}", e);
+        std::process::exit(1);
+    });
+    println!("PATH: {}", path);
+}
+
+```
+
+In this example, the `args` function is used to iterate over the command line arguments, and the `var` function is used to get the value of the `PATH` environment variable. If the `var` function returns an error, it is printed to the standard error stream and the program exits with a non-zero exit code.
