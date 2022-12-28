@@ -202,6 +202,8 @@ This function has a time complexity of O(log(n)), which means that the number of
 
 ## Writing and Running Unit Tests
 
+To write and run unit tests in Rust, you'll need to use the #[test] attribute, which marks a function as a unit test. You can then run your tests using the cargo test command.
+
 To test this function, you can define some test cases and then use assertions to check that the function returns the expected results for those test cases. Here is an example of how you could do this in Rust:
 
 ```rust
@@ -225,4 +227,19 @@ fn test_gcd() {
 
 This defines a test function test_gcd that contains five test cases. The assert_eq! macro checks that the value returned by the gcd function is equal to the expected result. If any of the assertions fails, the test function will produce an error.
 
-To run the tests, you can use a testing framework such as cargo test. This will execute all the test functions in your project and report any errors that occur.
+The `#[test]` marker is an example of an attribute.
+In Rust, attributes are a way to attach additional information to your code.
+They are used for a wide range of purposes, **including setting compiler options**, **defining test functions**, and **controlling how functions are called**.
+
+Attributes are written in square brackets and are placed before the item they apply to. For example, the `#[test]` attribute is used to mark a function as a unit test, and the `#[should_panic]` attribute is used to indicate that a test function should panic.
+
+Here's an example of how to use the `#[cfg]` attribute to enable or disable a block of code based on the current configuration:
+
+```rust
+#[cfg(target_os = "linux")]
+fn test_function() {
+    // Code that is only compiled on Linux goes here
+}
+```
+
+Attributes are a powerful feature in Rust and are used extensively in the Rust ecosystem.
