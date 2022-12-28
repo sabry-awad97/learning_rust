@@ -612,3 +612,34 @@ This will double each element in the `numbers` vector and then print `[2, 4, 6]`
   In this example, the vector `[1, 2, 3]` is wrapped in an `Arc` object and then passed to three separate threads. Each thread reads the data and prints it to the console. The `clone` method is used to create additional references to the data that can be passed to the threads.
 
   It's important to note that `Arc` only allows multiple threads to have read-only access to the data. If you want to modify the data from multiple threads, you will need to use a different type of synchronization mechanism, such as a mutex or a atomic data type.
+
+- In Rust, the borrowing and ownership system helps to ensure thread safety by preventing data races and other synchronization issues. When you transfer ownership of a data structure from one thread to another, Rust ensures that the sending thread no longer has access to the data and cannot modify it. This helps to prevent race conditions and other synchronization issues that can occur when multiple threads access and modify shared data.
+
+  In contrast, C and C++ do not have a built-in mechanism for preventing data races and other synchronization issues. It is up to the programmer to ensure that shared data is accessed and modified safely in a multithreaded environment. If the programmer does not take the necessary precautions, the effects can be unpredictable and may depend on factors such as the processor's cache and the number of writes to memory that have been performed recently.
+
+  Here is an example of transferring ownership of a data structure from one thread to another
+
+  ```rust
+  fn send_data_to_other_thread(data: Data) {
+      let other_thread = spawn(move || {
+          // other_thread now owns 'data' and can access and modify it
+          // without any restrictions
+          data.do_something();
+      });
+      // The current thread no longer has access to 'data' and cannot
+      // modify it
+  }
+  ```
+
+  In this example, the `send_data_to_other_thread` function transfers ownership of the `data` structure to the `other_thread` by using the `move` keyword in the closure that is passed to the `spawn` function. This ensures that the current thread no longer has access to the `data` structure and cannot modify it.
+
+  ```c++
+  void send_data_to_other_thread(Data* data) {
+      pthread_t other_thread;
+      pthread_create(&other_thread, NULL, &do_something, data);
+      // The current thread still has access to 'data' and could potentially
+      // modify it if it is not careful
+  }
+  ```
+
+  In the C or C++ , the `send_data_to_other_thread` function passes a pointer to the `data` structure to the `do_something` function, which is executed by the `other_thread`. The current thread still has access to the `data` structure and could potentially modify it if it is not careful. It is up to the programmer to ensure that the data is accessed and modified safely in a multithreaded environment.
