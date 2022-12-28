@@ -396,6 +396,10 @@ for m in &numbers[1..] {
 
 This code initializes a variable `d` with the first element of the `numbers` vector, and then iterates over the rest of the elements. At each iteration, it updates `d` to the GCD of `d` and the current element using the `gcd` function (which is not defined in this code snippet).
 
+In Rust, the `for m in &numbers[1..]` loop iterates over the elements in the `numbers` slice, starting at the second element (index 1) and ending at the last element. The `&` operator is used to borrow the elements in the slice, rather than copying them.
+
+The `..` syntax indicates that the loop should include all elements in the slice. If you wanted to iterate over a subset of the elements, you could use `..n` to include the elements up to (but not including) the element at index `n`, or `n..` to include the elements starting at index `n` and going to the end of the slice.
+
 ### Printing the result
 
 ```rust
