@@ -853,3 +853,42 @@ Here's a detailed description to display an image of the Mandelbrot set:
    ```
 
    There are two test cases provided for this function. The first test case checks that the function correctly parses a string containing a valid complex number, and the second test case checks that the function returns `None` when the input string is invalid.
+
+1. Mapping from Pixels to Complex Numbers:
+
+   A pixel is a small unit of a digital image, typically represented as a small square of color. Mapping from pixels to complex numbers involves creating a correspondence between the pixels in an image and the complex numbers in the complex plane. This can be done by assigning a complex number to each pixel based on its position in the image.
+
+   For example, suppose we have an image with a width of `w` pixels and a height of `h` pixels. We can map the pixels to complex numbers by assigning the complex number `x + yi` to the pixel at position `(x, y)`, where `x` and `y` are integers in the range `0` to `w-1` and `0` to `h-1`, respectively. This creates a correspondence between the pixels in the image and the complex numbers in the complex plane, with the origin (0,0) at the top-left corner of the image.
+
+   Alternatively, we can use the pixel coordinates to determine the position of the complex number in the complex plane. For example, we can map the pixel at position `(x, y)` to the complex number `(x - w/2) + (y - h/2)i`, where `w` and `h` are the width and height of the image in pixels. This creates a correspondence between the pixels in the image and the complex numbers in the complex plane, with the origin (0,0) at the center of the image.
+
+   There are many different ways to map pixels to complex numbers, and the choice of mapping depends on the specific needs of the application.
+
+   To visualize the mapping from pixels to complex numbers:
+
+   ```py
+       import numpy as np
+       import matplotlib.pyplot as plt
+
+   def create_image(w, h): # Create a blank image with a white background
+   image = np.ones((h, w, 3))
+
+       # Map the pixels to complex numbers
+       for x in range(w):
+           for y in range(h):
+               c = (x - w/2) + (y - h/2)*1j
+
+               # Set the pixel color based on the complex number
+               image[y, x] = (np.real(c), np.imag(c), 0)
+
+       return image
+
+   # Create an image with a width of 300 pixels and a height of 200 pixels
+
+   image = create_image(300, 200)
+
+   # Display the image
+
+   plt.imshow(image)
+   plt.show()
+   ```
