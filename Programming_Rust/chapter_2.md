@@ -824,3 +824,30 @@ This function appears to print out usage information for a command line program 
 The first line of the function uses string interpolation to print out a message explaining what the program does. The message is printed in green color, which is achieved by calling the `green()` method on the string.
 
 The second line of the function prints out usage information for the program, including the required arguments that the program expects: `target`, `replacement`, `INPUT`, and `OUTPUT`. These arguments correspond to the string that the program will search for, the string that it will replace it with, the input file to read from, and the output file to write to, respectively.
+
+```rust
+fn parse_args() -> Arguments {
+    let args: Vec<String> = env::args().skip(1).collect();
+    if args.len() != 4 {
+        print_usage();
+        eprintln!(
+            "{} wrong number of arguments: expected 4, got {}.",
+            "Error:".red().bold(),
+            args.len()
+        );
+        std::process::exit(1);
+    }
+    Arguments {
+        target: args[0].clone(),
+        replacement: args[1].clone(),
+        filename: args[2].clone(),
+        output: args[3].clone(),
+    }
+}
+```
+
+This function returns an instance of a struct called `Arguments`, which has four fields: `target`, `replacement`, `filename`, and `output`. These fields correspond to the string that the program will search for, the string that it will replace it with, the input file to read from, and the output file to write to, respectively.
+
+The function begins by collecting the command line arguments into a vector of `String`s, skipping the first argument (which is the name of the program itself). It then checks whether the number of arguments is equal to 4. If it is not, the function calls `print_usage()` to print out usage information and then prints an error message to the standard error output using the `eprintln!` macro. The error message includes the string "Error:", printed in red and bold text. Finally, the function exits the program with an exit code of 1, indicating that an error occurred.
+
+If the number of arguments is equal to 4, the function constructs an `Arguments` struct using the four command line arguments and returns it.
