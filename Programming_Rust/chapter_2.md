@@ -864,3 +864,106 @@ This is the main function of the program. It calls the `parse_args()` function t
 The `main()` function is the entry point of every Rust program. It is the first function that is executed when the program is run. In this case, the `main()` function simply calls `parse_args()` to parse the command line arguments and then prints out the resulting `Arguments` struct.
 
 It is good practice to keep the `main()` function short and simple, and to delegate more complex tasks to other functions. This makes the program easier to understand and maintain.
+
+## Reading and writing Files
+
+There are several ways to read and write files in Rust:
+
+1. Using the `std::fs` module: This module provides functions for reading and writing files, such as `read_to_string`, `write`, and `append`. These functions are blocking and perform I/O operations synchronously.
+2. Using the `std::io` module: This module provides a variety of types and traits for working with I/O, including the `Read` and `Write` traits that can be implemented for custom types and the `BufReader` and `BufWriter` types that provide buffering for better performance.
+3. Using the `tokio` crate: This crate is a runtime for asynchronous programming in Rust and provides a variety of functions for working with I/O, including `read_to_string`, `write`, and `append`, which are non-blocking and perform I/O operations asynchronously.
+4. Using the `async-std` crate: This crate is an async version of the Rust standard library and provides a variety of functions for working with I/O, including `read_to_string`, `write`, and `append`, which are non-blocking and perform I/O operations asynchronously.
+
+Here is a summary of these methods in a table:
+
+| Method      | Blocking | Asynchronous | Crate     |
+| ----------- | -------- | ------------ | --------- |
+| `std::fs`   | Yes      | No           | None      |
+| `std::io`   | Yes      | No           | None      |
+| `tokio`     | No       | Yes          | tokio     |
+| `async-std` | No       | Yes          | async-std |
+
+Here are some examples of using these different methods to read and write files in Rust:
+
+Using the `std::fs` module:
+
+```rust
+use std::fs;
+
+// Read the contents of a file into a string
+let contents = fs::read_to_string("filename.txt")?;
+
+// Write a string to a file, overwriting the file if it already exists
+fs::write("filename.txt", "Hello, world!")?;
+
+// Append a string to a file
+fs::append("filename.txt", "Hello, world!")?;
+```
+
+Using the `std::io` module:
+
+```rust
+use std::io;
+use std::io::{BufReader, BufWriter, Read, Write};
+
+// Read the contents of a file into a string
+let file = std::fs::File::open("filename.txt")?;
+let mut reader = BufReader::new(file);
+let mut contents = String::new();
+reader.read_to_string(&mut contents)?;
+
+// Write a string to a file, overwriting the file if it already exists
+let file = std::fs::File::create("filename.txt")?;
+let mut writer = BufWriter::new(file);
+writer.write(b"Hello, world!")?;
+
+// Append a string to a file
+let file = std::fs::OpenOptions::new()
+    .write(true)
+    .append(true)
+    .open("filename.txt")?;
+let mut writer = BufWriter::new(file);
+writer.write(b"Hello, world!")?;
+```
+
+Using the `tokio` crate:
+
+```rust
+use tokio::fs;
+
+#[tokio::main]
+async fn main() -> io::Result<()> {
+    // Read the contents of a file into a string
+    let contents = fs::read_to_string("filename.txt").await?;
+
+    // Write a string to a file, overwriting the file if it already exists
+    fs::write("filename.txt", "Hello, world!").await?;
+
+    // Append a string to a file
+    fs::append("filename.txt", "Hello, world!").await?;
+
+    Ok(())
+}
+```
+
+Using the `async-std` crate:
+
+```rust
+use async_std::fs;
+
+#[async_std::main]
+async fn main() -> std::io::Result<()> {
+    // Read the contents of a file into a string
+    let contents = fs::read_to_string("filename.txt").await?;
+
+    // Write a string to a file, overwriting the file if it already exists
+    fs::write("filename.txt", "Hello, world!").await?;
+
+    // Append a string to a file
+    fs::append("filename.txt", "Hello, world!").await?;
+
+    Ok(())
+}
+```
+
+Note that the `tokio` and `async-std` examples use the `#[tokio::main]` and `#[async_std::main]` attributes, respectively, to specify that the main function is an async function that will be run by the tok
