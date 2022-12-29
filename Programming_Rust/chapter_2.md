@@ -892,3 +892,53 @@ Here's a detailed description to display an image of the Mandelbrot set:
    plt.imshow(image)
    plt.show()
    ```
+
+   - Create a pixel_to_point function
+
+   ```rust
+   fn pixel_to_point(bounds: (usize, usize), pixel: (usize, usize), upper_left: Complex, lower_right: Complex) -> Complex {
+    let (width, height) = (
+        lower_right.real - upper_left.real,
+        upper_left.imag - lower_right.imag,
+    );
+    Complex {
+        real: upper_left.real + pixel.0 as f64 * width / bounds.0 as f64,
+        imag: upper_left.imag - pixel.1 as f64 * height / bounds.1 as f64,
+    }
+   }
+   ```
+
+   The `bounds` parameter is a tuple of two `usize` values, representing the width and height of the image in pixels. The `pixel` parameter is also a tuple of two `usize` values, representing the coordinates of the pixel to be converted. The `upper_left` parameter is a `Complex` struct representing the position of the upper left corner of the image in the complex plane, and the `lower_right` parameter is a `Complex` struct representing the position of the lower right corner of the image in the complex plane.
+
+   The function first calculates the width of the region in the complex plane covered by the image by subtracting the real part of the `upper_left` complex number from the real part of the `lower_right` complex number. It then calculates the height of the region in the complex plane by subtracting the imaginary part of the `lower_right` complex number from the imaginary part of the `upper_left` complex number.
+
+   Next, the function calculates the real part of the complex number corresponding to the pixel by adding the real part of the `upper_left` complex number to the product of the pixel's x-coordinate, the width of the region in the complex plane, and the reciprocal of the image width in pixels. The imaginary part of the complex number is calculated in a similar way, by subtracting the product of the pixel's y-coordinate, the height of the region in the complex plane, and the reciprocal of the image height in pixels from the imaginary part of the `upper_left` complex number.
+
+   Finally, the function returns a `Complex` struct with the calculated real and imaginary parts.
+
+   To test it:
+
+   ```rust
+   fn main() {}
+   #[test]
+   fn test_pixel_to_point() {
+       assert_eq!(
+           pixel_to_point(
+               (100, 200),
+               (25, 175),
+               Complex {
+                   real: -1.0,
+                   imag: 1.0
+               },
+               Complex {
+                   real: 1.0,
+                   imag: -1.0
+               }
+           ),
+           Complex {
+               real: -0.5,
+               imag: -0.75
+           }
+       );
+   }
+   ```
