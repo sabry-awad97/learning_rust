@@ -1007,3 +1007,24 @@ Here is a summary of the code in table form:
 | Parse command line arguments                                    | Obtain `filename` and `output` arguments                                                                                                                  |
 | Read contents of file specified by `filename`                   | If successful, store contents in `data` variable. If unsuccessful, print error message to standard error output and exit program with non-zero exit code. |
 | Write contents of `data` variable to file specified by `output` | If successful, do nothing. If unsuccessful, print error message to standard error output and exit program with non-zero exit code.                        |
+
+To test this code, you can create a file with some sample content and use this code to read from the file and write it to another file. Then you can compare the contents of the two files to verify that the code is working correctly.
+
+Here's an example of how you could test this code:
+
+1. Create a text file called `input.txt` with some sample content, for example:
+
+```rust
+Hello, world!
+This is a test file.
+```
+
+1. Run the code with the `input.txt` file as the `filename` argument and a file called `output.txt` as the `output` argument:
+
+```rust
+cargo run -- input.txt output.txt
+```
+
+1. Open the `output.txt` file and verify that it contains the same content as the `input.txt` file.
+
+You can also try providing invalid arguments or modifying the code to test different scenarios. For example, you could try providing a non-existent file as the `filename` argument to test the error handling code.
