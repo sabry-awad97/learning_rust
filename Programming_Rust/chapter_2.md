@@ -942,3 +942,54 @@ Here's a detailed description to display an image of the Mandelbrot set:
        );
    }
    ```
+
+   - Plotting the Set
+
+   ```rust
+   /// Render a rectangle of the Mandelbrot set into a buffer of pixels.
+   ///
+   /// The `bounds` argument gives the width and height of the buffer `pixels`,
+   /// which holds one grayscale pixel per byte. The `upper_left` and `lower_right`
+   /// arguments specify points on the complex plane corresponding to the upper-
+   /// left and lower-right corners of the pixel buffer.
+   fn render(
+       pixels: &mut [u8],
+       bounds: (usize, usize),
+       upper_left: Complex,
+       lower_right: Complex,
+   ) {
+       assert!(pixels.len() == bounds.0 * bounds.1);
+       for row in 0..bounds.1 {
+           for column in 0..bounds.0 {
+               let point = pixel_to_point(bounds, (column, row), upper_left, lower_right);
+               pixels[row * bounds.0 + column] = match escape_time(point, 255) {
+                   None => 0,
+                   Some(count) => 255 - count as u8,
+               };
+           }
+       }
+   }
+
+   ```
+
+   The `pixels` argument is a mutable slice of bytes that will hold the pixel data for the image. The pixel data is organized as a sequence of bytes, with each byte representing the intensity of a single pixel in the image.
+
+   The `bounds` argument is a tuple of two `usize` values representing the width and height of the image in pixels. The `upper_left` and `lower_right` arguments are `Complex` structs representing points on the complex plane corresponding to the upper-left and lower-right corners of the image, respectively.
+
+   The function begins by asserting that the length of the `pixels` slice is equal to the product of the width and height of the image. This ensures that the `pixels` slice has enough capacity to hold the pixel data for the entire image.
+
+   The function then iterates over the rows and columns of the image using nested `for` loops. For each iteration, it uses the `pixel_to_point` function to convert the pixel coordinates to a complex number on the complex plane. It then calls the `escape_time` function, passing in the complex number and a maximum escape count of 255.
+
+   The `escape_time` function returns `None` if the complex number does not escape within the maximum escape count, and it returns `Some(count)` if the complex number does escape, where `count` is the number of iterations required for the complex number to escape.
+
+   If the `escape_time` function returns `None`, the function sets the pixel value to 0, which corresponds to black in a grayscale image. If the `escape_time` function returns a value, the function sets the pixel value to the difference between 255 and the escape count, converted to a `u8`. This results in a grayscale image where pixels with a low escape count are displayed as dark (since they have a high pixel value) and pixels with a high escape count are displayed as light (since they have a low pixel value).
+
+   Finally, the function updates the pixel data in the `pixels` slice by assigning the calculated pixel value to the appropriate index in the slice. The index is calculated as the product of the row number and the width of the image, plus the column number. This ensures that the pixel data is stored in row-major order, with the pixel data for each row stored consecutively in memory.
+
+   **What is the meaning of the `escape_time` ?**
+
+   In the context of the Mandelbrot set, the escape time of a complex number is the number of iterations required for the magnitude of the complex number to exceed a certain threshold. This threshold is often chosen to be 2, since the Mandelbrot set is defined as the set of complex numbers for which the magnitude of the complex number remains bounded by 2 under iteration of the complex function z -> z^2 + c, where c is the complex number.
+
+   The escape time of a complex number can be used to classify the complex number as either belonging to the Mandelbrot set or not belonging to the Mandelbrot set. If the escape time of a complex number is `None`, it means that the complex number belongs to the Mandelbrot set. If the escape time of a complex number is `Some(count)`, it means that the complex number does not belong to the Mandelbrot set and that it took `count` iterations for the magnitude of the complex number to exceed the threshold.
+
+   The escape time of a complex number is often used to color the pixels in an image of the Mandelbrot set. Pixels corresponding to complex numbers with a low escape time are typically colored dark, while pixels corresponding to complex numbers with a high escape time are typically colored light. This results in an image with a characteristic "swirled" pattern, with the dark regions corresponding to the points in the complex plane that belong to the Mandelbrot set and the light regions corresponding to the points that do not belong to the set.
