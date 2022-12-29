@@ -851,3 +851,16 @@ This function returns an instance of a struct called `Arguments`, which has four
 The function begins by collecting the command line arguments into a vector of `String`s, skipping the first argument (which is the name of the program itself). It then checks whether the number of arguments is equal to 4. If it is not, the function calls `print_usage()` to print out usage information and then prints an error message to the standard error output using the `eprintln!` macro. The error message includes the string "Error:", printed in red and bold text. Finally, the function exits the program with an exit code of 1, indicating that an error occurred.
 
 If the number of arguments is equal to 4, the function constructs an `Arguments` struct using the four command line arguments and returns it.
+
+```rust
+fn main() {
+    let args = parse_args();
+    println!("{:?}", args);
+}
+```
+
+This is the main function of the program. It calls the `parse_args()` function to parse the command line arguments, and then prints out the resulting `Arguments` struct using the `println!` macro and the `Debug` trait.
+
+The `main()` function is the entry point of every Rust program. It is the first function that is executed when the program is run. In this case, the `main()` function simply calls `parse_args()` to parse the command line arguments and then prints out the resulting `Arguments` struct.
+
+It is good practice to keep the `main()` function short and simple, and to delegate more complex tasks to other functions. This makes the program easier to understand and maintain.
