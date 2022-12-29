@@ -805,4 +805,22 @@ This would print something like:
 
 ```rust
     Arguments { target: "hello", replacement: "world", filename: "input.txt", output: "output.txt" }
-`
+```
+
+```rust
+use text_colorizer::*;
+
+fn print_usage() {
+    eprintln!(
+        "{} - change occurrences of one string into another",
+        "quickreplace".green()
+    );
+    eprintln!("Usage: quickreplace <target> <replacement> <INPUT> <OUTPUT>");
+}
+```
+
+This function appears to print out usage information for a command line program called `quickreplace`. The function takes no arguments, and uses the `eprintln!` macro to print to the standard error output.
+
+The first line of the function uses string interpolation to print out a message explaining what the program does. The message is printed in green color, which is achieved by calling the `green()` method on the string.
+
+The second line of the function prints out usage information for the program, including the required arguments that the program expects: `target`, `replacement`, `INPUT`, and `OUTPUT`. These arguments correspond to the string that the program will search for, the string that it will replace it with, the input file to read from, and the output file to write to, respectively.
