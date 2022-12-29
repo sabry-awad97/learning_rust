@@ -1080,3 +1080,150 @@ fn main() {
 ```
 
 You can then test the find and replace functionality by running the code with the `find` and `replace` arguments and verifying that the `output` file contains the modified text.
+
+## Find and Replace using Regex
+
+```rust
+use regex::Regex;
+fn replace(target: &str, replacement: &str, text: &str) -> Result<String, regex::Error> {
+    let regex = Regex::new(target)?;
+    Ok(regex.replace_all(text, replacement).to_string())
+}
+```
+
+This is a function that takes three strings as arguments: `target`, `replacement`, and `text`. The `target` argument is a regular expression that specifies the pattern to search for in `text`. The `replacement` argument is a string that will be used to replace the occurrences of the pattern found in `text`.
+
+The function first creates a new `Regex` object from the `target` string using the `Regex::new` function. The `?` operator is used to propagate any error that might occur during the creation of the `Regex` object. If the `Regex` object is created successfully, the function calls the `replace_all` method on it, passing `text` and `replacement` as arguments. The `replace_all` method returns a new string with the replacements applied, and this string is returned by the function as the result.
+
+If an error occurs during the creation of the `Regex` object, the function returns the error using the `Err` variant of the `Result` type. Otherwise, it returns the modified string using the `Ok` variant of the `Result` type.
+
+This function can be used to replace all occurrences of a specific pattern in a string with a given replacement string. For example:
+
+```rust
+let target = "\\d+";
+let replacement = "NUMBER";
+let text = "This is a test with 123 numbers and 456 more numbers.";
+let result = replace(target, replacement, text).unwrap();
+assert_eq!(result, "This is a test with NUMBER numbers and NUMBER more numbers.");
+```
+
+```rust
+fn main() {
+    let args = parse_args();
+    let data = match fs::read_to_string(&args.filename) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!(
+                "{} failed to read from file '{}': {:?}",
+                "Error:".red().bold(),
+                args.filename,
+                e
+            );
+            std::process::exit(1);
+        }
+    };
+    let replaced_data = match replace(&args.target, &args.replacement, &data) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!("{} failed to replace text: {:?}", "Error:".red().bold(), e);
+            std::process::exit(1);
+        }
+    };
+    match fs::write(&args.output, &replaced_data) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!(
+                "{} failed to write to file '{}': {:?}",
+                "Error:".red().bold(),
+                args.filename,
+                e
+            );
+            std::process::exit(1);
+        }
+    };
+}
+```
+
+This is the final touch of the program.
+
+- Here a more organized version of the program
+
+```rust
+use regex::Regex;
+use std::{env, fs};
+use text_colorizer::*;
+
+#[derive(Debug)]
+struct Arguments {
+    target: String,
+    replacement: String,
+    input_filename: String,
+    output_filename: String,
+}
+
+impl Arguments {
+    fn parse() -> Self {
+        let args: Vec<String> = env::args().skip(1).collect();
+        if args.len() != 4 {
+            print_usage();
+            eprintln!(
+                "{} wrong number of arguments: expected 4, got {}.",
+                "Error:".red().bold(),
+                args.len()
+            );
+            std::process::exit(1);
+        }
+        Arguments {
+            target: args[0].clone(),
+            replacement: args[1].clone(),
+            input_filename: args[2].clone(),
+            output_filename: args[3].clone(),
+        }
+    }
+}
+
+fn print_usage() {
+    eprintln!("{} - change occurrences of one string into another", "quickreplace".green());
+    eprintln!("Usage: quickreplace <target> <replacement> <input_filename> <output_filename>");
+}
+
+fn main() {
+    let args = Arguments::parse();
+    let input_data = match fs::read_to_string(&args.input_filename) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!(
+                "{} failed to read from file '{}': {}",
+                "Error:".red().bold(),
+                args.input_filename,
+                e
+            );
+            std::process::exit(1);
+        }
+    };
+    let replaced_data = match replace(&args.target, &args.replacement, &input_data) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!("{} failed to replace text: {}", "Error:".red().bold(), e);
+            std::process::exit(1);
+        }
+    };
+    match fs::write(&args.output_filename, &replaced_data) {
+        Ok(_) => println!("Successfully replaced text and wrote output to '{}'", args.output_filename),
+        Err(e) => {
+            eprintln!(
+                "{} failed to write to file '{}': {}",
+                "Error:".red().bold(),
+                args.output_filename,
+                e
+            );
+            std::process::exit(1);
+        }
+    };
+}
+
+fn replace(target: &str, replacement: &str, text: &str) -> Result<String, regex::Error> {
+    let regex = Regex::new(target)?;
+    Ok(regex.replace_all(text, replacement).to_string())
+}
+```
