@@ -1028,3 +1028,55 @@ cargo run -- input.txt output.txt
 1. Open the `output.txt` file and verify that it contains the same content as the `input.txt` file.
 
 You can also try providing invalid arguments or modifying the code to test different scenarios. For example, you could try providing a non-existent file as the `filename` argument to test the error handling code.
+
+## Find and Replace functionality
+
+To add find and replace functionality to this code, you can modify the code as follows:
+
+1. Add a new command line argument to specify the string to search for (`find`) and the string to replace it with (`replace`).
+1. Modify the code to read the `find` and `replace` arguments and store them in variables.
+1. Use the `replace` method of the `String` type to replace all occurrences of the `find` string with the `replace` string in the `data` variable. For example:
+
+```rust
+let data = data.replace(&find, &replace);
+```
+
+1. Write the modified `data` variable to the output file as before.
+
+Here's an example of the modified code:
+
+```rust
+fn main() {
+    let args = parse_args();
+    let find = &args.find;
+    let replace = &args.replace;
+
+    let data = match fs::read_to_string(&args.filename) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!(
+                "{} failed to read from file '{}': {:?}",
+                "Error:".red().bold(),
+                args.filename,
+                e
+            );
+            std::process::exit(1);
+        }
+    };
+    let data = data.replace(find, replace);
+    match fs::write(&args.output, &data) {
+        Ok(_) => {}
+        Err(e) => {
+            eprintln!(
+                "{} failed to write to file '{}': {:?}",
+                "Error:".red().bold(),
+                args.filename,
+                e
+            );
+            std::process::exit(1);
+        }
+    };
+}
+```
+
+You can then test the find and replace functionality by running the code with the `find` and `replace` arguments and verifying that the `output` file contains the modified text.
