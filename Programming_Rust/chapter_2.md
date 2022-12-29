@@ -967,3 +967,43 @@ async fn main() -> std::io::Result<()> {
 ```
 
 Note that the `tokio` and `async-std` examples use the `#[tokio::main]` and `#[async_std::main]` attributes, respectively, to specify that the main function is an async function that will be run by the tok
+
+- To read file inside QuickReplace:
+
+```rust
+fn main() {
+    let args = parse_args();
+    let data = match fs::read_to_string(&args.filename) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!(
+                "{} failed to read from file '{}': {:?}",
+                "Error:".red().bold(),
+                args.filename,
+                e
+            );
+            std::process::exit(1);
+        }
+    };
+    match fs::write(&args.output, &data) {
+        Ok(_) => {}
+        Err(e) => {
+            eprintln!(
+                "{} failed to write to file '{}': {:?}",
+                "Error:".red().bold(),
+                args.filename,
+                e
+            );
+            std::process::exit(1);
+        }
+    };
+}
+```
+
+Here is a summary of the code in table form:
+
+| Action                                                          | Result                                                                                                                                                    |
+| --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parse command line arguments                                    | Obtain `filename` and `output` arguments                                                                                                                  |
+| Read contents of file specified by `filename`                   | If successful, store contents in `data` variable. If unsuccessful, print error message to standard error output and exit program with non-zero exit code. |
+| Write contents of `data` variable to file specified by `output` | If successful, do nothing. If unsuccessful, print error message to standard error output and exit program with non-zero exit code.                        |
