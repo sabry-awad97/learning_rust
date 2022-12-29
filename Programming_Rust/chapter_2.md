@@ -721,346 +721,53 @@ Here's a detailed description to display an image of the Mandelbrot set:
 
    The `Complex` struct represents a complex number with a real and an imaginary component. The `Add` and `Mul` traits are implemented for `Complex` to allow addition and multiplication of complex numbers, respectively. The `new` associated function creates a new `Complex` instance with the given real and imaginary components, and the `norm` method calculates the magnitude of the complex number.
 
-1. Define the `escape_time` function that takes a complex number `c` and a limit as input and returns the number of iterations it takes for the magnitude of the complex number to exceed `4.0` when it is repeatedly transformed by the Mandelbrot set formula:
+- A simplified version of it
 
-   ```rust
-   fn escape_time(c: Complex, limit: usize) -> Option<usize> {
-       let mut z = Complex::new(0.0, 0.0);
-       for i in 0..limit {
-           z = z * z + c;
-           if z.norm() > 4.0 {
-               return Some(i);
-           }
-       }
-       None
-   }
-   ```
+```rust
 
-   The `escape_time` function uses the Mandelbrot set formula to transform the complex number `z` and checks if its magnitude exceeds `4.0` after each iteration. If the magnitude exceeds `4.0`, the function returns the number of iterations it took. If the magnitude does not exceed `4.0` within the specified number of iterations, the function returns `None`.
+use image::{ImageBuffer, Rgb};
 
-1. Define the `parse_pairs` function:
+fn mandelbrot(c: Complex) -> u8 {
+    // Maximum number of iterations
+    const MAX_ITER: u32 = 255;
 
-   This is a Rust function that takes a string `s` and a separator character `separator` as inputs. It tries to parse the string `s` into a tuple of two values of type `T`, where `T` is a generic type parameter that implements the `FromStr` trait.
-
-   ```rust
-   use std::str::FromStr;
-
-   fn parse_pair<T: FromStr>(s: &str, separator: char) -> Option<(T, T)> {
-       match s.find(separator) {
-           None => None,
-           Some(index) => {
-               match (T::from_str(&s[..index]), T::from_str(&s[index + 1..])) {
-                   (Ok(l), Ok(r)) => Some((l, r)),
-                   _ => None
-               }
-           }
-       }
-   }
-   ```
-
-   This is a Rust function that parses a string and returns an option containing a pair of values of type `T`, where `T` is a type that implements the `FromStr` trait. The function takes two arguments:
-
-   1. `s: &str`: a reference to a string that represents a pair of values separated by a `separator` character.
-   1. `separator: char`: the character that separates the two values in the string.
-
-   The function first uses the `find` method of the `str` type to search for the `separator` character in the string. If the separator is not found, the function returns `None`. If the separator is found, the function attempts to parse the two substrings on either side of the separator using the `from_str` method of the `T` type. If the parsing is successful, the function returns `Some` containing a pair of the parsed values. If the parsing fails, the function returns `None`.
-
-   The `parse_pair` function is a generic function, meaning that it can work with any type `T` that implements the `FromStr` trait. This allows the function to be used with a variety of types, as long as they can be parsed from a string.
-
-   Here is the explanation of the `parse_pair` function:
-
-   ```rust
-   match s.find(separator) {
-       None => None,
-       Some(index) => {
-           ...
-       }
-   }
-   ```
-
-   The `find` method returns an option type `Option<usize>`, where `usize` is an unsigned integer type. If the `separator` character is found in the string, the `find` method returns `Some` containing the index of the character in the string. If the character is not found, the method returns `None`.
-
-   The block then uses a `match` expression to branch on the result of the `find` method. If the `separator` character is not found, the block returns `None`. If the `separator` is found, the block executes the code in the `Some` branch, which attempts to parse the left and right substrings of the input string.
-
-   ```rust
-    match (T::from_str(&s[..index]), T::from_str(&s[index + 1..])) {
-        (Ok(l), Ok(r)) => Some((l, r)),
-        _ => None
-    }
-   ```
-
-   The `match` expression is used to handle the results of two calls to the `from_str` method of the `T` type. The `from_str` method parses the left and right substrings of the input string.
-
-   The `match` expression has two arms:
-
-   1. The first arm matches the `Ok` variant of the `Result` type returned by the `from_str` method. If both calls to `from_str` are successful, the arm binds the parsed values to the variables `l` and `r` and returns `Some` containing a pair of the parsed values.
-   2. The second arm is a catch-all pattern that matches any value. In this case, it is used to catch any error value returned by the `from_str` method, in addition to any other value that is not `Ok`. If either call to `from_str` returns an error, the arm returns `None`.
-
-   Here is a breakdown of the syntax of the `match` expression in a Markdown table:
-
-   | Syntax                                                     | Description                                                                                                                                                                                                 |
-   | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-   | `match`                                                    | Keyword that indicates the start of a `match` expression.                                                                                                                                                   |
-   | `(T::from_str(&s[..index]), T::from_str(&s[index + 1..]))` | Parentheses around a tuple containing two calls to the `from_str` method of the `T` type. The `from_str` method parses the left and right substrings of the input string.                                   |
-   | `{`                                                        | Curly brace that indicates the start of the `match` arms.                                                                                                                                                   |
-   | `(Ok(l), Ok(r))`                                           | Pattern that matches the `Ok` variant of the `Result` type returned by the `from_str` method. If both calls to `from_str` are successful, the pattern binds the parsed values to the variables `l` and `r`. |
-   | `=>`                                                       | Arrow that separates the pattern from the expression that is executed when the pattern matches.                                                                                                             |
-   | `Some((l, r))`                                             | Expression that returns `Some` containing a pair of the parsed values.                                                                                                                                      |
-   | `_`                                                        | Catch-all pattern that matches any value. In this case, it is used to catch any error value returned by the `from_str` method, in addition to any other value that is not `Ok`.                             |
-   | `None`                                                     | Expression that returns `None`.                                                                                                                                                                             |
-   | `}`                                                        | Curly brace that indicates the end of the `match` arms.                                                                                                                                                     |
-
-   To test it
-
-   ```rust
-   #[test]
-   fn test_parse_pair() {
-       assert_eq!(parse_pair::<i32>("", ','), None);
-       assert_eq!(parse_pair::<i32>("10,", ','), None);
-       assert_eq!(parse_pair::<i32>(",10", ','), None);
-       assert_eq!(parse_pair::<i32>("10,20", ','), Some((10, 20)));
-       assert_eq!(parse_pair::<i32>("10,20xy", ','), None);
-       assert_eq!(parse_pair::<f64>("0.5x", 'x'), None);
-       assert_eq!(parse_pair::<f64>("0.5x1.5", 'x'), Some((0.5, 1.5)));
-   }
-   ```
-
-1. Define a `parse_complex` function:
-
-   This code `parse_complex` function takes a string `s` as input and attempts to parse it as a `complex` number.
-
-   ```rust
-   /// Parse a pair of floating-point numbers separated by a comma as a complex number.
-   fn parse_complex(s: &str) -> Option<Complex> {
-       match parse_pair(s, ',') {
-           Some((re, im)) => Some(Complex { re, im }),
-           None => None
-       }
-   }
-   ```
-
-   The function calls another function `parse_pair` to split the string `s` into two parts separated by a comma. The two parts are then used to create a complex number object with the `re` field representing the real part and the `im` field representing the imaginary part. The function returns `Some(Complex { re, im })` if the parsing is successful, or `None` if it fails.
-
-   To test it:
-
-   ```rust
-    #[test]
-    fn test_parse_complex() {
-        assert_eq!(parse_complex("1.25,-0.0625"),
-        Some(Complex { re: 1.25, im: -0.0625 }));
-        assert_eq!(parse_complex(",-0.0625"), None);
-    }
-   ```
-
-   There are two test cases provided for this function. The first test case checks that the function correctly parses a string containing a valid complex number, and the second test case checks that the function returns `None` when the input string is invalid.
-
-1. Mapping from Pixels to Complex Numbers:
-
-   A pixel is a small unit of a digital image, typically represented as a small square of color. Mapping from pixels to complex numbers involves creating a correspondence between the pixels in an image and the complex numbers in the complex plane. This can be done by assigning a complex number to each pixel based on its position in the image.
-
-   For example, suppose we have an image with a width of `w` pixels and a height of `h` pixels. We can map the pixels to complex numbers by assigning the complex number `x + yi` to the pixel at position `(x, y)`, where `x` and `y` are integers in the range `0` to `w-1` and `0` to `h-1`, respectively. This creates a correspondence between the pixels in the image and the complex numbers in the complex plane, with the origin (0,0) at the top-left corner of the image.
-
-   Alternatively, we can use the pixel coordinates to determine the position of the complex number in the complex plane. For example, we can map the pixel at position `(x, y)` to the complex number `(x - w/2) + (y - h/2)i`, where `w` and `h` are the width and height of the image in pixels. This creates a correspondence between the pixels in the image and the complex numbers in the complex plane, with the origin (0,0) at the center of the image.
-
-   There are many different ways to map pixels to complex numbers, and the choice of mapping depends on the specific needs of the application.
-
-   To visualize the mapping from pixels to complex numbers:
-
-   ```py
-       import numpy as np
-       import matplotlib.pyplot as plt
-
-   def create_image(w, h): # Create a blank image with a white background
-   image = np.ones((h, w, 3))
-
-       # Map the pixels to complex numbers
-       for x in range(w):
-           for y in range(h):
-               c = (x - w/2) + (y - h/2)*1j
-
-               # Set the pixel color based on the complex number
-               image[y, x] = (np.real(c), np.imag(c), 0)
-
-       return image
-
-   # Create an image with a width of 300 pixels and a height of 200 pixels
-
-   image = create_image(300, 200)
-
-   # Display the image
-
-   plt.imshow(image)
-   plt.show()
-   ```
-
-   - Create a pixel_to_point function
-
-   ```rust
-   fn pixel_to_point(bounds: (usize, usize), pixel: (usize, usize), upper_left: Complex, lower_right: Complex) -> Complex {
-    let (width, height) = (
-        lower_right.real - upper_left.real,
-        upper_left.imag - lower_right.imag,
-    );
-    Complex {
-        real: upper_left.real + pixel.0 as f64 * width / bounds.0 as f64,
-        imag: upper_left.imag - pixel.1 as f64 * height / bounds.1 as f64,
-    }
-   }
-   ```
-
-   The `bounds` parameter is a tuple of two `usize` values, representing the width and height of the image in pixels. The `pixel` parameter is also a tuple of two `usize` values, representing the coordinates of the pixel to be converted. The `upper_left` parameter is a `Complex` struct representing the position of the upper left corner of the image in the complex plane, and the `lower_right` parameter is a `Complex` struct representing the position of the lower right corner of the image in the complex plane.
-
-   The function first calculates the width of the region in the complex plane covered by the image by subtracting the real part of the `upper_left` complex number from the real part of the `lower_right` complex number. It then calculates the height of the region in the complex plane by subtracting the imaginary part of the `lower_right` complex number from the imaginary part of the `upper_left` complex number.
-
-   Next, the function calculates the real part of the complex number corresponding to the pixel by adding the real part of the `upper_left` complex number to the product of the pixel's x-coordinate, the width of the region in the complex plane, and the reciprocal of the image width in pixels. The imaginary part of the complex number is calculated in a similar way, by subtracting the product of the pixel's y-coordinate, the height of the region in the complex plane, and the reciprocal of the image height in pixels from the imaginary part of the `upper_left` complex number.
-
-   Finally, the function returns a `Complex` struct with the calculated real and imaginary parts.
-
-   To test it:
-
-   ```rust
-   fn main() {}
-   #[test]
-   fn test_pixel_to_point() {
-       assert_eq!(
-           pixel_to_point(
-               (100, 200),
-               (25, 175),
-               Complex {
-                   real: -1.0,
-                   imag: 1.0
-               },
-               Complex {
-                   real: 1.0,
-                   imag: -1.0
-               }
-           ),
-           Complex {
-               real: -0.5,
-               imag: -0.75
-           }
-       );
-   }
-   ```
-
-   - Plotting the Set
-
-   ```rust
-   /// Render a rectangle of the Mandelbrot set into a buffer of pixels.
-   ///
-   /// The `bounds` argument gives the width and height of the buffer `pixels`,
-   /// which holds one grayscale pixel per byte. The `upper_left` and `lower_right`
-   /// arguments specify points on the complex plane corresponding to the upper-
-   /// left and lower-right corners of the pixel buffer.
-   fn render(
-       pixels: &mut [u8],
-       bounds: (usize, usize),
-       upper_left: Complex,
-       lower_right: Complex,
-   ) {
-       assert!(pixels.len() == bounds.0 * bounds.1);
-       for row in 0..bounds.1 {
-           for column in 0..bounds.0 {
-               let point = pixel_to_point(bounds, (column, row), upper_left, lower_right);
-               pixels[row * bounds.0 + column] = match escape_time(point, 255) {
-                   None => 0,
-                   Some(count) => 255 - count as u8,
-               };
-           }
-       }
-   }
-
-   ```
-
-   The `pixels` argument is a mutable slice of bytes that will hold the pixel data for the image. The pixel data is organized as a sequence of bytes, with each byte representing the intensity of a single pixel in the image.
-
-   The `bounds` argument is a tuple of two `usize` values representing the width and height of the image in pixels. The `upper_left` and `lower_right` arguments are `Complex` structs representing points on the complex plane corresponding to the upper-left and lower-right corners of the image, respectively.
-
-   The function begins by asserting that the length of the `pixels` slice is equal to the product of the width and height of the image. This ensures that the `pixels` slice has enough capacity to hold the pixel data for the entire image.
-
-   The function then iterates over the rows and columns of the image using nested `for` loops. For each iteration, it uses the `pixel_to_point` function to convert the pixel coordinates to a complex number on the complex plane. It then calls the `escape_time` function, passing in the complex number and a maximum escape count of 255.
-
-   The `escape_time` function returns `None` if the complex number does not escape within the maximum escape count, and it returns `Some(count)` if the complex number does escape, where `count` is the number of iterations required for the complex number to escape.
-
-   If the `escape_time` function returns `None`, the function sets the pixel value to 0, which corresponds to black in a grayscale image. If the `escape_time` function returns a value, the function sets the pixel value to the difference between 255 and the escape count, converted to a `u8`. This results in a grayscale image where pixels with a low escape count are displayed as dark (since they have a high pixel value) and pixels with a high escape count are displayed as light (since they have a low pixel value).
-
-   Finally, the function updates the pixel data in the `pixels` slice by assigning the calculated pixel value to the appropriate index in the slice. The index is calculated as the product of the row number and the width of the image, plus the column number. This ensures that the pixel data is stored in row-major order, with the pixel data for each row stored consecutively in memory.
-
-   **What is the meaning of the `escape_time` ?**
-
-   In the context of the Mandelbrot set, the escape time of a complex number is the number of iterations required for the magnitude of the complex number to exceed a certain threshold. This threshold is often chosen to be 2, since the Mandelbrot set is defined as the set of complex numbers for which the magnitude of the complex number remains bounded by 2 under iteration of the complex function z -> z^2 + c, where c is the complex number.
-
-   The escape time of a complex number can be used to classify the complex number as either belonging to the Mandelbrot set or not belonging to the Mandelbrot set. If the escape time of a complex number is `None`, it means that the complex number belongs to the Mandelbrot set. If the escape time of a complex number is `Some(count)`, it means that the complex number does not belong to the Mandelbrot set and that it took `count` iterations for the magnitude of the complex number to exceed the threshold.
-
-   The escape time of a complex number is often used to color the pixels in an image of the Mandelbrot set. Pixels corresponding to complex numbers with a low escape time are typically colored dark, while pixels corresponding to complex numbers with a high escape time are typically colored light. This results in an image with a characteristic "swirled" pattern, with the dark regions corresponding to the points in the complex plane that belong to the Mandelbrot set and the light regions corresponding to the points that do not belong to the set.
-
-   - Writing Image Files
-
-   ```rust
-   fn write_image(
-       filename: &str,
-       pixels: &[u8],
-       bounds: (usize, usize),
-   ) -> Result<(), Box<dyn Error>> {
-       image::save_buffer(
-           filename,
-           pixels,
-           bounds.0 as u32,
-           bounds.1 as u32,
-           image::ColorType::Rgb8,
-       )?;
-       Ok(())
-   }
-   ```
-
-   This is a Rust function that writes an image file to the filesystem. It takes in three arguments:
-
-   1. `filename`: a string slice that specifies the name of the file to be written.
-   2. `pixels`: a slice of bytes that represents the pixel data of the image.
-   3. `bounds`: a tuple of two `usize` values that represent the width and height of the image in pixels.
-
-   The function uses the `image` crate to save the image buffer to a file with the specified `filename`. The image data is assumed to be in the RGB8 color format. The function returns a `Result` type, which is an enumeration that can either be an `Ok` variant, indicating that the operation was successful, or an `Err` variant, indicating that an error occurred.
-
-   If the function encounters an error while saving the image, it will return an `Err` variant with the error value boxed in a trait object. Otherwise, it will return an `Ok` variant, indicating that the operation was successful.
-
-   The `image` crate is a library for working with images in Rust. It provides functions and types for reading, writing, and manipulating image data. It supports a variety of image file formats and color models, including JPEG, PNG, BMP, and GIF.
-
-   Some of the main features of the `image` crate include:
-
-   - Reading and writing image files from the filesystem or other sources.
-   - Accessing and manipulating individual pixel values.
-   - Converting between different image color models.
-   - Resizing, cropping, and rotating images.
-   - Applying filters and effects to images.
-
-   The `image` crate is widely used in Rust for tasks such as image processing, computer vision, and graphics. It is well-documented and has a simple, intuitive API.
-
-   - Mandelbrot Program
-
-   ```rust
-    fn main() {
-        let args: Vec<String> = env::args().collect();
-        if args.len() != 5 {
-            eprintln!("Usage: {} FILE PIXELS UPPERLEFT LOWERRIGHT", args[0]);
-            eprintln!(
-                "Example: {} mandel.png 1000x750 -1.20,0.35 -1,0.20",
-                args[0]
-            );
-            std::process::exit(1);
+    let mut z = Complex { real: 0.0, imag: 0.0 };
+    let mut i = 0;
+    while i < MAX_ITER {
+        if z.norm() > 2.0 {
+            break;
         }
-        let bounds = parse_pair(&args[2], 'x').expect("error parsing image dimensions");
-        let upper_left = parse_complex(&args[3]).expect("error parsing upper left corner point");
-        let lower_right = parse_complex(&args[4]).expect("error parsing lower right corner point");
-        let mut pixels = vec![0; bounds.0 * bounds.1];
-        render(&mut pixels, bounds, upper_left, lower_right);
-        write_image(&args[1], &pixels, bounds).expect("error writing PNG file");
+        z = z * z + c;
+        i += 1;
     }
-   ```
 
-   This is a Rust program that generates an image of the Mandelbrot set and writes it to a file. The program takes four command-line arguments: the name of the output file, the image dimensions in pixels, and the complex plane coordinates of the upper left and lower right corners of the image.
+    i as u8
+}
 
-   The program starts by collecting the command-line arguments into a vector of strings called `args`. It then checks that there are exactly five arguments (the program name and four input arguments) and exits if this is not the case.
+fn main() {
+    // Image dimensions
+    let width = 800;
+    let height = 600;
 
-   Next, the program parses the string representing the image dimensions into a pair of integers using the `parse_pair` function. It then parses the strings representing the upper left and lower right corner points into complex numbers using the `parse_complex` function.
+    // Create an empty image
+    let mut imgbuf = ImageBuffer::new(width, height);
 
-   The program then initializes a vector of pixels with the correct number of elements and calls the `render` function to compute the pixel values. Finally, it calls the `write_image` function to write the image data to a file in PNG format.
+    // Iterate over the pixels in the image
+    for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
+        // Map the pixel coordinates to a complex number
+        let c = Complex {
+            real: (x as f64 - width as f64 / 2.0) / (width as f64 / 4.0),
+            imag: (y as f64 - height as f64 / 2.0) / (height as f64 / 4.0),
+        };
+
+        // Compute the number of iterations until the point escapes the Mandelbrot set
+        let i = mandelbrot(c);
+
+        // Set the pixel color based on the number of iterations
+        *pixel = Rgb([i, i, i]);
+    }
+
+    // Save the image as a PNG file
+    imgbuf.save("mandelbrot.png").unwrap();
+}
+```
