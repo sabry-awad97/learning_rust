@@ -1034,3 +1034,33 @@ Here's a detailed description to display an image of the Mandelbrot set:
    - Applying filters and effects to images.
 
    The `image` crate is widely used in Rust for tasks such as image processing, computer vision, and graphics. It is well-documented and has a simple, intuitive API.
+
+   - Mandelbrot Program
+
+   ```rust
+    fn main() {
+        let args: Vec<String> = env::args().collect();
+        if args.len() != 5 {
+            eprintln!("Usage: {} FILE PIXELS UPPERLEFT LOWERRIGHT", args[0]);
+            eprintln!(
+                "Example: {} mandel.png 1000x750 -1.20,0.35 -1,0.20",
+                args[0]
+            );
+            std::process::exit(1);
+        }
+        let bounds = parse_pair(&args[2], 'x').expect("error parsing image dimensions");
+        let upper_left = parse_complex(&args[3]).expect("error parsing upper left corner point");
+        let lower_right = parse_complex(&args[4]).expect("error parsing lower right corner point");
+        let mut pixels = vec![0; bounds.0 * bounds.1];
+        render(&mut pixels, bounds, upper_left, lower_right);
+        write_image(&args[1], &pixels, bounds).expect("error writing PNG file");
+    }
+   ```
+
+   This is a Rust program that generates an image of the Mandelbrot set and writes it to a file. The program takes four command-line arguments: the name of the output file, the image dimensions in pixels, and the complex plane coordinates of the upper left and lower right corners of the image.
+
+   The program starts by collecting the command-line arguments into a vector of strings called `args`. It then checks that there are exactly five arguments (the program name and four input arguments) and exits if this is not the case.
+
+   Next, the program parses the string representing the image dimensions into a pair of integers using the `parse_pair` function. It then parses the strings representing the upper left and lower right corner points into complex numbers using the `parse_complex` function.
+
+   The program then initializes a vector of pixels with the correct number of elements and calls the `render` function to compute the pixel values. Finally, it calls the `write_image` function to write the image data to a file in PNG format.
