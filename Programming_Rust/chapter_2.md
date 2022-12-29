@@ -810,17 +810,46 @@ Here's a detailed description to display an image of the Mandelbrot set:
    | `None`                                                     | Expression that returns `None`.                                                                                                                                                                             |
    | `}`                                                        | Curly brace that indicates the end of the `match` arms.                                                                                                                                                     |
 
-To test it
+   To test it
 
-```rust
-#[test]
-fn test_parse_pair() {
-    assert_eq!(parse_pair::<i32>("", ','), None);
-    assert_eq!(parse_pair::<i32>("10,", ','), None);
-    assert_eq!(parse_pair::<i32>(",10", ','), None);
-    assert_eq!(parse_pair::<i32>("10,20", ','), Some((10, 20)));
-    assert_eq!(parse_pair::<i32>("10,20xy", ','), None);
-    assert_eq!(parse_pair::<f64>("0.5x", 'x'), None);
-    assert_eq!(parse_pair::<f64>("0.5x1.5", 'x'), Some((0.5, 1.5)));
-}
-```
+   ```rust
+   #[test]
+   fn test_parse_pair() {
+       assert_eq!(parse_pair::<i32>("", ','), None);
+       assert_eq!(parse_pair::<i32>("10,", ','), None);
+       assert_eq!(parse_pair::<i32>(",10", ','), None);
+       assert_eq!(parse_pair::<i32>("10,20", ','), Some((10, 20)));
+       assert_eq!(parse_pair::<i32>("10,20xy", ','), None);
+       assert_eq!(parse_pair::<f64>("0.5x", 'x'), None);
+       assert_eq!(parse_pair::<f64>("0.5x1.5", 'x'), Some((0.5, 1.5)));
+   }
+   ```
+
+1. Define a `parse_complex` function:
+
+   This code `parse_complex` function takes a string `s` as input and attempts to parse it as a `complex` number.
+
+   ```rust
+   /// Parse a pair of floating-point numbers separated by a comma as a complex number.
+   fn parse_complex(s: &str) -> Option<Complex> {
+       match parse_pair(s, ',') {
+           Some((re, im)) => Some(Complex { re, im }),
+           None => None
+       }
+   }
+   ```
+
+   The function calls another function `parse_pair` to split the string `s` into two parts separated by a comma. The two parts are then used to create a complex number object with the `re` field representing the real part and the `im` field representing the imaginary part. The function returns `Some(Complex { re, im })` if the parsing is successful, or `None` if it fails.
+
+   To test it:
+
+   ```rust
+    #[test]
+    fn test_parse_complex() {
+        assert_eq!(parse_complex("1.25,-0.0625"),
+        Some(Complex { re: 1.25, im: -0.0625 }));
+        assert_eq!(parse_complex(",-0.0625"), None);
+    }
+   ```
+
+   There are two test cases provided for this function. The first test case checks that the function correctly parses a string containing a valid complex number, and the second test case checks that the function returns `None` when the input string is invalid.
