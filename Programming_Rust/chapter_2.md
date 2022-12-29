@@ -771,3 +771,38 @@ fn main() {
     imgbuf.save("mandelbrot.png").unwrap();
 }
 ```
+
+## Filesystems and Command-Line Tools
+
+### `QuickReplace` CLI
+
+```rust
+#[derive(Debug)]
+struct Arguments {
+    target: String,
+    replacement: String,
+    filename: String,
+    output: String,
+}
+```
+
+The `#[derive(Debug)]` attribute tells the Rust compiler to automatically implement the `Debug` trait for the `Arguments` struct. This allows you to print the values of an `Arguments` instance using the `{:?}` debug format specifier. For example:
+
+Copy code
+
+```rust
+let args = Arguments {
+    target: "hello".to_string(),
+    replacement: "world".to_string(),
+    filename: "input.txt".to_string(),
+    output: "output.txt".to_string(),
+};
+
+println!("{:?}", args);
+```
+
+This would print something like:
+
+```rust
+    Arguments { target: "hello", replacement: "world", filename: "input.txt", output: "output.txt" }
+`
