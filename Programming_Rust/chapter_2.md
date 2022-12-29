@@ -758,21 +758,69 @@ Here's a detailed description to display an image of the Mandelbrot set:
    }
    ```
 
-   The function uses `find` method on the string `s` to find the index of the first occurrence of the separator character. If the separator character is not found, the function returns `None`.
+   This is a Rust function that parses a string and returns an option containing a pair of values of type `T`, where `T` is a type that implements the `FromStr` trait. The function takes two arguments:
 
-   If the separator character is found, the function uses Rust's pattern matching to try to parse the two substrings separated by the separator character into values of type `T` using the `from_str` method. If both parses are successful, the function returns a `Some` variant containing the tuple of the parsed values. If either parse fails, the function returns `None`.
+   1. `s: &str`: a reference to a string that represents a pair of values separated by a `separator` character.
+   1. `separator: char`: the character that separates the two values in the string.
 
-   To test it
+   The function first uses the `find` method of the `str` type to search for the `separator` character in the string. If the separator is not found, the function returns `None`. If the separator is found, the function attempts to parse the two substrings on either side of the separator using the `from_str` method of the `T` type. If the parsing is successful, the function returns `Some` containing a pair of the parsed values. If the parsing fails, the function returns `None`.
+
+   The `parse_pair` function is a generic function, meaning that it can work with any type `T` that implements the `FromStr` trait. This allows the function to be used with a variety of types, as long as they can be parsed from a string.
+
+   Here is the explanation of the `parse_pair` function:
 
    ```rust
-   #[test]
-   fn test_parse_pair() {
-       assert_eq!(parse_pair::<i32>("", ','), None);
-       assert_eq!(parse_pair::<i32>("10,", ','), None);
-       assert_eq!(parse_pair::<i32>(",10", ','), None);
-       assert_eq!(parse_pair::<i32>("10,20", ','), Some((10, 20)));
-       assert_eq!(parse_pair::<i32>("10,20xy", ','), None);
-       assert_eq!(parse_pair::<f64>("0.5x", 'x'), None);
-       assert_eq!(parse_pair::<f64>("0.5x1.5", 'x'), Some((0.5, 1.5)));
+   match s.find(separator) {
+       None => None,
+       Some(index) => {
+           ...
+       }
    }
    ```
+
+   The `find` method returns an option type `Option<usize>`, where `usize` is an unsigned integer type. If the `separator` character is found in the string, the `find` method returns `Some` containing the index of the character in the string. If the character is not found, the method returns `None`.
+
+   The block then uses a `match` expression to branch on the result of the `find` method. If the `separator` character is not found, the block returns `None`. If the `separator` is found, the block executes the code in the `Some` branch, which attempts to parse the left and right substrings of the input string.
+
+   ```rust
+    match (T::from_str(&s[..index]), T::from_str(&s[index + 1..])) {
+        (Ok(l), Ok(r)) => Some((l, r)),
+        _ => None
+    }
+   ```
+
+   The `match` expression is used to handle the results of two calls to the `from_str` method of the `T` type. The `from_str` method parses the left and right substrings of the input string.
+
+   The `match` expression has two arms:
+
+   1. The first arm matches the `Ok` variant of the `Result` type returned by the `from_str` method. If both calls to `from_str` are successful, the arm binds the parsed values to the variables `l` and `r` and returns `Some` containing a pair of the parsed values.
+   2. The second arm is a catch-all pattern that matches any value. In this case, it is used to catch any error value returned by the `from_str` method, in addition to any other value that is not `Ok`. If either call to `from_str` returns an error, the arm returns `None`.
+
+   Here is a breakdown of the syntax of the `match` expression in a Markdown table:
+
+   | Syntax                                                     | Description                                                                                                                                                                                                 |
+   | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | `match`                                                    | Keyword that indicates the start of a `match` expression.                                                                                                                                                   |
+   | `(T::from_str(&s[..index]), T::from_str(&s[index + 1..]))` | Parentheses around a tuple containing two calls to the `from_str` method of the `T` type. The `from_str` method parses the left and right substrings of the input string.                                   |
+   | `{`                                                        | Curly brace that indicates the start of the `match` arms.                                                                                                                                                   |
+   | `(Ok(l), Ok(r))`                                           | Pattern that matches the `Ok` variant of the `Result` type returned by the `from_str` method. If both calls to `from_str` are successful, the pattern binds the parsed values to the variables `l` and `r`. |
+   | `=>`                                                       | Arrow that separates the pattern from the expression that is executed when the pattern matches.                                                                                                             |
+   | `Some((l, r))`                                             | Expression that returns `Some` containing a pair of the parsed values.                                                                                                                                      |
+   | `_`                                                        | Catch-all pattern that matches any value. In this case, it is used to catch any error value returned by the `from_str` method, in addition to any other value that is not `Ok`.                             |
+   | `None`                                                     | Expression that returns `None`.                                                                                                                                                                             |
+   | `}`                                                        | Curly brace that indicates the end of the `match` arms.                                                                                                                                                     |
+
+To test it
+
+```rust
+#[test]
+fn test_parse_pair() {
+    assert_eq!(parse_pair::<i32>("", ','), None);
+    assert_eq!(parse_pair::<i32>("10,", ','), None);
+    assert_eq!(parse_pair::<i32>(",10", ','), None);
+    assert_eq!(parse_pair::<i32>("10,20", ','), Some((10, 20)));
+    assert_eq!(parse_pair::<i32>("10,20xy", ','), None);
+    assert_eq!(parse_pair::<f64>("0.5x", 'x'), None);
+    assert_eq!(parse_pair::<f64>("0.5x1.5", 'x'), Some((0.5, 1.5)));
+}
+```
