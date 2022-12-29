@@ -993,3 +993,44 @@ Here's a detailed description to display an image of the Mandelbrot set:
    The escape time of a complex number can be used to classify the complex number as either belonging to the Mandelbrot set or not belonging to the Mandelbrot set. If the escape time of a complex number is `None`, it means that the complex number belongs to the Mandelbrot set. If the escape time of a complex number is `Some(count)`, it means that the complex number does not belong to the Mandelbrot set and that it took `count` iterations for the magnitude of the complex number to exceed the threshold.
 
    The escape time of a complex number is often used to color the pixels in an image of the Mandelbrot set. Pixels corresponding to complex numbers with a low escape time are typically colored dark, while pixels corresponding to complex numbers with a high escape time are typically colored light. This results in an image with a characteristic "swirled" pattern, with the dark regions corresponding to the points in the complex plane that belong to the Mandelbrot set and the light regions corresponding to the points that do not belong to the set.
+
+   - Writing Image Files
+
+   ```rust
+   fn write_image(
+       filename: &str,
+       pixels: &[u8],
+       bounds: (usize, usize),
+   ) -> Result<(), Box<dyn Error>> {
+       image::save_buffer(
+           filename,
+           pixels,
+           bounds.0 as u32,
+           bounds.1 as u32,
+           image::ColorType::Rgb8,
+       )?;
+       Ok(())
+   }
+   ```
+
+   This is a Rust function that writes an image file to the filesystem. It takes in three arguments:
+
+   1. `filename`: a string slice that specifies the name of the file to be written.
+   2. `pixels`: a slice of bytes that represents the pixel data of the image.
+   3. `bounds`: a tuple of two `usize` values that represent the width and height of the image in pixels.
+
+   The function uses the `image` crate to save the image buffer to a file with the specified `filename`. The image data is assumed to be in the RGB8 color format. The function returns a `Result` type, which is an enumeration that can either be an `Ok` variant, indicating that the operation was successful, or an `Err` variant, indicating that an error occurred.
+
+   If the function encounters an error while saving the image, it will return an `Err` variant with the error value boxed in a trait object. Otherwise, it will return an `Ok` variant, indicating that the operation was successful.
+
+   The `image` crate is a library for working with images in Rust. It provides functions and types for reading, writing, and manipulating image data. It supports a variety of image file formats and color models, including JPEG, PNG, BMP, and GIF.
+
+   Some of the main features of the `image` crate include:
+
+   - Reading and writing image files from the filesystem or other sources.
+   - Accessing and manipulating individual pixel values.
+   - Converting between different image color models.
+   - Resizing, cropping, and rotating images.
+   - Applying filters and effects to images.
+
+   The `image` crate is widely used in Rust for tasks such as image processing, computer vision, and graphics. It is well-documented and has a simple, intuitive API.
