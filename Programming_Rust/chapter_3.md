@@ -2592,3 +2592,19 @@ Here are some examples of using slices in Rust:
        let zs: &[String] = &["a", "b", "c"].iter().map(|s| s.to_string()).collect::<Vec<_>>();
    }
    ```
+
+Here is a comparison of arrays, vectors, and slices in Rust:
+
+|                          | Arrays   | Vectors  | Slices   |
+| ------------------------ | -------- | -------- | -------- |
+| Syntax                   | `[T; N]` | `Vec<T>` | `&[T]`   |
+| Capacity                 | Fixed    | Dynamic  | N/A      |
+| Resizable                | No       | Yes      | No       |
+| Ownership of data        | Owned    | Owned    | Borrowed |
+| Can be indexed           | Yes      | Yes      | Yes      |
+| Can be iterated over     | Yes      | Yes      | Yes      |
+| Can be compared          | Yes      | Yes      | Yes      |
+| Can be sorted            | Yes      | Yes      | Yes      |
+| Length can be obtained   | Yes      | Yes      | Yes      |
+| Can be converted to/from | No       | Yes      | Yes      |
+| Boxed                    | Yes      | Yes      | No       |
