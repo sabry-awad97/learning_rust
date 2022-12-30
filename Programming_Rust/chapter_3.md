@@ -2613,31 +2613,154 @@ Here is a comparison of arrays, vectors, and slices in Rust:
 
 - In Rust, strings are sequences of Unicode characters.
 - Rust has two primary string types: `&str` and `String`.
+
   - `&str` is a slice that points to a UTF-8-encoded string stored elsewhere. It is often used as a function argument or a return type.
+
+    ```rust
+        let s: &str = "Hello, world!"; // &str slice
+    ```
+
   - `String` is an owned, growable string. It is stored on the heap and can be mutated.
+
+    ```rust
+    let mut s = String::from("Hello, world!"); // String
+    ```
 
 ## Conversion
 
 - You can convert a `String` to a `&str` using the `as_str` method.
+
+  ```rust
+  let s = "Hello, world!".to_string(); // String
+  let s: &str = s.as_str(); // &str
+  ```
+
 - You can convert a `&str` to a `String` using the `to_string` method.
+
+  ```rust
+  let s = "Hello, world!".to_string(); // String
+  ```
+
 - You can create a `String` from a string literal using the `to_owned` method.
+
+  ```rust
+  let s = "Hello, world!".to_owned(); // String
+  ```
+
 - You can create a `String` from a byte slice using the `String::from_utf8` function.
+
+    ```rust
+    let s = String::from_utf8(vec![72, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 33]).unwrap(); // String
+    ```
 
 ## Access and Modification
 
 - You can get a byte slice from a `String` using the `as_bytes` method.
+
+    ```rust
+    let s = "Hello, world!".to_string();
+    let bs = s.as_bytes(); // [72, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 33]
+    ```
+
 - You can get a `char` iterator from a `String` using the `chars` method.
+
+    ```rust
+    let s = "Hello, world!".to_string();
+    for c in s.chars() { // H, e, l, l, o, ,,  , w, o, r, l, d, !
+        println!("{}", c);
+    }
+    ```
+
 - You can get a `&str` iterator from a `String` using the `lines` method.
+
+    ```rust
+    let s = "Hello, world!".to_string();
+    for line in s.lines() { // Hello, world!
+        println!("{}", line);
+    }
+    ```
+
 - You can concatenate two strings using the `+` operator or the `format!` macro.
+
+    ```rust
+    let s1 = "Hello, ".to_string();
+    let s2 = "world!".to_string();
+    let s = s1 + &s2; // "Hello, world!"
+    let s = format!("{}{}", s1, s2); // "Hello, world!"
+    ```
+
 - You can get the length of a string in characters using the `len` method.
+
+    ```rust
+    let s = "Hello, world!".to_string();
+    println!("{}", s.len()); // 12
+    ```
+
 - You can get the length of a string in bytes using the `as_bytes`.
+
+    ```rust
+    let s = "Hello, world!".to_string();
+    println!("{}", s.as_bytes().len()); // 13
+    ```
+
 - You can access individual characters or bytes of a string using indexing.
+
+    ```rust
+    let s = "Hello, world!".to_string();
+    println!("{}", s[0..5]); // "Hello"
+    ```
+
 - You can slice a string using the `[a..b]` syntax.
+
+    ```rust
+    let s = "Hello, world!".to_string();
+    println!("{}", s[0..5]); // "Hello"
+    ```
+
 - You can iterate over the characters or bytes of a string using a loop.
+
+    ```rust
+    let s = "Hello, world!".to_string();
+    for c in s.chars() {
+        println!("{}", c);
+    }
+    ```
+
 - You can search for a string or a character in a string using the `contains`, `starts_with`, or `ends_with` method.
+
+    ```rust
+    let s = "Hello, world!";
+    println!(s.contains("world"));
+    println!(s.starts_with("Hello"));
+    println!(s.ends_with("world!"));
+    println!(s.starts_with(&s[0..5]));
+    println!(s.ends_with(&s[7..12]));
+    ```
+
 - You can replace a substring in a string using the `replace` or `replacen` method.
+
+    ```rust
+    let s = "Hello, world!".to_string();
+    let s = s.replace("world", "Rust"); // "Hello, Rust!"
+    let s = s.replacen("l", "L", 2); // "HeLLo, Rust!"
+    ```
+
 - You can trim leading or trailing whitespace or characters from a string using the `trim`, `trim_start`, or `trim_end` method.
+
+    ```rust
+    let s = "   Hello, world!   ".to_string();
+    let s = s.trim(); // "Hello, world!"
+    let s = s.trim_start(); // "Hello, world!"
+    let s = s.trim_end(); // "Hello, world!"
+    ```
+
 - You can pad a string on the left or right with a given character using the `pad_left` or `pad_right`.
+
+    ```rust
+    let s = "Hello, world!".to_string();
+    let s = s.pad_left(20, '-'); // "----------Hello, world!"
+    let s = s.pad_right(20, '-'); // "----------Hello, world!-------"
+    ```
 
 ## Splitting and Joining
 
