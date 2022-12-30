@@ -222,6 +222,8 @@ let res: Result<i32, &str> = Ok(5);
 
 In this example, `res` is a `Result` type that represents the result of an operation that may fail. The `Result` type is written as `Result<T, E>`, where `T` is the type of the success value and `E` is the type of the error value. The `Result` type can have two values: `Ok(T)`, which represents a successful result with a value of type `T`, and `Err(E)`, which represents a failed result with an error value of type `E`. In this case, `res` is set to `Ok(5)`, which means the operation was successful and the result is the value `5`.
 
+---
+
 ## Fixed-Width Numeric Types
 
 ### Integer Types
@@ -575,6 +577,8 @@ Here is a summary of the operation names that follow the `checked_`, `wrapping_`
 |                | `wrapping_shr`    | Performs wrapping right shift, wrapping around on overflow or underflow.                                             |
 |                | `overflowing_shr` | Performs overflowing right shift, returning a boolean value indicating whether an overflow or underflow occurred.    |
 
+---
+
 ## Floating Point Types
 
 In Rust, there are two main types of floating-point numbers: `f32` for single-precision floating point and `f64` for double-precision floating point. Both types are based on the IEEE 754 standard and have the following properties:
@@ -720,6 +724,8 @@ Keep in mind that floating-point numbers can be imprecise due to the fixed numbe
 
   It's always a good idea to use parentheses to clarify the order of operations in your code, especially when using multiple operators or method calls. This can help prevent confusion and reduce the chance of errors.
 
+---
+
 ## The bool Type
 
 The bool type is a primitive type in Rust and occupies one byte of memory.
@@ -847,6 +853,8 @@ Here is a summary of the main features of the bool type in Rust:
 | Use in functions | The`bool`type can be used as the return type for functions that return a boolean value. |
 | Printing | The`bool`type can be printed using the`{}`format specifier in the`println!`macro.`println!("{}", true)`|
 | Parsing | The`bool`type can be parsed from a string using the`parse`method.`"true".parse::<bool>().unwrap()` |
+
+---
 
 ## Characters
 
@@ -1040,6 +1048,8 @@ let e: char = '😄';
 let f = e.clone();
 assert_eq!(e, f);
 ```
+
+---
 
 ## Tuple Type
 
@@ -1510,59 +1520,59 @@ Here are examples of each of the main points about the zero-tuple in Rust:
 
 1. The zero-tuple is a special type of tuple that has no elements:
 
-    ```rust
-    let t: () = ();
-    ```
+   ```rust
+   let t: () = ();
+   ```
 
 1. It is written as `()` and is used to represent the absence of a value:
 
-    ```rust
-    let t: Option<()> = None;
-    ```
+   ```rust
+   let t: Option<()> = None;
+   ```
 
 1. The zero-tuple is often used as the return type of functions that do not need to return a value:
 
-    ```rust
-    fn foo() -> () {
-        // do something
-    }
+   ```rust
+   fn foo() -> () {
+       // do something
+   }
 
-    let result = foo();
-    ```
+   let result = foo();
+   ```
 
 1. It is also commonly used as the parameter type of functions that do not take any arguments:
 
-    ```rust
-    fn bar(_: ()) {
-        // do something
-    }
+   ```rust
+   fn bar(_: ()) {
+       // do something
+   }
 
-    bar(());
-    ```
+   bar(());
+   ```
 
 1. The `std::mem` module's `size_of_val` function returns 0 for the zero-tuple, whereas it returns the size of the tuple's elements for other tuples:
 
-    ```rust
-    use std::mem;
+   ```rust
+   use std::mem;
 
-    let t = ();
-    let size = mem::size_of_val(&t);
-    assert_eq!(size, 0);
+   let t = ();
+   let size = mem::size_of_val(&t);
+   assert_eq!(size, 0);
 
-    let t = (1, 2, 3);
-    let size = mem::size_of_val(&t);
-    assert_eq!(size, 3 * mem::size_of::<i32>());
-    ```
+   let t = (1, 2, 3);
+   let size = mem::size_of_val(&t);
+   assert_eq!(size, 3 * mem::size_of::<i32>());
+   ```
 
-    Summary of zero-tuple:
+   Summary of zero-tuple:
 
-    | Property | Description |
-    | --- | --- |
-    | Type | Tuple with no elements |
-    | Syntax | `()` |
-    | Representation | Absence of a value |
-    | Common uses | Return type of functions that do not need to return a value, parameter type of functions that do not take any arguments |
-    | Special treatment | `std::mem` module's `size_of_val` function returns 0 |
+   | Property          | Description                                                                                                             |
+   | ----------------- | ----------------------------------------------------------------------------------------------------------------------- |
+   | Type              | Tuple with no elements                                                                                                  |
+   | Syntax            | `()`                                                                                                                    |
+   | Representation    | Absence of a value                                                                                                      |
+   | Common uses       | Return type of functions that do not need to return a value, parameter type of functions that do not take any arguments |
+   | Special treatment | `std::mem` module's `size_of_val` function returns 0                                                                    |
 
 In Rust, tuples can contain a single value.
 
@@ -1587,3 +1597,151 @@ Here is the summary of tuple types
 | `std::fmt` module       | Provides a number of trait implementations for tuples, allowing you to format tuples for display or debugging purposes                                                                                                                                                                         |
 | Zero-tuple (unit type)  | Tuple with no elements; written as `()` and used to represent the absence of a value; often used as the return type of functions that do not need to return a value or as the parameter type of functions that do not take any arguments; `std::mem` module's `size_of_val` function returns 0 |
 | Tuple with single value | Tuple with a single element; treated the same as other tuples in most contexts                                                                                                                                                                                                                 |
+
+---
+
+## Pointer Types
+
+In Rust, there are three types that represent memory addresses: references, boxes, and unsafe pointers.
+
+References are a way to borrow a value from one place and use it in another place. They are represented by the `&` operator and are immutable by default, have a limited lifetime, and are safe to use.
+
+Boxes are a way to store a value on the heap. They are represented by the `Box` type and are often used when a value is too large to fit on the stack or when transferring ownership of a value.
+
+Unsafe pointers are pointers that do not have the safety guarantees of references or boxes. They are represented by the `*const T` and `*mut T` types and are often used for low-level system programming tasks or when interacting with foreign code. They should be used with caution as they can lead to undefined behavior.
+
+| Type           | Syntax                 | Properties                                                                                                                   |
+| -------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Reference      | `&T`                   | Immutable by default, has a limited lifetime, safe to use                                                                    |
+| Box            | `Box<T>`               | Stores a value on the heap, transfers ownership of the value                                                                 |
+| Unsafe pointer | `*const T` or `*mut T` | Does not have the safety guarantees of references or boxes, should be used with caution as it can lead to undefined behavior |
+
+## Here are the main pointer types in Rust in Details
+
+1. **References** in Rust are a way to borrow a value from one place and use it in another place. They are represented by the `&` operator and are a way to refer to a value without taking ownership of it.
+
+   References have a few important properties:
+
+   - They are immutable by default. This means that you cannot modify the value that a reference points to.
+   - They have a limited lifetime. This means that a reference can only be used within a certain scope. When the scope ends, the reference is no longer valid.
+   - They are safe. Rust's borrow checker ensures that references are always valid and that they are not used after their lifetime has ended.
+
+   Here's an example of using a reference:
+
+   ```rust
+   fn main() {
+       let s = String::from("hello");
+
+       // `s` is borrowed by `reference_to_s`
+       let reference_to_s = &s;
+
+       println!("{}", reference_to_s);
+   }
+   ```
+
+   In this example, we have a `String` value `s`, and we create a reference to it called `reference_to_s`. The reference is created using the `&` operator, which indicates that `reference_to_s` is a reference to `s`.
+
+   References are often used when you want to pass a value to a function without taking ownership of it. For example:
+
+   ```rust
+   fn print_string(s: &String) {
+       println!("{}", s);
+   }
+
+   fn main() {
+       let s = String::from("hello");
+
+       print_string(&s);
+
+       println!("{}", s);
+   }
+   ```
+
+   In this example, we pass the reference to `s` to the `print_string` function. The function can use the reference to read the value of `s`, but it cannot modify it or take ownership of it.
+
+   References are a key concept in Rust's ownership and borrowing system, which helps ensure memory safety and efficiency in Rust programs.
+
+1. **Boxes** in Rust are a way to store a value on the heap, which is a separate area of memory from the stack. They are represented by the `Box` type, which is a smart pointer to a value on the heap. Boxes are often used when you want to store a value with a larger size than the stack can accommodate, or when you want to transfer ownership of a value to another part of your program.
+
+   Here's an example of using a `Box`:
+
+   ```rust
+   fn main() {
+       let b = Box::new(5);
+
+       println!("{}", b);
+   }
+   ```
+
+   In this example, we create a `Box` called `b` that stores the value `5`. Because `b` is a `Box`, the value is stored on the heap rather than on the stack.
+
+   Boxes have a few important properties:
+
+   - They store a value on the heap. This means that the value is stored in a separate area of memory from the stack and has a different lifetime than stack-allocated values.
+   - They transfer ownership of a value. When you assign a `Box` to another variable, the ownership of the value is transferred to the new variable. This means that the original `Box` is no longer valid and cannot be used.
+   - They are deallocated when they go out of scope. When a `Box` goes out of scope, the value it points to is deallocated, or freed, from the heap. This helps prevent memory leaks in Rust programs.
+
+   Here's an example of transferring ownership of a value with a `Box`:
+
+   ```rust
+   fn main() {
+       let b = Box::new(5);
+
+       // `b` is moved into `b2`
+       let b2 = b;
+
+       // `b` is no longer valid
+       // println!("{}", b); // error: use of moved value
+
+       println!("{}", b2);
+   }
+   ```
+
+   In this example, we create a `Box` called `b` that stores the value `5`. We then create a new `Box` called `b2` and assign `b` to it. This transfers the ownership of the value from `b` to `b2`, so `b` is no longer valid and cannot be used.
+
+   Boxes are a useful tool for storing and transferring values on the heap in Rust programs. They are an important part of Rust's ownership and borrowing system, which helps ensure memory safety and efficiency in Rust programs.
+   Here is a comparison of the main pointer types in Rust presented in a table format:
+
+1. Unsafe pointers in Rust are pointers that do not have the safety guarantees of references or boxes. They are represented by the `*const T` and `*mut T` types, where `T` is the type of the value being pointed to. Unsafe pointers are often used when interacting with foreign code or when working with low-level system programming tasks. They are generally not recommended for use in safe Rust code, as they can lead to undefined behavior and can be difficult to use correctly.
+
+   For example, here's some code that uses an unsafe pointer to modify the value of a `u32`:
+
+   ```rust
+   fn main() {
+       let mut x = 5;
+       let p = &mut x as *mut i32;
+
+       unsafe {
+           *p = 10;
+       }
+
+       println!("{}", x); // prints 10
+   }
+   ```
+
+   In this example, we create a mutable reference to `x` and then cast it to an unsafe pointer using the `as` operator. We then use the `*` operator to dereference the pointer and modify the value it points to. Because this code involves unsafe operations, it must be wrapped in an `unsafe` block.
+
+   Unsafe pointers have a few important properties:
+
+   - They do not have the safety guarantees of references or boxes. This means that they can be used to access invalid memory or to modify values in an unsafe way.
+   - They can be used to interact with foreign code. Unsafe pointers can be used to call functions or access data structures written in other languages, such as C or C++.
+   - They can be used to perform low-level system programming tasks. Unsafe pointers can be used to access hardware resources or to perform other tasks that require direct manipulation of memory.
+
+   It's important to use caution when working with unsafe pointers, as they can easily lead to undefined behavior and can be difficult to use correctly. In general, it is recommended to use references or boxes whenever possible, and to only use unsafe pointers when absolutely necessary.
+
+## Here's a comparison of the three types
+
+| Type           | Syntax                 | Properties                                                                                                                   |
+| -------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Reference      | `&T`                   | Immutable by default, has a limited lifetime, safe to use                                                                    |
+| Box            | `Box<T>`               | Stores a value on the heap, transfers ownership of the value                                                                 |
+| Unsafe pointer | `*const T` or `*mut T` | Does not have the safety guarantees of references or boxes, should be used with caution as it can lead to undefined behavior |
+
+---
+
+| Type       | Modifiability of value | Owns memory location | Borrows value from another location |
+| ---------- | ---------------------- | -------------------- | ----------------------------------- |
+| `*const T` | No                     | Yes                  | No                                  |
+| `*mut T`   | Yes                    | Yes                  | No                                  |
+| `&T`       | No                     | No                   | Yes                                 |
+| `&mut T`   | Yes                    | No                   | Yes                                 |
