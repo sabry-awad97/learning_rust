@@ -52,3 +52,124 @@ In addition to these primitive types, Rust also has a number of compound types, 
 - Result&lt;T, E&gt;, which is a type that represents the result of an operation that may fail, with a success value of type `T` or an error value of type `E`.
 - Trait objects, which are references to any value that implements a given set of methods.
 - Functions, which are pointers to a block of code that can be called.
+
+Here are some examples of the types:
+Sure! Here is a more detailed explanation of each of the examples I provided:
+
+```rust
+// Signed and unsigned integers
+let i: i32 = -42;
+let u: u32 = 42;
+```
+
+In this example, `i` is a signed 32-bit integer with the value `-42`, and `u` is an unsigned 32-bit integer with the value `42`. In Rust, signed integers are denoted by a `i` followed by a number indicating the number of bits they use (e.g., `i8`, `i16`, `i32`, `i64`, `i128`). Unsigned integers are denoted by a `u` followed by a number indicating the number of bits they use (e.g., `u8`, `u16`, `u32`, `u64`, `u128`).
+
+```rust
+// Floating-point numbers
+let f1: f32 = 3.14;
+let f2: f64 = 6.022e23;
+```
+
+In this example, `f1` is a single-precision floating-point number with the value `3.14`, and `f2` is a double-precision floating-point number with the value `6.022e23`. In Rust, floating-point numbers are denoted by the type `f32` for single-precision numbers and `f64` for double-precision numbers.
+
+```rust
+// Boolean
+let b: bool = true;
+```
+
+In this example, `b` is a boolean variable with the value `true`. The boolean type in Rust is denoted by `bool` and can have the values `true` or `false`.
+
+```rust
+// Unicode character
+let c: char = 'X';
+```
+
+In this example, `c` is a Unicode character with the value `'X'`. The `char` type in Rust represents a single Unicode character and is 32 bits wide.
+
+```rust
+// Empty tuple
+let unit: () = ();
+```
+
+In this example, `unit` is an empty tuple, also known as the unit type. The unit type represents a value that does not have any meaningful data associated with it. It is denoted by the empty tuple `()`.
+
+```rust
+// Struct
+struct Point {
+    x: f32,
+    y: f32,
+}
+let point = Point { x: 0.0, y: 0.0 };
+```
+
+In this example, `Point` is a struct with two fields, `x` and `y`, both of which are floating-point numbers. The `point` variable is an instance of this struct, with the values `0.0` and `0.0` for the `x` and `y` fields, respectively.
+
+```rust
+// Tuple
+let tuple: (i32, char) = (42, 'X');
+```
+
+In this example, `tuple` is a tuple with two elements, an integer and a character. The type of the tuple is written as a comma-separated list of the types of its elements, in this case `(i32, char)`.
+
+```rust
+// Enum
+enum Color {
+    Red,
+    Green,
+    Blue,
+}
+let color = Color::Red;
+```
+
+In this example, `Color` is an enumeration (enum) with three values: `Red`, `Green`, and `Blue`. Enums are used to define a fixed set of values, each of which can optionally have an associated payload of data. In this case, the `Color` enum has three values, each of which has no associated data. The `color` variable is set to the value `Color::Red`, which is one of the values of the `Color` enum.
+
+```rust
+// Box
+let boxed: Box<i32> = Box::new(42);
+```
+
+In this example, `boxed` is a `Box` that owns an integer value in the heap. Boxes are smart pointers that manage the memory for their values and ensure that the values are properly deallocated when they are no longer needed. The `Box::new()` function is used to create a new box containing the given value.
+
+```rust
+// Reference
+let x = 5;
+let y = &x;
+```
+
+In this example, `x` is an integer with the value `5`, and `y` is a reference to `x`. References are non-owning pointers to a value and are denoted by the `&` operator. In this case, `y` is a reference to `x`, so it points to the same value as `x`, but it does not own it.
+
+```rust
+// Array
+let array: [i32; 3] = [1, 2, 3];
+```
+
+In this example, `array` is an array with three elements, all of which are 32-bit integers. Arrays in Rust are fixed-length collections of values of the same type. The type of an array is written as `[T; N]`, where `T` is the type of the elements and `N` is the length of the array.
+
+```rust
+// Vector
+let mut vec = vec![1, 2, 3];
+vec.push(4);
+```
+
+In this example, `vec` is a vector with three elements, all of which are integers. Vectors are dynamically-sized arrays in Rust, and they can grow or shrink as needed. The `vec!` macro is used to create a new vector with the given elements. The `push()` method is used to add an element to the end of the vector.
+
+```rust
+// Slice
+let slice = &vec[1..3];
+```
+
+In this example, `slice` is a slice that refers to a portion of the `vec` vector. Slices are references to a portion of an array or vector, comprising a pointer and a length. They are written as `&[T]`, where `T` is the type of the elements. In this case, `slice` refers to the elements of `vec` at indices 1 and 2 (the slice is half-open, so it includes the start index but not the end index).
+
+```rust
+// Option
+let opt: Option<i32> = Some(5);
+```
+
+In this example, `opt` is an `Option` type that represents a value that may or may not be present. The `Option` type is written as `Option<T>`, where `T` is the type of the value that may be present. The `Option` type can have two values: `Some(T)`, which represents a value that is present, and `None`, which represents a value that is absent. In this case, `opt` is set to `Some(5)`, which means it has the value `5`.
+
+```rust
+// Result
+let res: Result<i32, &str> = Ok(5);
+```
+
+In this example, `res` is a `Result` type that represents the result of an operation that may fail. The `Result` type is written as `Result<T, E>`, where `T` is the type of the success value and `E` is the type of the error value. The `Result` type can have two values: `Ok(T)`, which represents a successful result with a value of type `T`, and `Err(E)`, which represents a failed result with an error value of type `E`. In this case, `res` is set to `Ok(5)`, which means the operation was successful and the result is the value `5`.
