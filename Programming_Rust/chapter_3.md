@@ -1738,3 +1738,56 @@ In Rust, there are three types that represent memory addresses: references, boxe
 | Lifetime                            | Limited                                                                          | Independent                                                                                    | Independent                                                       |
 | Safety guarantees                   | Yes                                                                              | Yes                                                                                            | No                                                                |
 | Use                                 | Pass a value to a function without taking ownership, read-only access to a value | Store a value with a larger size than the stack can accommodate, transfer ownership of a value | Low-level system programming tasks, interacting with foreign code |
+
+## Shared References vs Mutable References
+
+In Rust, a shared reference is written as `&T`, where `T` is the type of the value being referenced. Here's an example of how you might use a shared reference:
+
+```rust
+fn main() {
+    let x = 5;
+    let y = &x; // y is a shared reference to x
+
+    println!("x = {}", x); // prints "x = 5"
+    println!("y = {}", y); // prints "y = 5"
+
+    // The following line would cause a compile-time error, because shared references are read-only
+    // *y = 10;
+}
+```
+
+- Shared references are immutable, meaning that you cannot modify the value they point to. They are also shared, meaning that you can have multiple shared references to the same value at the same time. This can be useful for allowing multiple parts of your code to read a value without needing to make copies of it.
+
+- Shared references are also known as "borrows" in Rust, because when you create a shared reference to a value, you are borrowing that value from its owner. This allows Rust to enforce its borrowing rules, which help ensure that your code is thread-safe and that you don't run into issues with dangling pointers or data races.
+
+In Rust, a mutable reference is written as `&mut T`, where `T` is the type of the value being referenced. Here's an example of how you might use a mutable reference:
+
+```rust
+fn main() {
+    let mut x = 5;
+    let y = &mut x; // y is a mutable reference to x
+
+    println!("x = {}", x); // prints "x = 5"
+    println!("y = {}", y); // prints "y = 5"
+
+    *y = 10; // modify the value x through y
+    println!("x = {}", x); // prints "x = 10"
+}
+```
+
+- Mutable references are exclusive, meaning that you cannot have multiple mutable references to the same value at the same time. This is because allowing multiple mutable references to the same value could lead to data races and other thread-safety issues. As a result, Rust requires you to ensure that you have a unique mutable reference to a value before you can modify it.
+
+- Mutable references are also known as "unique borrows" in Rust, because they allow you to borrow a value uniquely and mutably. This allows Rust to enforce its borrowing rules and help ensure that your code is thread-safe and free from dangling pointers and data races.
+
+The separation between shared and mutable references in Rust is an important part of the language's safety guarantees. By requiring that you choose between shared and mutable references, Rust can ensure that you don't run into issues with data races and other thread-safety problems.
+
+The "single writer or multiple readers" rule refers to the fact that you can either have a single mutable reference to a value (the "single writer"), or you can have any number of shared references to the value (the "multiple readers"). You cannot have both at the same time, as this could lead to issues with data races and thread safety.
+
+Here is a comparison of shared (`&T`) and mutable (`&mut T`) references in Rust:
+
+|                             | Shared (`&T`)                             | Mutable (`&mut T`)                |
+| --------------------------- | ----------------------------------------- | --------------------------------- |
+| Mutability                  | Immutable                                 | Mutable                           |
+| Multiple references allowed | Yes                                       | No                                |
+| Used for                    | Reading                                   | Reading and writing               |
+| Borrow rules                | Cannot be borrowed while borrowed mutably | Cannot be borrowed while borrowed |
