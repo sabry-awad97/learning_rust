@@ -173,3 +173,59 @@ let res: Result<i32, &str> = Ok(5);
 ```
 
 In this example, `res` is a `Result` type that represents the result of an operation that may fail. The `Result` type is written as `Result<T, E>`, where `T` is the type of the success value and `E` is the type of the error value. The `Result` type can have two values: `Ok(T)`, which represents a successful result with a value of type `T`, and `Err(E)`, which represents a failed result with an error value of type `E`. In this case, `res` is set to `Ok(5)`, which means the operation was successful and the result is the value `5`.
+
+## Fixed-Width Numeric Types
+
+### Integer Types
+
+In Rust, the `u8`, `i8`, `u16`, `i16`, `u32`, `i32`, `u64`, `i64`, `u128`, and `i128` types are fixed-width numeric types. These types represent integers with a fixed number of bits, which means that they can represent a range of values that is determined by the number of bits they use.
+
+For example, an `i8` is a signed 8-bit integer, which means it can represent any integer value between -128 and 127, inclusive. An `u16` is an unsigned 16-bit integer, which means it can represent any integer value between 0 and 65535, inclusive.
+
+Fixed-width numeric types are useful when you need to ensure that a value will always be stored in a specific number of bits. This can be important in situations where the size of the value is critical, such as when working with hardware devices or when communicating with other systems.
+
+It's also worth noting that Rust has type aliases for the fixed-width integer types that correspond to the native word size of the target architecture. These types are `isize` and `usize`, and they are either 32 or 64 bits wide depending on the architecture. These types are typically used when you need an integer type that is the same size as a pointer on the machine.
+
+Certainly! Here is a summary of the fixed-width numeric types in Rust in the form of a table:
+Certainly! Here is a summary of the integer types in Rust, along with some example uses of each type:
+
+| Type     | Width (bits) | Range                                                                               | Example Uses                                          |
+| -------- | ------------ | ----------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `i8`     | 8            | -128 to 127                                                                         | Small integers, counts, flags, enumerations           |
+| **`u8`** | 8            | 0 to 255                                                                            | Small counts, flags, enumerations                     |
+| `i16`    | 16           | -32768 to 32767                                                                     | Medium-sized integers, counts, flags, enumerations    |
+| `u16`    | 16           | 0 to 65535                                                                          | Medium-sized counts, flags, enumerations              |
+| `i32`    | 32           | -2147483648 to 2147483647                                                           | Large integers, counts, flags, enumerations           |
+| `u32`    | 32           | 0 to 4294967295                                                                     | Large counts, flags, enumerations                     |
+| `i64`    | 64           | -9223372036854775808 to 9223372036854775807                                         | Very large integers, counts, flags, enumerations      |
+| `u64`    | 64           | 0 to 18446744073709551615                                                           | Very large counts, flags, enumerations                |
+| `i128`   | 128          | -170141183460469231731687303715884105728 to 170141183460469231731687303715884105727 | Extremely large integers, counts, flags, enumerations |
+| `u128`   | 128          | 0 to 340282366920938463463374607431768211455                                        | Extremely large counts, flags, enumerations           |
+| `isize`  | 32 or 64     | depends on architecture                                                             | Pointer-sized integers                                |
+| `usize`  | 32 or 64     | depends on architecture                                                             | Pointer-sized counts                                  |
+
+I hope this helps! Let me know if you have any questions.
+Certainly! Here are some examples of using the fixed-width numeric types in Rust:
+
+```rust
+// Declare and initialize variables with fixed-width integer types
+let x: i8 = 42;
+let y: u8 = 255;
+let z: i16 = -32768;
+
+// Perform arithmetic operations with fixed-width integer types
+let a: i32 = x + y as i32; // Convert y to i32 before adding
+let b: u16 = z as u16 + 1; // Convert z to u16 before adding
+
+// Compare fixed-width integer types
+let c: bool = x < y as i8; // Convert y to i8 before comparing
+let d: bool = z == -32768;
+
+// Convert between fixed-width integer types
+let e: u8 = x as u8; // Convert x to u8
+let f: i16 = y as i16; // Convert y to i16
+
+// Use type aliases for the native word size
+let g: isize = -9223372036854775808;
+let h: usize = 18446744073709551615;
+```
