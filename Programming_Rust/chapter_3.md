@@ -2608,3 +2608,58 @@ Here is a comparison of arrays, vectors, and slices in Rust:
 | Length can be obtained   | Yes      | Yes      | Yes      |
 | Can be converted to/from | No       | Yes      | Yes      |
 | Boxed                    | Yes      | Yes      | No       |
+
+## String
+
+In Rust, there are two main types for working with strings: `&str` and `String`.
+
+`&str` is a slice type that refers to a string slice, which is a sequence of Unicode scalar values (i.e. a string). `&str` values are usually created by borrowing a string literal or a slice of another string. `&str` values are immutable and cannot be modified.
+
+`String` is a growable, owned string type. It is implemented as a wrapper around a vector of bytes, with helpful methods for working with strings. `String` values can be modified, and they own their own data.
+
+Here are the most important information strings in Rust:
+
+- Strings are sequences of Unicode characters.
+- Rust has two string types: `&str` and `String`.
+- `&str` is a slice that points to a UTF-8-encoded string stored elsewhere. It is often used as a function argument or a return type.
+- `String` is an owned, growable string. It is stored on the heap and can be mutated.
+- You can convert a `String` to a `&str` using the `as_str` method.
+- You can convert a `&str` to a `String` using the `to_string` method.
+- You can create a `String` from a string literal using the `to_owned` method.
+- You can create a `String` from a byte slice using the `String::from_utf8` function.
+- You can get a byte slice from a `String` using the `as_bytes` method.
+- You can get a `char` iterator from a `String` using the `chars` method.
+- You can get a `&str` iterator from a `String` using the `lines` method.
+- You can concatenate two strings using the `+` operator or the `format!` macro.
+- You can get the length of a string in characters using the `len` method.
+- You can get the length of a string in bytes using the `as_bytes`.
+- You can access individual characters or bytes of a string using indexing.
+- You can slice a string using the `[a..b]` syntax.
+- You can iterate over the characters or bytes of a string using a loop.
+- You can search for a string or a character in a string using the `contains`, `starts_with`, or `ends_with` method.
+- You can replace a substring in a string using the `replace` or `replacen` method.
+- You can trim leading or trailing whitespace or characters from a string using the `trim`, `trim_start`, or `trim_end` method.
+- You can pad a string on the left or right with a given character using the `pad_left` or `pad_right`.
+- You can split a string into multiple substrings using the `split` method. This method takes a separator and returns an iterator of substrings. You can use the `collect` method to collect the substrings into a vector.
+- You can split a string into multiple substrings using the `split_whitespace` method. This method returns an iterator of substrings, where each substring is a sequence of contiguous non-whitespace characters.
+- You can split a string into multiple substrings using the `split_terminator` method. This method takes a separator and returns an iterator of substrings, where the separator is not included in the substrings.
+- You can split a string into multiple substrings using the `rsplit` method. This method is similar to `split`, but it starts from the end of the string and works backwards.
+- You can split a string into multiple substrings using the `rsplit_terminator` method. This method is similar to `split_terminator`, but it starts from the end of the string and works backwards.
+- You can split a string into multiple substrings using the `split_ascii_whitespace` method. This method is similar to `split_whitespace`, but it only considers ASCII whitespace characters.
+- You can split a string into multiple substrings using the `splitn` method. This method is similar to `split`, but it only splits the string at a certain number of occurrences of the separator.
+- You can split a string into multiple substrings using the `rsplitn` method. This method is similar to `rsplit`, but it only splits the string at a certain number of occurrences of the separator.
+- You can join multiple strings into a single string using the `join` method. This method takes an iterator of strings and a separator, and returns a new string with the strings joined together using the separator.
+- You can check if a string is empty using the `is_empty` method.
+- You can check if a string is not empty using the `is_not_empty` method.
+- You can check if a string starts with a given prefix using the `starts_with` method.
+- You can check if a string ends with a given suffix using the `ends_with` method.
+- You can check if a string contains a given substring using the `contains` method.
+- You can check if a string is a substring of another string using the `is_substring_of` method.
+- You can check if a string is a suffix of another string using the `is_suffix_of` method.
+- You can check if a string is a prefix of another string using the `is_prefix_of` method.
+- You can check if a string is an infix of another string using the `is_infix_of` method.
+- You can check if a string is an ASCII string using the `is_ascii` method.
+- You can check if a string is an ASCII string using the `is_ascii_alphabetic` method.
+- You can check if a string is an ASCII string using the `is_ascii_alphanumeric` method.
+- You can check if a string is an ASCII string using the `is_ascii_lowercase` method.
+- You can check if a string is an ASCII string using the `is_ascii_uppercase` method.
