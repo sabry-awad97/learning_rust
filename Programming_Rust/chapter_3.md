@@ -1510,49 +1510,59 @@ Here are examples of each of the main points about the zero-tuple in Rust:
 
 1. The zero-tuple is a special type of tuple that has no elements:
 
-```rust
-let t: () = ();
-```
+    ```rust
+    let t: () = ();
+    ```
 
 1. It is written as `()` and is used to represent the absence of a value:
 
-```rust
-let t: Option<()> = None;
-```
+    ```rust
+    let t: Option<()> = None;
+    ```
 
 1. The zero-tuple is often used as the return type of functions that do not need to return a value:
 
-```rust
-fn foo() -> () {
-    // do something
-}
+    ```rust
+    fn foo() -> () {
+        // do something
+    }
 
-let result = foo();
-```
+    let result = foo();
+    ```
 
 1. It is also commonly used as the parameter type of functions that do not take any arguments:
 
-```rust
-fn bar(_: ()) {
-    // do something
-}
+    ```rust
+    fn bar(_: ()) {
+        // do something
+    }
 
-bar(());
-```
+    bar(());
+    ```
 
-5. The `std::mem` module's `size_of_val` function returns 0 for the zero-tuple, whereas it returns the size of the tuple's elements for other tuples:
+1. The `std::mem` module's `size_of_val` function returns 0 for the zero-tuple, whereas it returns the size of the tuple's elements for other tuples:
 
-```rust
-use std::mem;
+    ```rust
+    use std::mem;
 
-let t = ();
-let size = mem::size_of_val(&t);
-assert_eq!(size, 0);
+    let t = ();
+    let size = mem::size_of_val(&t);
+    assert_eq!(size, 0);
 
-let t = (1, 2, 3);
-let size = mem::size_of_val(&t);
-assert_eq!(size, 3 * mem::size_of::<i32>());
-```
+    let t = (1, 2, 3);
+    let size = mem::size_of_val(&t);
+    assert_eq!(size, 3 * mem::size_of::<i32>());
+    ```
+
+    Summary of zero-tuple:
+
+    | Property | Description |
+    | --- | --- |
+    | Type | Tuple with no elements |
+    | Syntax | `()` |
+    | Representation | Absence of a value |
+    | Common uses | Return type of functions that do not need to return a value, parameter type of functions that do not take any arguments |
+    | Special treatment | `std::mem` module's `size_of_val` function returns 0 |
 
 In Rust, tuples can contain a single value.
 
