@@ -1,6 +1,6 @@
 # Fundamental Types
 
-Here's a list of primitive types in rust
+Here's a list of some types in rust
 
 | Type                                | Description                                                                                     | Values                                                                       |
 | ----------------------------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
@@ -27,3 +27,28 @@ Here's a list of primitive types in rust
 | `Result<u64, Error>`                | Result of operation that may fail: either a success value `Ok(v)`, or an error `Err(e)`         | `Ok(4096)`, `Err(Error::last_os_error())`                                    |
 | `&dyn Any`, `&mut dyn Read`         | Trait object: reference to any value that implements a given set of methods                     | value as `&dyn Any`, `&mut file as &mut dyn Read`                            |
 | `fn(&str) -> bool`                  | Pointer to function                                                                             | `str::is_empty`                                                              |
+
+this table lists many of the different types in the Rust programming language
+
+- The `i8`, `i16`, `i32`, `i64`, and `i128` types are signed integers of 8, 16, 32, 64, and 128 bits in size, respectively.
+- The `u8`, `u16`, `u32`, `u64`, and `u128` types are unsigned integers of 8, 16, 32, 64, and 128 bits in size, respectively.
+- The `isize` and `usize` types are signed and unsigned integers, respectively, that are the same size as an address on the machine. On a 32-bit machine, these types are 32 bits wide, while on a 64-bit machine, they are 64 bits wide.
+- The `f32` and `f64` types are IEEE floating-point numbers, representing single and double precision, respectively.
+- The `bool` type represents a boolean value, which can be either `true` or `false`.
+- The `char` type represents a Unicode character, which is 32 bits wide.
+- The `()` type, also known as the unit type, represents an empty tuple. It is often used to represent a value that does not have any meaningful data associated with it.
+
+In addition to these primitive types, Rust also has a number of compound types, including:
+
+- Structs, which are user-defined types that can have multiple fields of different types.
+- Tuples, which are fixed-length collections of values of different types.
+- Enums, which are types that can have a fixed set of values, each of which can have an optional payload of data.
+- Boxes, which are smart pointers that own a value in the heap.
+- References, which are non-owning pointers to a value.
+- Arrays, which are fixed-length collections of values of the same type.
+- Vectors, which are dynamically-sized arrays.
+- Slices, which are references to a portion of an array or vector.
+- Option&lt;T&gt;, which is a type that can either be `Some(T)` or `None`, representing a value that may or may not be present.
+- Result&lt;T, E&gt;, which is a type that represents the result of an operation that may fail, with a success value of type `T` or an error value of type `E`.
+- Trait objects, which are references to any value that implements a given set of methods.
+- Functions, which are pointers to a block of code that can be called.
