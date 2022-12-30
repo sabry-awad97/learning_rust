@@ -312,3 +312,60 @@ let h: usize = 18446744073709551615;
   | Unicode character | b'\\u{hhhhh}' | hhhhhh (hexadecimal) |
 
   Note that these byte literals are not the same as ASCII character literals, which are written using regular characters and are not preceded by a `b`. For example, the ASCII character literal for the single quote character is `'\''` (with no `b`), and the numeric equivalent is 39i8.
+
+  Here is a list of some common keyboard keys and the hexadecimal codes that can be used to represent them in Rust using hexadecimal byte literals:
+
+  | Keyboard Key | Hexadecimal Code | Byte Literal |
+  | ------------ | ---------------- | ------------ |
+  | Backspace    | `08`             | `b'\x08'`    |
+  | Tab          | `09`             | `b'\x09'`    |
+  | Enter        | `0d`             | `b'\x0d'`    |
+  | Escape       | `1b`             | `b'\x1b'`    |
+  | Space        | `20`             | `b'\x20'`    |
+  | Digit 0      | `30`             | `b'\x30'`    |
+  | Digit 1      | `31`             | `b'\x31'`    |
+  | Digit 2      | `32`             | `b'\x32'`    |
+  | Digit 3      | `33`             | `b'\x33'`    |
+  | Digit 4      | `34`             | `b'\x34'`    |
+  | Digit 5      | `35`             | `b'\x35'`    |
+  | Digit 6      | `36`             | `b'\x36'`    |
+  | Digit 7      | `37`             | `b'\x37'`    |
+  | Digit 8      | `38`             | `b'\x38'`    |
+  | Digit 9      | `39`             | `b'\x39'`    |
+  | A            | `41`             | `b'\x41'`    |
+  | B            | `42`             | `b'\x42'`    |
+  | C            | `43`             | `b'\x43'`    |
+  | D            | `44`             | `b'\x44'`    |
+  | E            | `45`             | `b'\x45'`    |
+  | F            | `46`             | `b'\x46'`    |
+  | G            | `47`             | `b'\x47'`    |
+  | H            | `48`             | `b'\x48'`    |
+  | I            | `49`             | `b'\x49'`    |
+  | J            | `4a`             | `b'\x4a'`    |
+  | K            | `4b`             | `b'\x4b'`    |
+  | L            | `4c`             | `b'\x4c'`    |
+  | M            | `4d`             | `b'\x4d'`    |
+  | N            | `4e`             | `b'\x4e'`    |
+  | O            | `4f`             | `b'\x4f'`    |
+  | P            | `50`             | `b'\x50'`    |
+  | Q            | `51`             | `b'\x51'`    |
+  | R            | `52`             | `b'\x52'`    |
+  | S            | `53`             | `b'\x53'`    |
+  | T            | `54`             | `b'\x54'`    |
+  | U            | `55`             | `b'\x55'`    |
+  | V            | `56`             | `b'\x56'`    |
+  | W            | `57`             | `b'\x57'`    |
+  | X            | `58`             | `b'\x58'`    |
+  | Y            | `59`             | `b'\x59'`    |
+  | Z            | `5a`             | `b'\x5a'`    |
+  | Delete       | `7f`             | `b'\x7f'`    |
+
+  Here is an example of using the b'\x7f' byte literal in Rust:
+
+  ```rust
+  let key: u8 = b'\x7f';
+
+  if key == b'\x7f' {
+      println!("The delete key was pressed!");
+  }
+  ```
