@@ -1963,3 +1963,22 @@ Here's a comparison of some of pointer types available in Rust:
 - **Safety**: The level of safety provided by the pointer type. Raw pointers provide the lowest level of safety, as they do not implement any safety checks and can easily lead to memory safety issues if used incorrectly.
 
 It's important to note that raw pointers should generally be avoided whenever possible and replaced with safer alternatives like reference-counted pointers (`Rc`) or smart pointers (such as `Box` or `Arc`). These types of pointers provide additional safety guarantees and can help you avoid common pitfalls when working with memory in Rust.
+
+## Arrays, Vectors, and Slices
+
+Arrays are fixed-size collections of items that are stored in contiguous memory. They have a low overhead but cannot be resized. They are suitable for use cases where the size of the collection is known in advance and does not need to change.
+
+Vectors are dynamically-sized collections of items that are stored in contiguous memory. They have a moderate amount of overhead but can be resized as needed. They are suitable for use cases where the size of the collection needs to change frequently.
+
+Slices are views into contiguous collections of items, such as arrays or vectors. They do not own the data they refer to and do not have any overhead. They are useful for borrowing a portion of data from an array or vector and are suitable for use cases where you need to pass a subset of data to a function or iterate over a portion of a collection.
+
+Here is a comparison of arrays, vectors, and slices in Rust:
+
+|                        | Arrays (`[T; N]`)         | Vectors (`Vec<T>`)  | Slices (`&[T]`)            |
+| ---------------------- | ------------------------- | ------------------- | -------------------------- |
+| Contiguous memory?     | Yes                       | Yes                 | Yes                        |
+| Fixed size?            | Yes                       | No                  | No                         |
+| Dynamically resizable? | No                        | Yes                 | No                         |
+| Own data?              | Yes                       | Yes                 | No                         |
+| Overhead               | Low                       | Moderate            | None                       |
+| Use cases              | Large, static collections | Dynamic collections | Borrowing portions of data |
