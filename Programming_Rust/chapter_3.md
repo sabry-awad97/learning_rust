@@ -2159,3 +2159,323 @@ Here are some examples of using arrays in Rust:
        assert_eq!(iter.next(), None); // iter is at the end
    }
    ```
+
+---
+
+## Vectors
+
+Vectors are dynamic arrays in Rust, meaning that they can grow or shrink in size as needed. They are implemented as a wrapper around a fixed-size array, with a pointer to the beginning and end of the used part of the array, and a capacity representing the total size of the array.
+
+Here is a list of key points about vectors in Rust:
+
+- Vectors are dynamic arrays that can grow or shrink in size as needed.
+- They are written as `Vec<T>`, where `T` is the type of the elements.
+- Vectors have a variable size and can be resized as needed.
+- They are stored on the heap, rather than the stack.
+- Vectors have a moderate amount of overhead and are efficient for storing small to medium-sized collections of data.
+- They are suitable for use cases where the size of the collection needs to be changed frequently.
+- Vectors are suitable for use with iterators and the Rust standard library.
+- Vectors are useful for storing collections of data that need to be resized frequently.
+- They can be accessed directly by index, and can be iterated over using a loop or the `.iter()` method.
+- Vectors can be passed as arguments to functions using either a reference (`&Vec<T>`) or by value (`Vec<T>`).
+- Vectors are stored on the heap, which means they have a variable size and are not destroyed when they go out of scope.
+- Vectors can be created using the `Vec::new()` function or the `vec!` macro.
+- Vectors can be resized using the `.resize()` method or the `.reserve()` method.
+
+Here are some examples of using vectors in Rust:
+
+1. Creating a new vector:
+
+   ```rust
+   fn main() {
+       let xs: Vec<i32> = Vec::new(); // xs is an empty vector of i32 values
+   }
+   ```
+
+1. Creating a vector using the `vec!` macro:
+
+   ```rust
+   fn main() {
+       let xs = vec![1, 2, 3, 4, 5]; // xs is a vector of 5 i32 values
+   }
+   ```
+
+1. Accessing elements of a vector:
+
+   ```rust
+   fn main() {
+       let xs = vec![1, 2, 3, 4, 5];
+       let first = xs[0]; // first is 1
+       let last = xs[4]; // last is 5
+   }
+   ```
+
+1. Iterating over a vector:
+
+   ```rust
+   fn main() {
+       let xs = vec![1, 2, 3, 4, 5];
+       for x in xs.iter() { // x is an immutable reference to an element of xs
+           println!("{}", x);
+       }
+   }
+   ```
+
+1. Passing a vector as an argument to a function:
+
+   ```rust
+   fn print_vector(xs: &Vec<i32>) {
+       for x in xs.iter() {
+           println!("{}", x);
+       }
+   }
+
+   fn main() {
+       let xs = vec![1, 2, 3, 4, 5];
+       print_vector(&xs); // pass xs as a reference to print_vector
+   }
+   ```
+
+1. Appending elements to a vector:
+
+   ```rust
+   fn main() {
+       let mut xs = vec![1, 2, 3, 4, 5];
+       xs.push(6); // xs is now [1, 2, 3, 4, 5, 6]
+   }
+   ```
+
+1. Removing elements from a vector:
+
+   ```rust
+   fn main() {
+       let mut xs = vec![1, 2, 3, 4, 5];
+       xs.pop(); // xs is now [1, 2, 3, 4]
+   }
+   ```
+
+1. Inserting elements into a vector:
+
+   ```rust
+   fn main() {
+       let mut xs = vec![1, 2, 3, 4, 5];
+       xs.insert(3, 99); // xs is now [1, 2, 3, 99, 4, 5]
+   }
+   ```
+
+1. Removing elements from a vector:
+
+   ```rust
+   let mut numbers = vec![1, 2, 3, 4, 5, 6];
+
+   // Remove the element at index 2
+   let removed = numbers.remove(2);
+
+   // numbers is now [1, 2, 4, 5, 6]
+   // removed is 3
+   ```
+
+1. Sorting a vector:
+
+   ```rust
+   fn main() {
+       let mut xs = vec![3, 1, 4, 5, 2];
+       xs.sort(); // xs is now [1, 2, 3, 4, 5]
+   }
+   ```
+
+1. Reversing a vector:
+
+   ```rust
+   fn main() {
+       let mut xs = vec![1, 2, 3, 4, 5];
+       xs.reverse(); // xs is now [5, 4, 3, 2, 1]
+   }
+   ```
+
+1. Comparing two vectors:
+
+   ```rust
+   fn main() {
+       let xs = vec![1, 2, 3, 4, 5];
+       let ys = vec![1, 2, 3, 4, 5];
+       let zs = vec![5, 4, 3, 2, 1];
+       assert_eq!(xs, ys); // xs and ys are equal
+       assert_ne!(xs, zs); // xs and zs are not equal
+   }
+   ```
+
+1. Copying a vector:
+
+   ```rust
+   fn main() {
+       let xs = vec![1, 2, 3, 4, 5];
+       let ys = xs.clone(); // ys is a copy of xs
+   }
+   ```
+
+1. Checking if a vector is empty:
+
+   ```rust
+   fn main() {
+       let xs: Vec<i32> = Vec::new(); // xs is an empty vector
+       assert!(xs.is_empty());
+   }
+   ```
+
+1. Getting the length of a vector:
+
+   ```rust
+   fn main() {
+       let xs = vec![1, 2, 3, 4, 5];
+       let length = xs.len(); // length is 5
+   }
+   ```
+
+1. Getting the capacity of a vector:
+
+   ```rust
+   fn main() {
+       let mut xs = Vec::with_capacity(10);
+       let capacity = xs.capacity(); // capacity is 10
+       xs.push(1);
+       xs.push(2);
+       xs.push(3);
+       xs.push(4);
+       xs.push(5);
+       let new_capacity = xs.capacity(); // new_capacity is still 10 (capacity is not increased)
+   }
+   ```
+
+1. Resizing a vector:
+
+   ```rust
+   fn main() {
+       let mut xs = vec![1, 2, 3, 4, 5];
+       xs.resize(10, 99); // xs is now [1, 2, 3, 4, 5, 99, 99, 99, 99, 99]
+   }
+   ```
+
+1. Clearing a vector:
+
+   ```rust
+   fn main() {
+       let mut xs = vec![1, 2, 3, 4, 5];
+       xs.clear(); // xs is now an empty vector
+   }
+   ```
+
+1. Slicing a vector:
+
+   ```rust
+   fn main() {
+       let xs = vec![1, 2, 3, 4, 5];
+       let ys = &xs[1..4]; // ys is a slice of the elements [2, 3, 4]
+   }
+   ```
+
+1. Merging two vectors:
+
+   ```rust
+   fn main() {
+       let mut xs = vec![1, 2, 3];
+       let ys = vec![4, 5, 6];
+       xs.extend(ys); // xs is now [1, 2, 3, 4, 5, 6]
+   }
+   ```
+
+1. Using a vector with a generic type parameter:
+
+   ```rust
+   fn main() {
+       let xs: Vec<i32> = vec![1, 2, 3, 4, 5];
+       let ys: Vec<f64> = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+       let zs: Vec<String> = vec!["a", "b", "c"].into_iter().map(|s| s.to_string()).collect();
+   }
+   ```
+
+1. Using a vector with `Vec::with_capacity`:
+
+   ```rust
+   fn main() {
+       let mut xs = Vec::with_capacity(5);
+       xs.push(1);
+       xs.push(2);
+       xs.push(3);
+       xs.push(4);
+       xs.push(5);
+   }
+   ```
+
+1. Using a vector with `Vec::from_iter`:
+
+   ```rust
+   fn main() {
+       let xs = vec![1, 2, 3, 4, 5];
+       let ys: Vec<i32> = Vec::from_iter(xs.iter().map(|x| x * 2)); // ys is [2, 4, 6, 8, 10]
+   }
+   ```
+
+1. Using a vector with `Vec::drain`:
+
+   ```rust
+   fn main() {
+       let mut xs = vec![1, 2, 3, 4, 5];
+       let ys: Vec<i32> = xs.drain(1..4).collect(); ys is [2, 3, 4]
+       println!("{:?}", xs) // xs [1, 5]
+   }
+   ```
+
+1. Using a vector with `Vec::retain`:
+
+   ```rust
+   fn main() {
+       let mut xs = vec![1, 2, 3, 4, 5];
+       xs.retain(|x| x % 2 == 0); // xs is now [2, 4]
+   }
+   ```
+
+1. Using a vector with `Vec::sort_unstable`:
+
+   ```rust
+   fn main() {
+       let mut xs = vec![3, 1, 4, 5, 2];
+       xs.sort_unstable(); // xs is now [1, 2, 3, 4, 5]
+   }
+   ```
+
+1. Using a vector with `Vec::sort_by_key`:
+
+   ```rust
+   fn main() {
+       let mut xs = vec![("a", 1), ("b", 2), ("c", 3)];
+       xs.sort_by_key(|k| k.1); // xs is now [("a", 1), ("b", 2), ("c", 3)]
+   }
+   ```
+
+1. Using a vector with `Vec::dedup`:
+
+   ```rust
+   fn main() {
+       let mut xs = vec![1, 2, 2, 3, 3, 3, 4, 4, 4, 4];
+       xs.dedup(); // xs is now [1, 2, 3, 4]
+   }
+   ```
+
+1. Using a vector with `Vec::dedup_by_key`:
+
+   ```rust
+   fn main() {
+       let mut xs = vec![("a", 1), ("b", 2), ("b", 3), ("c", 4), ("c", 5), ("c", 6)];
+       xs.dedup_by_key(|k| k.0); // xs is now [("a", 1), ("b", 2), ("c", 4)]
+   }
+   ```
+
+1. Using a vector with `Vec::dedup_by`:
+
+```rust
+fn main() {
+    let mut xs = vec![1, 2, 2, 3, 3, 3, 4, 4, 4, 4];
+    xs.dedup_by(|a, b| a % 2 == b % 2); // xs is now [1, 2, 3, 4]
+}
+```
