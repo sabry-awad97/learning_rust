@@ -2611,10 +2611,6 @@ Here is a comparison of arrays, vectors, and slices in Rust:
 
 ## String
 
-Here is an organized summary of string manipulation in Rust:
-
-## Introduction
-
 - In Rust, strings are sequences of Unicode characters.
 - Rust has two primary string types: `&str` and `String`.
   - `&str` is a slice that points to a UTF-8-encoded string stored elsewhere. It is often used as a function argument or a return type.
