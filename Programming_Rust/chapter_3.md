@@ -1,5 +1,51 @@
 # Fundamental Types
 
+## Rust's type inference and its powerful macro system
+
+Type inference allows the Rust compiler to automatically deduce the types of variables and expressions based on the context in which they appear. This means that you don't always have to explicitly specify the types of your variables and expressions, as the compiler can infer them for you. This can make writing Rust code more concise and reduce the amount of boilerplate you have to write.
+
+Rust's macro system allows you to define and use custom code generation macros, which can be used to generate repetitive or boilerplate code for you. This can help you avoid having to manually write out the same code multiple times, and can make it easier to write code that is more abstract and modular.
+
+Overall, Rust's focus on types and its support for type inference and macros can help make it easier for you to write efficient and reliable code, while still providing the flexibility and expressiveness you need to solve complex problems.
+
+Here are some examples of type inference in Rust:
+
+```rust
+let x = 5; // x is inferred to be an i32
+
+let y = "hello"; // y is inferred to be a &str
+
+let z = [1, 2, 3]; // z is inferred to be a [i32; 3]
+
+fn add(a: i32, b: i32) -> i32 {
+    a + b
+}
+
+let sum = add(5, 6); // sum is inferred to be an i32`
+
+And here is an example of a macro in Rust:
+
+Copy code
+
+`macro_rules! create_function {
+    ($func_name:ident) => {
+        fn $func_name() {
+            println!("You called the {} function", stringify!($func_name));
+        }
+    }
+}
+
+create_function!(foo);
+create_function!(bar);
+
+foo(); // prints "You called the foo function"
+bar(); // prints "You called the bar function"
+```
+
+In this example, the `create_function!` macro generates functions with the specified name. The `$func_name:ident` syntax specifies a macro variable that will be replaced with the name of the function being generated. The `stringify!` macro expands to the string representation of its argument, allowing us to print the name of the function being called.
+
+## Rust Types
+
 Here's a list of some types in rust
 
 | Type                                | Description                                                                                     | Values                                                                       |
