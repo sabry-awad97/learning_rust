@@ -2617,7 +2617,7 @@ Here is a comparison of arrays, vectors, and slices in Rust:
   - `&str` is a slice that points to a UTF-8-encoded string stored elsewhere. It is often used as a function argument or a return type.
 
     ```rust
-        let s: &str = "Hello, world!"; // &str slice
+    let s: &str = "Hello, world!"; // &str slice
     ```
 
   - `String` is an owned, growable string. It is stored on the heap and can be mutated.
@@ -2649,140 +2649,307 @@ Here is a comparison of arrays, vectors, and slices in Rust:
 
 - You can create a `String` from a byte slice using the `String::from_utf8` function.
 
-    ```rust
-    let s = String::from_utf8(vec![72, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 33]).unwrap(); // String
-    ```
+  ```rust
+  let s = String::from_utf8(vec![72, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 33]).unwrap(); // String
+  ```
 
 ## Access and Modification
 
 - You can get a byte slice from a `String` using the `as_bytes` method.
 
-    ```rust
-    let s = "Hello, world!".to_string();
-    let bs = s.as_bytes(); // [72, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 33]
-    ```
+  ```rust
+  let s = "Hello, world!".to_string();
+  let bs = s.as_bytes(); // [72, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 33]
+  ```
 
 - You can get a `char` iterator from a `String` using the `chars` method.
 
-    ```rust
-    let s = "Hello, world!".to_string();
-    for c in s.chars() { // H, e, l, l, o, ,,  , w, o, r, l, d, !
-        println!("{}", c);
-    }
-    ```
+  ```rust
+  let s = "Hello, world!".to_string();
+  for c in s.chars() { // H, e, l, l, o, ,,  , w, o, r, l, d, !
+      println!("{}", c);
+  }
+  ```
 
 - You can get a `&str` iterator from a `String` using the `lines` method.
 
-    ```rust
-    let s = "Hello, world!".to_string();
-    for line in s.lines() { // Hello, world!
-        println!("{}", line);
-    }
-    ```
+  ```rust
+  let s = "Hello, world!".to_string();
+  for line in s.lines() { // Hello, world!
+      println!("{}", line);
+  }
+  ```
 
 - You can concatenate two strings using the `+` operator or the `format!` macro.
 
-    ```rust
-    let s1 = "Hello, ".to_string();
-    let s2 = "world!".to_string();
-    let s = s1 + &s2; // "Hello, world!"
-    let s = format!("{}{}", s1, s2); // "Hello, world!"
-    ```
+  ```rust
+  let s1 = "Hello, ".to_string();
+  let s2 = "world!".to_string();
+  let s = s1 + &s2; // "Hello, world!"
+  let s = format!("{}{}", s1, s2); // "Hello, world!"
+  ```
 
 - You can get the length of a string in characters using the `len` method.
 
-    ```rust
-    let s = "Hello, world!".to_string();
-    println!("{}", s.len()); // 12
-    ```
+  ```rust
+  let s = "Hello, world!".to_string();
+  println!("{}", s.len()); // 12
+  ```
 
 - You can get the length of a string in bytes using the `as_bytes`.
 
-    ```rust
-    let s = "Hello, world!".to_string();
-    println!("{}", s.as_bytes().len()); // 13
-    ```
+  ```rust
+  let s = "Hello, world!".to_string();
+  println!("{}", s.as_bytes().len()); // 13
+  ```
 
 - You can access individual characters or bytes of a string using indexing.
 
-    ```rust
-    let s = "Hello, world!".to_string();
-    println!("{}", s[0..5]); // "Hello"
-    ```
+  ```rust
+  let s = "Hello, world!".to_string();
+  println!("{}", s[0..5]); // "Hello"
+  ```
 
 - You can slice a string using the `[a..b]` syntax.
 
-    ```rust
-    let s = "Hello, world!".to_string();
-    println!("{}", s[0..5]); // "Hello"
-    ```
+  ```rust
+  let s = "Hello, world!".to_string();
+  println!("{}", s[0..5]); // "Hello"
+  ```
 
 - You can iterate over the characters or bytes of a string using a loop.
 
-    ```rust
-    let s = "Hello, world!".to_string();
-    for c in s.chars() {
-        println!("{}", c);
-    }
-    ```
+  ```rust
+  let s = "Hello, world!".to_string();
+  for c in s.chars() {
+      println!("{}", c);
+  }
+  ```
 
-- You can search for a string or a character in a string using the `contains`, `starts_with`, or `ends_with` method.
+- You can search for a string or a character in a string using the `contains` method.
 
-    ```rust
-    let s = "Hello, world!";
-    println!(s.contains("world"));
-    println!(s.starts_with("Hello"));
-    println!(s.ends_with("world!"));
-    println!(s.starts_with(&s[0..5]));
-    println!(s.ends_with(&s[7..12]));
-    ```
+  ```rust
+  let s = "Hello, world!";
+  println!(s.contains("world"));
+  ```
 
 - You can replace a substring in a string using the `replace` or `replacen` method.
 
-    ```rust
-    let s = "Hello, world!".to_string();
-    let s = s.replace("world", "Rust"); // "Hello, Rust!"
-    let s = s.replacen("l", "L", 2); // "HeLLo, Rust!"
-    ```
+  ```rust
+  let s = "Hello, world!".to_string();
+  let s = s.replace("world", "Rust"); // "Hello, Rust!"
+  let s = s.replacen("l", "L", 2); // "HeLLo, Rust!"
+  ```
 
 - You can trim leading or trailing whitespace or characters from a string using the `trim`, `trim_start`, or `trim_end` method.
 
-    ```rust
-    let s = "   Hello, world!   ".to_string();
-    let s = s.trim(); // "Hello, world!"
-    let s = s.trim_start(); // "Hello, world!"
-    let s = s.trim_end(); // "Hello, world!"
-    ```
+  ```rust
+  let s = "   Hello, world!   ".to_string();
+  let s = s.trim(); // "Hello, world!"
+  let s = s.trim_start(); // "Hello, world!"
+  let s = s.trim_end(); // "Hello, world!"
+  ```
 
 - You can pad a string on the left or right with a given character using the `pad_left` or `pad_right`.
 
-    ```rust
-    let s = "Hello, world!".to_string();
-    let s = s.pad_left(20, '-'); // "----------Hello, world!"
-    let s = s.pad_right(20, '-'); // "----------Hello, world!-------"
-    ```
+  ```rust
+  let s = "Hello, world!".to_string();
+  let s = s.pad_left(20, '-'); // "----------Hello, world!"
+  let s = s.pad_right(20, '-'); // "----------Hello, world!-------"
+  ```
 
 ## Splitting and Joining
 
 - You can split a string into multiple substrings using the `split` method. This method takes a separator and returns an iterator of substrings. You can use the `collect` method to collect the substrings into a vector.
+
+  ```rust
+  let s = "apple,banana,cherry";
+  let v: Vec<&str> = s.split(',').collect(); // ["apple", "banana", "cherry"]
+  ```
+
 - You can split a string into multiple substrings using the `split_whitespace` method. This method returns an iterator of substrings, where each substring is a sequence of contiguous non-whitespace characters.
+
+  ```rust
+  let s = "apple   banana   cherry";
+  let v: Vec<&str> = s.split_whitespace().collect(); // ["apple", "banana", "cherry"]
+  ```
+
 - You can split a string into multiple substrings using the `split_terminator` method. This method takes a separator and returns an iterator of substrings, where the separator is not included in the substrings.
+
+  ```rust
+  let s = "apple,,banana,,cherry";
+  let v: Vec<&str> = s.split_terminator(",,").collect(); // ["apple", "banana", "cherry"]
+  ```
+
 - You can split a string into multiple substrings using the `rsplit` method. This method is similar to `split`, but it starts from the end of the string and works backwards.
+
+  ```rust
+  let s = "apple,banana,cherry";
+  let v: Vec<&str> = s.rsplit(',').collect(); // ["cherry", "banana", "apple"]
+  ```
+
 - You can split a string into multiple substrings using the `rsplit_terminator` method. This method is similar to `split_terminator`, but it starts from the end of the string and works backwards.
+
+  ```rust
+  let s = "apple,,banana,,cherry";
+  let v: Vec<&str> = s.rsplit_terminator(",,").collect(); // ["cherry", "banana", "apple"]
+  ```
+
 - You can split a string into multiple substrings using the `split_ascii_whitespace` method. This method is similar to `split_whitespace`, but it only considers ASCII whitespace characters.
 
+  ```rust
+  let s = "apple   banana   cherry";
+  let v: Vec<&str> = s.split_ascii_whitespace().collect(); // ["apple", "banana", "cherry"]
+  ```
+
 - You can split a string into multiple substrings using the `splitn` method. This method is similar to `split`, but it only splits the string at a certain number of occurrences of the separator.
+
+  ```rust
+  let s = "apple,banana,cherry,date";
+  let v: Vec<&str> = s.splitn(2, ',').collect(); // ["apple", "banana,cherry,date"]
+  ```
+
 - You can split a string into multiple substrings using the `rsplitn` method. This method is similar to `rsplit`, but it only splits the string at a certain number of occurrences of the separator.
+
+  ```rust
+  let s = "apple,banana,cherry,date";
+  let v: Vec<&str> = s.rsplitn(2, ',').collect(); // ["date", "cherry,banana,apple"]
+  ```
+
 - You can join multiple strings into a single string using the `join` method. This method takes an iterator of strings and a separator, and returns a new string with the strings joined together using the separator.
 
-## Other Operations
+  ```rust
+  let v = vec!["apple", "banana", "cherry"];
+  let s: String = v.join(", "); // "apple, banana, cherry"
+  ```
+
+## Comparison and Inspection
 
 - You can check if a string is empty using the `is_empty` method.
+
+  ```rust
+  let s = "".to_string();
+  if s.is_empty() { // true
+      println!("The string is empty");
+  }
+  ```
+
 - You can check if a string is not empty using the `is_not_empty` method.
+
+  ```rust
+  let s = "Hello, world!".to_string();
+  if s.is_not_empty() { // true
+      println!("The string is not empty");
+  }
+  ```
+
 - You can check if a string starts with a given prefix using the `starts_with` method.
+
+  ```rust
+  let s = "Hello, world!".to_string();
+  if s.starts_with("Hello") { // true
+      println!("The string starts with 'Hello'");
+  }
+  ```
+
 - You can check if a string ends with a given suffix using the `ends_with` method.
+
+  ```rust
+  let s = "Hello, world!".to_string();
+  if s.ends_with("!") { // true
+      println!("The string ends with '!'");
+  }
+  ```
+
 - You can check if a string contains a given substring using the `contains` method.
-- You can check if a string is a substring of another string using the `is_substring_of` method.
+
+  ```rust
+  let s = "Hello, world!".to_string();
+  if s.contains("world") { // true
+      println!("The string contains 'world'");
+  }
+  ```
+
+- You can check if a string is a substring of another string using the `contains` method.
+
+  ```rust
+  let s1 = "Hello, world!".to_string();
+  let s2 = "world".to_string();
+  if s1.contains(&s2) { // true
+      println!("'{}' is a substring of '{}'", s2, s1);
+  }
+  ```
+
+## Miscellaneous
+
+---
+
+- You can convert a string to uppercase or lowercase using the `to_uppercase` or `to_lowercase` method.
+
+  ```rust
+  let s = "Hello, world!".to_string();
+  let s = s.to_uppercase(); // "HELLO, WORLD!"
+  let s = s.to_lowercase(); // "hello, world!"
+  ```
+
+- You can iterate over the characters or bytes of a string in reverse order using the `rev` method.
+
+  ```rust
+  let s = "Hello, world!".to_string();
+  for c in s.chars().rev() {
+      println!("{}", c);
+  }
+  ```
+
+- You can get the byte index of a character in a string using the `char_indices` method.
+
+  ```rust
+  let s = "Hello, world!".to_string();
+  for (i, c) in s.char_indices() {
+      println!("Character {} is at index {}", c, i);
+  }
+  ```
+
+- You can get the character and its byte index in a string using the `char_indices` method.
+
+  ```rust
+  let s = "Hello, world!".to_string();
+  for (i, c) in s.char_indices() {
+      println!("Character {} is at index {}", c, i);
+  }
+  ```
+
+- You can get the character at a given byte index in a string using the `get` method.
+
+  ```rust
+  let s = "Hello, world!".to_string();
+  if let Some(c) = s.get(7) {
+      println!("Character at index 7 is {}", c);
+  }
+  ```
+
+- You can get a subslice of a string using the `get` method.
+
+  ```rust
+  let s = "Hello, world!".to_string();
+  if let Some(subslice) = s.get(7..12) {
+      println!("Subslice from index 7 to 12 is {}", subslice);
+  }
+  ```
+
+- You can get the character at a given index in a string using the `chars` method and indexing.
+
+  ```rust
+  let s = "Hello, world!".to_string();
+  let c = s.chars().nth(7); // Some('w')
+  ```
+
+- You can get the character at a given index in a string using the `chars` method and indexing.
+
+  ```rust
+  let s = "Hello, world!".to_string();
+  let c = s.chars().nth(7); // Some('w')
+  ```
 
 ## Formatting and Printing
 
