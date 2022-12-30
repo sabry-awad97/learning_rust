@@ -2479,3 +2479,116 @@ fn main() {
     xs.dedup_by(|a, b| a % 2 == b % 2); // xs is now [1, 2, 3, 4]
 }
 ```
+
+---
+
+## Slices
+
+Here is a summary of some of the key points about slices in Rust:
+
+- Slices are a kind of reference that allow you to borrow a contiguous sequence of elements from a collection such as an array, a vector, or a string.
+- Slices are represented using the syntax `&[T]`, where `T` is the type of the elements in the slice.
+- Slices are created using the `&` operator, followed by a reference to the collection and a range indicating which elements to include in the slice.
+- Slices can be indexed using square brackets, just like arrays.
+- Slices can be iterated over using a loop or other iterator-based construct.
+- Slices can be compared using the `==` and `!=` operators.
+- Slices can be sorted using the `sort` method.
+- The `len` method can be used to get the length of a slice.
+
+Here are some examples of using slices in Rust:
+
+1. Creating a slice from an array:
+
+   ```rust
+   fn main() {
+       let xs: [i32; 5] = [1, 2, 3, 4, 5];
+       let ys: &[i32] = &xs;
+   }
+   ```
+
+1. Creating a slice from a vector:
+
+   ```rust
+   fn main() {
+       let xs = vec![1, 2, 3, 4, 5];
+       let ys: &[i32] = &xs;
+   }
+   ```
+
+1. Creating a slice from a string:
+
+   ```rust
+   fn main() {
+       let xs = "hello";
+       let ys: &str = &xs;
+   }
+   ```
+
+1. Indexing a slice:
+
+   ```rust
+   fn main() {
+       let xs = &[1, 2, 3, 4, 5];
+       let x = xs[0]; // x is 1
+   }
+   ```
+
+1. Iterating over a slice:
+
+   ```rust
+   fn main() {
+       let xs = &[1, 2, 3, 4, 5];
+       for x in xs {
+           println!("{}", x);
+       }
+   }
+   ```
+
+1. Slicing a slice:
+
+   ```rust
+   fn main() {
+       let xs = &[1, 2, 3, 4, 5];
+       let ys = &xs[1..4]; // ys is [2, 3, 4]
+   }
+   ```
+
+1. Getting the length of a slice:
+
+   ```rust
+   fn main() {
+       let xs = &[1, 2, 3, 4, 5];
+       let length = xs.len(); // length is 5
+   }
+   ```
+
+1. Comparing two slices:
+
+   ```rust
+   fn main() {
+       let xs = &[1, 2, 3, 4, 5];
+       let ys = &[1, 2, 3, 4, 5];
+       let zs = &[5, 4, 3, 2, 1];
+       assert_eq!(xs, ys); // xs and ys are equal
+       assert_ne!(xs, zs); // xs and zs are not equal
+   }
+   ```
+
+1. Sorting a slice:
+
+   ```rust
+   fn main() {
+       let mut xs = &[3, 1, 4, 5, 2];
+       xs.sort(); // xs is now [1, 2, 3, 4, 5]
+   }
+   ```
+
+1. Using a slice with a generic type parameter:
+
+   ```rust
+   fn main() {
+       let xs: &[i32] = &[1, 2, 3, 4, 5];
+       let ys: &[f64] = &[1.0, 2.0, 3.0, 4.0, 5.0];
+       let zs: &[String] = &["a", "b", "c"].iter().map(|s| s.to_string()).collect::<Vec<_>>();
+   }
+   ```
