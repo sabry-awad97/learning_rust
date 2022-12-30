@@ -1496,3 +1496,62 @@ Here are some examples that illustrate each of the additional points:
    assert_eq!(old, (1, 2, 3));
    assert_eq!(t, (4, 5, 6));
    ```
+
+_**Zero Tuple**_
+
+Certainly! Here is a summary of the main points about the zero-tuple, also known as the unit type, in Rust:
+
+- The zero-tuple is a special type of tuple that has no elements.
+- It is written as `()` and is used to represent the absence of a value.
+- The zero-tuple is often used as the return type of functions that do not need to return a value.
+- It is also commonly used as the parameter type of functions that do not take any arguments.
+- The `std::mem` module's `size_of_val` function returns 0 for the zero-tuple, whereas it returns the size of the tuple's elements for other tuples.
+- The zero-tuple is a special case of the tuple type in Rust and is treated differently in certain contexts.
+
+Here are examples of each of the main points about the zero-tuple in Rust:
+
+1. The zero-tuple is a special type of tuple that has no elements:
+
+```rust
+let t: () = ();
+```
+
+1. It is written as `()` and is used to represent the absence of a value:
+
+```rust
+let t: Option<()> = None;
+```
+
+1. The zero-tuple is often used as the return type of functions that do not need to return a value:
+
+```rust
+fn foo() -> () {
+    // do something
+}
+
+let result = foo();
+```
+
+1. It is also commonly used as the parameter type of functions that do not take any arguments:
+
+```rust
+fn bar(_: ()) {
+    // do something
+}
+
+bar(());
+```
+
+5. The `std::mem` module's `size_of_val` function returns 0 for the zero-tuple, whereas it returns the size of the tuple's elements for other tuples:
+
+```rust
+use std::mem;
+
+let t = ();
+let size = mem::size_of_val(&t);
+assert_eq!(size, 0);
+
+let t = (1, 2, 3);
+let size = mem::size_of_val(&t);
+assert_eq!(size, 3 * mem::size_of::<i32>());
+```
