@@ -10,7 +10,7 @@ Overall, Rust's focus on types and its support for type inference and macros can
 
 Here are some examples of type inference in Rust:
 
-```rust
+````rust
 let x = 5; // x is inferred to be an i32
 
 let y = "hello"; // y is inferred to be a &str
@@ -25,14 +25,16 @@ let sum = add(5, 6); // sum is inferred to be an i32`
 
 And here is an example of a macro in Rust:
 
-Copy code
+```rust
+
+````
 
 `macro_rules! create_function {
-    ($func_name:ident) => {
+($func_name:ident) => {
         fn $func_name() {
             println!("You called the {} function", stringify!($func_name));
-        }
-    }
+}
+}
 }
 
 create_function!(foo);
@@ -40,7 +42,8 @@ create_function!(bar);
 
 foo(); // prints "You called the foo function"
 bar(); // prints "You called the bar function"
-```
+
+````
 
 In this example, the `create_function!` macro generates functions with the specified name. The `$func_name:ident` syntax specifies a macro variable that will be replaced with the name of the function being generated. The `stringify!` macro expands to the string representation of its argument, allowing us to print the name of the function being called.
 
@@ -106,7 +109,7 @@ Sure! Here is a more detailed explanation of each of the examples I provided:
 // Signed and unsigned integers
 let i: i32 = -42;
 let u: u32 = 42;
-```
+````
 
 In this example, `i` is a signed 32-bit integer with the value `-42`, and `u` is an unsigned 32-bit integer with the value `42`. In Rust, signed integers are denoted by a `i` followed by a number indicating the number of bits they use (e.g., `i8`, `i16`, `i32`, `i64`, `i128`). Unsigned integers are denoted by a `u` followed by a number indicating the number of bits they use (e.g., `u8`, `u16`, `u32`, `u64`, `u128`).
 
@@ -393,3 +396,182 @@ println!("x = {} (u32), y = {} (i32)", x, y);
 ```
 
 This will also print `x = 42 (u32), y = 42 (i32)`.
+
+## Checked, Wrapping, Saturating, and Overflowing Arithmetic
+
+In computer arithmetic, an "overflow" condition occurs when the result of an arithmetic operation exceeds the maximum value that can be represented by the type being used. For example, in Rust, the maximum value that can be represented by an `u8` type is `255`. If you try to perform an arithmetic operation that would produce a result greater than 255, an overflow condition occurs.
+
+An "underflow" condition is the opposite of an overflow condition: it occurs when the result of an arithmetic operation is less than the minimum value that can be represented by the type being used. For example, in Rust, the minimum value that can be represented by an i8 type is -128. If you try to perform an arithmetic operation that would produce a result less than -128, an underflow condition occurs.
+
+In Rust, you can perform arithmetic operations on integers using the standard arithmetic operators (e.g., `+`, `-`, `*`, `/`, `%`). By default, these operators will perform "unchecked" arithmetic, which means that they will not check for overflow or underflow conditions. This can be useful when you want to maximize performance, but it can also be dangerous if you are not careful, as it can lead to undefined behavior if an overflow or underflow occurs.
+
+```rust
+// Overflow example
+let x: u8 = 255;
+let y: u8 = 1;
+
+let result = x + y;
+
+// The result of this operation is 256, which is greater than the maximum value that can be represented by an u8 (255).
+// Therefore, an overflow condition occurs, and the result of the operation is undefined.
+
+// Underflow example
+let x: i8 = -128;
+let y: i8 = -1;
+
+let result = x - y;
+
+// The result of this operation is 127, which is greater than the maximum value that can be represented by an i8 (-128).
+// Therefore, an underflow condition occurs, and the result of the operation is undefined.
+```
+
+To avoid this, you can use the `checked_*` variants of the arithmetic operators, which check for overflow and underflow and return `None` if an overflow or underflow occurs. Alternatively, you can use the `Wrapping` type from the `std::num` module to perform wrapping arithmetic, or the `saturating_*` variants of the arithmetic operators to perform saturating arithmetic.
+
+To perform checked arithmetic in Rust, you can use the `checked_*` variants of the arithmetic operators. For example, the `checked_add` function performs addition that checks for overflow, and returns `None` if an overflow occurs:
+
+```rust
+use std::num::Wrapping;
+
+let x: u8 = 255;
+let y: u8 = 1;
+
+let result = x.checked_add(y);
+
+assert_eq!(result, None);
+```
+
+You can also use the `Wrapping` type from the `std::num` module to perform wrapping arithmetic, which wraps around instead of overflowing or underflowing. For example:
+
+```rust
+use std::num::Wrapping;
+
+let x: Wrapping<u8> = Wrapping(255);
+let y: Wrapping<u8> = Wrapping(1);
+
+let result = x + y;
+
+assert_eq!(result.0, 0);
+```
+
+In addition, you can use the `saturating_*` variants of the arithmetic operators to perform saturating arithmetic, which saturates to the maximum or minimum value of the type instead of overflowing or underflowing. For example:
+
+```rust
+use std::num::Wrapping;
+
+let x: u8 = 255;
+let y: u8 = 1;
+
+let result = x.saturating_add(y);
+
+assert_eq!(result, 255);
+```
+
+Finally, you can use the `overflowing_*` variants of the arithmetic operators to perform overflowing arithmetic and get a boolean value indicating whether an overflow occurred. For example:
+
+```rust
+let x: u8 = 255;
+let y: u8 = 1;
+
+let (result, overflowed) = x.overflowing_add(y);
+
+assert_eq!(result, 0);
+assert_eq!(overflowed, true);
+```
+
+In Rust, the names of the operations that follow the `checked_`, `wrapping_`, `saturating_`, or `overflowing_` prefix are the same as the names of the corresponding standard arithmetic operations (e.g., `add`, `sub`, `mul`, `div`, `rem`), with the exception of the `shl` and `shr` operations, which are used for bitwise shifting.
+
+Here are some examples of using the `checked_`, `wrapping_`, `saturating_`, and `overflowing_` prefixes with the various arithmetic operations:
+
+```rust
+use std::num::Wrapping;
+
+// Addition
+let x = 1u8;
+let y = 2u8;
+
+let checked_result = x.checked_add(y);
+let wrapping_result = Wrapping(x).wrapping_add(Wrapping(y)).0;
+let saturating_result = x.saturating_add(y);
+let (overflowing_result, overflowed) = x.overflowing_add(y);
+
+// Subtraction
+let x = 1u8;
+let y = 2u8;
+
+let checked_result = x.checked_sub(y);
+let wrapping_result = Wrapping(x).wrapping_sub(Wrapping(y)).0;
+let saturating_result = x.saturating_sub(y);
+let (overflowing_result, overflowed) = x.overflowing_sub(y);
+
+// Multiplication
+let x = 2u8;
+let y = 3u8;
+
+let checked_result = x.checked_mul(y);
+let wrapping_result = Wrapping(x).wrapping_mul(Wrapping(y)).0;
+let saturating_result = x.saturating_mul(y);
+let (overflowing_result, overflowed) = x.overflowing_mul(y);
+
+assert_eq!(checked_result, Some(6));
+assert_eq!(wrapping_result, 6);
+assert_eq!(saturating_result, 6);
+assert_eq!(overflowing_result, 6);
+assert_eq!(overflowed, false);
+
+// Division
+let x = 10u8;
+let y = 3u8;
+
+let checked_result = x.checked_div(y);
+let wrapping_result = Wrapping(x).wrapping_div(Wrapping(y)).0;
+
+// Remainder
+let x = 10u8;
+let y = 3u8;
+
+let checked_result = x.checked_rem(y);
+let wrapping_result = Wrapping(x).wrapping_rem(Wrapping(y)).0;
+
+// Left shift
+let x = 1u8;
+let y = 2u8;
+
+let checked_result = x.checked_shl(y);
+let wrapping_result = Wrapping(x).wrapping_shl(y as u32).0;
+let (overflowing_result, overflowed) = x.overflowing_shl(y);
+
+// Right shift
+let x = 1u8;
+let y = 2u8;
+
+let checked_result = x.checked_shr(y);
+let wrapping_result = Wrapping(x).wrapping_shr(y as u32).0;
+let (overflowing_result, overflowed) = x.overflowing_shr(y);
+```
+
+Certainly! Here is a summary of the operation names that follow the `checked_`, `wrapping_`, `saturating_`, or `overflowing_` prefix:
+
+| Operation      | Prefix            | Description                                                                                                          |
+| -------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Addition       | `checked_add`     | Performs checked addition, returning `None` if an overflow or underflow occurs.                                      |
+|                | `wrapping_add`    | Performs wrapping addition, wrapping around on overflow or underflow.                                                |
+|                | `saturating_add`  | Performs saturating addition, returning the maximum or minimum value if an overflow or underflow occurs.             |
+|                | `overflowing_add` | Performs overflowing addition, returning a boolean value indicating whether an overflow or underflow occurred.       |
+| Subtraction    | `checked_sub`     | Performs checked subtraction, returning `None` if an overflow or underflow occurs.                                   |
+|                | `wrapping_sub`    | Performs wrapping subtraction, wrapping around on overflow or underflow.                                             |
+|                | `saturating_sub`  | Performs saturating subtraction, returning the maximum or minimum value if an overflow or underflow occurs.          |
+|                | `overflowing_sub` | Performs overflowing subtraction, returning a boolean value indicating whether an overflow or underflow occurred.    |
+| Multiplication | `checked_mul`     | Performs checked multiplication, returning `None` if an overflow or underflow occurs.                                |
+|                | `wrapping_mul`    | Performs wrapping multiplication, wrapping around on overflow or underflow.                                          |
+|                | `saturating_mul`  | Performs saturating multiplication, returning the maximum or minimum value if an overflow or underflow occurs.       |
+|                | `overflowing_mul` | Performs overflowing multiplication, returning a boolean value indicating whether an overflow or underflow occurred. |
+| Division       | `checked_div`     | Performs checked division, returning `None` if an overflow or underflow occurs or if the divisor is zero.            |
+|                | `wrapping_div`    | Performs wrapping division, wrapping around on overflow or underflow or if the divisor is zero.                      |
+| Remainder      | `checked_rem`     | Performs checked remainder, returning `None` if an overflow or underflow occurs or if the divisor is zero.           |
+|                | `wrapping_rem`    | Performs wrapping remainder, wrapping around on overflow or underflow or if the divisor is zero.                     |
+| Left shift     | `checked_shl`     | Performs checked left shift, returning `None` if an overflow or underflow occurs.                                    |
+|                | `wrapping_shl`    | Performs wrapping left shift, wrapping around on overflow or underflow.                                              |
+|                | `overflowing_shl` | Performs overflowing left shift, returning a boolean value indicating whether an overflow or underflow occurred.     |
+| Right shift    | `checked_shr`     | Performs checked right shift, returning `None` if an overflow or underflow occurs.                                   |
+|                | `wrapping_shr`    | Performs wrapping right shift, wrapping around on overflow or underflow.                                             |
+|                | `overflowing_shr` | Performs overflowing right shift, returning a boolean value indicating whether an overflow or underflow occurred.    |
