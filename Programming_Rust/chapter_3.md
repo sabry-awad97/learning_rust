@@ -549,7 +549,7 @@ let wrapping_result = Wrapping(x).wrapping_shr(y as u32).0;
 let (overflowing_result, overflowed) = x.overflowing_shr(y);
 ```
 
-Certainly! Here is a summary of the operation names that follow the `checked_`, `wrapping_`, `saturating_`, or `overflowing_` prefix:
+Here is a summary of the operation names that follow the `checked_`, `wrapping_`, `saturating_`, or `overflowing_` prefix:
 
 | Operation      | Prefix            | Description                                                                                                          |
 | -------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------- |
@@ -575,3 +575,148 @@ Certainly! Here is a summary of the operation names that follow the `checked_`, 
 | Right shift    | `checked_shr`     | Performs checked right shift, returning `None` if an overflow or underflow occurs.                                   |
 |                | `wrapping_shr`    | Performs wrapping right shift, wrapping around on overflow or underflow.                                             |
 |                | `overflowing_shr` | Performs overflowing right shift, returning a boolean value indicating whether an overflow or underflow occurred.    |
+
+## Floating Point Types
+
+In Rust, there are two main types of floating-point numbers: `f32` for single-precision floating point and `f64` for double-precision floating point. Both types are based on the IEEE 754 standard and have the following properties:
+
+- They can represent positive and negative infinity, as well as “not a number” (NaN) values.
+- They have a fixed number of bits to represent the mantissa (the fractional part of a number) and the exponent (the power of 10 by which the mantissa is multiplied).
+- They provide a relatively high precision for representing real numbers, but they do have limitations due to the fixed number of bits they use.
+- Both `f32` and `f64` implement the `Float` trait, which provides a number of methods for working with floating-point numbers, such as `abs`, `ceil`, `floor`, and others.
+
+Here are some examples of using floating-point types in Rust:
+
+```rust
+let x = 2.0; // f64
+let y: f32 = 3.0; // f32
+
+// Error! No implicit conversion
+let z = x + y;
+
+// addition
+let sum = x + y as f64;
+
+// subtraction
+let difference = x - y as f64;
+
+// multiplication
+let product = x * y as f64;
+
+// division
+let quotient = x / y as f64;
+
+// remainder
+let remainder = x % y as f64;
+```
+
+In the above example, the variable `x` is inferred to be of type `f64`, while `y` is explicitly declared as an `f32`. When we try to add `x` and `y` directly, we get a compile-time error because there is no implicit conversion between these two types. We can fix the error by explicitly casting `x` to an `f32` using the `as` operator.
+
+Keep in mind that floating-point numbers can be imprecise due to the fixed number of bits they use to represent their mantissa and exponent. You should be aware of this limitation when using them in your code.
+
+| Type  | Description                                                      | Mantissa Bits | Exponent Bits |
+| ----- | ---------------------------------------------------------------- | ------------- | ------------- |
+| `f32` | Single-precision floating point, based on the IEEE 754 standard. | 24            | 8             |
+| `f64` | Double-precision floating point, based on the IEEE 754 standard. | 53            | 11            |
+
+- The `f32` and `f64` types both have associated constants that represent special floating-point values, such as positive and negative infinity, the not-a-number (NaN) value, and the minimum and maximum finite values.
+
+  Here are some examples of using these constants:
+
+  ```rust
+  use std::f32;
+
+  let x = f32::INFINITY; // x is positive infinity
+  let y = f32::NEG_INFINITY; // y is negative infinity
+  let z = f32::NAN; // z is the NaN value
+  let w = f32::MIN; // w is the smallest finite f32 value
+  let v = f32::MAX; // v is the largest finite f32 value
+  ```
+
+  Note that you will need to `use std::f32` or `use std::f64` at the top of your code to bring these constants into scope.
+
+- You can also check whether a floating-point value is one of these special values using the `is_infinite`, `is_nan`, and `is_finite` methods provided by the `Float` trait. For example:
+
+  ```rust
+  use std::f32;
+
+  let x = f32::INFINITY;
+  assert!(x.is_infinite());
+
+  let y = f32::NAN;
+  assert!(y.is_nan());
+
+  let z = 1.0;
+  assert!(z.is_finite());
+  ```
+
+- The f32 and f64 types provide a full complement of methods for mathematical calculations. The `std::f32::consts` and `std::f64::consts` modules in the Rust standard library provide various commonly used mathematical constants such as `E`, `PI`, and `SQRT_2` as constants that you can use in your Rust code. These constants are provided for both the `f32` and `f64` types.
+
+  ```rust
+  use std::f64::consts::{E, PI, SQRT_2};
+
+  fn main() {
+      let x = 2f64;
+
+      // Calculate the square root of x
+      let x_sqrt = x.sqrt();
+
+      // Calculate the sine of x
+      let x_sin = x.sin();
+
+      // Calculate the cosine of x
+      let x_cos = x.cos();
+
+      // Calculate the tangent of x
+      let x_tan = x.tan();
+
+      // Calculate the natural logarithm of x
+      let x_ln = x.ln();
+
+      // Calculate the base-10 logarithm of x
+      let x_log10 = x.log10();
+
+      // Calculate the base-2 logarithm of x
+      let x_log2 = x.log2();
+
+      // Calculate the power of E raised to the x
+      let e_to_the_x = E.powf(x);
+
+      // Calculate the absolute value of x
+      let x_abs = x.abs();
+
+      // Calculate the maximum of x and PI
+      let max = x.max(PI);
+
+      // Calculate the minimum of x and SQRT_2
+      let min = x.min(SQRT_2);
+  }
+  ```
+
+  In this example, we use the `sqrt`, `sin`, `cos`, `tan`, `ln`, `log10`, `log2`, `powf`, `abs`, `max`, and `min` methods on the `f64` type, as well as the `E`, `PI`, and `SQRT_2` constants from the `std::f64::consts` module.
+
+- In Rust, the precedence of method calls is higher than the precedence of prefix operators such as `!` or `-`. This means that if you have a method call on a negated value, you need to use parentheses to ensure that the method call is evaluated before the negation.
+
+  For example, consider the following code:
+
+  ```rust
+  let x = 2f32;
+  let y = -x.abs();
+
+  println!("{}", y);
+  ```
+
+  In this code, the `abs` method is called on `-x`, which returns the absolute value of `x`. However, because the precedence of the method call is higher than the precedence of the negation operator, the `abs` method is called first and then the result is negated. This means that the value of `y` will be `-2`, not `2`.
+
+  To correctly evaluate this expression, you need to use parentheses to specify that the negation should be applied first:
+
+  ```rust
+  let x = 2f32;
+  let y = (-x).abs();
+
+  println!("{}", y);
+  ```
+
+  Now, the value of `y` will be `2`, as expected.
+
+  It's always a good idea to use parentheses to clarify the order of operations in your code, especially when using multiple operators or method calls. This can help prevent confusion and reduce the chance of errors.
