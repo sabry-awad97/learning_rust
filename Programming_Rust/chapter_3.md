@@ -10,7 +10,7 @@ Overall, Rust's focus on types and its support for type inference and macros can
 
 Here are some examples of type inference in Rust:
 
-````rust
+```rust
 let x = 5; // x is inferred to be an i32
 
 let y = "hello"; // y is inferred to be a &str
@@ -21,21 +21,20 @@ fn add(a: i32, b: i32) -> i32 {
     a + b
 }
 
-let sum = add(5, 6); // sum is inferred to be an i32`
+let sum = add(5, 6); // sum is inferred to be an i32
+```
 
 And here is an example of a macro in Rust:
 
 ```rust
-
-````
-
-`macro_rules! create_function {
-($func_name:ident) => {
+macro_rules! create_function {
+    ($func_name:ident) => {
         fn $func_name() {
             println!("You called the {} function", stringify!($func_name));
+        }
+    };
 }
-}
-}
+
 
 create_function!(foo);
 create_function!(bar);
@@ -43,7 +42,7 @@ create_function!(bar);
 foo(); // prints "You called the foo function"
 bar(); // prints "You called the bar function"
 
-````
+```
 
 In this example, the `create_function!` macro generates functions with the specified name. The `$func_name:ident` syntax specifies a macro variable that will be replaced with the name of the function being generated. The `stringify!` macro expands to the string representation of its argument, allowing us to print the name of the function being called.
 
@@ -109,7 +108,7 @@ Sure! Here is a more detailed explanation of each of the examples I provided:
 // Signed and unsigned integers
 let i: i32 = -42;
 let u: u32 = 42;
-````
+```
 
 In this example, `i` is a signed 32-bit integer with the value `-42`, and `u` is an unsigned 32-bit integer with the value `42`. In Rust, signed integers are denoted by a `i` followed by a number indicating the number of bits they use (e.g., `i8`, `i16`, `i32`, `i64`, `i128`). Unsigned integers are denoted by a `u` followed by a number indicating the number of bits they use (e.g., `u8`, `u16`, `u32`, `u64`, `u128`).
 
