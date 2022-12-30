@@ -1151,8 +1151,6 @@ Here are a few more things that you might find useful to know about the tuple ty
 
 1. The `std::mem` module provides a number of functions for inspecting and manipulating tuples, including `size_of_val`, `align_of_val`, `offset_of`, and `swap`.
 
-Here are a few more things that you might find useful to know about the tuple type in Rust:
-
 1. The `std::tuple` module provides a number of functions and macros for working with tuples, including `zip`, `zip_eq`, `h list`, and `tuple_macros`.
 
 1. The `std::iter` module provides an iterator adaptor called `tuple_windows` that allows you to iterate over overlapping groups of values in a tuple.
