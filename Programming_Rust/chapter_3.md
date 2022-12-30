@@ -1916,3 +1916,7 @@ Here is a comparison of shared (`&T`) and mutable (`&mut T`) references in Rust:
 | Overhead                    | Low                                       | Low                               |
 | Use cases                   | Reading values, multiple readers          | Modifying values, single writer   |
 | Borrow rules                | Cannot be borrowed while borrowed mutably | Cannot be borrowed while borrowed |
+
+- Shared references have low overhead and are useful for allowing multiple parts of your code to read a value without needing to make copies of it.
+
+- Mutable references have low overhead and are useful for modifying values in place or for communicating changes
