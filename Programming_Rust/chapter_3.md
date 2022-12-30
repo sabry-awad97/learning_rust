@@ -1499,8 +1499,6 @@ Here are some examples that illustrate each of the additional points:
 
 _**Zero Tuple**_
 
-Certainly! Here is a summary of the main points about the zero-tuple, also known as the unit type, in Rust:
-
 - The zero-tuple is a special type of tuple that has no elements.
 - It is written as `()` and is used to represent the absence of a value.
 - The zero-tuple is often used as the return type of functions that do not need to return a value.
