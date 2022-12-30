@@ -1964,6 +1964,8 @@ Here's a comparison of some of pointer types available in Rust:
 
 It's important to note that raw pointers should generally be avoided whenever possible and replaced with safer alternatives like reference-counted pointers (`Rc`) or smart pointers (such as `Box` or `Arc`). These types of pointers provide additional safety guarantees and can help you avoid common pitfalls when working with memory in Rust.
 
+---
+
 ## Arrays, Vectors, and Slices
 
 Arrays are fixed-size collections of items that are stored in contiguous memory. They have a low overhead but cannot be resized. They are suitable for use cases where the size of the collection is known in advance and does not need to change.
@@ -1982,3 +1984,178 @@ Here is a comparison of arrays, vectors, and slices in Rust:
 | Own data?              | Yes                       | Yes                 | No                         |
 | Overhead               | Low                       | Moderate            | None                       |
 | Use cases              | Large, static collections | Dynamic collections | Borrowing portions of data |
+
+---
+
+## Arrays
+
+Here is a list of key points about arrays in Rust:
+
+- Arrays are fixed-size collections of items that are stored in contiguous memory.
+- They are written as `[T; N]`, where `T` is the type of the items and `N` is the number of items in the array.
+- Arrays have a fixed size and cannot be resized.
+- They are stored on the stack, rather than the heap.
+- Arrays have very low overhead and are efficient for storing large amounts of data.
+- They are not suitable for use cases where the size of the collection needs to be changed frequently.
+- Arrays are suitable for use with the foreign function interface (FFI) and for communicating with C code.
+- Arrays are useful for storing large, static collections of data.
+- They have a fixed size and cannot be resized, so it's important to choose the correct size for the array when declaring it.
+- Arrays can be accessed directly by index, and can be iterated over using a loop or the `.iter()` method.
+- Arrays are not suitable for use with iterators that require ownership, as they do not implement the `IntoIterator` trait.
+- Arrays can be passed as arguments to functions using either a reference (`&[T]`) or by value (`[T; N]`).
+- Arrays are stored on the stack, which means they have a fixed size and are destroyed when they go out of scope.
+
+Here are some examples of using arrays in Rust:
+
+1. Declaring an array:
+
+   ```rust
+   fn main() {
+       let xs: [i32; 5] = [1, 2, 3, 4, 5]; // xs is an array of 5 i32 values
+   }
+   ```
+
+1. Accessing elements of an array:
+
+   ```rust
+   fn main() {
+       let xs: [i32; 5] = [1, 2, 3, 4, 5];
+       let first = xs[0]; // first is 1
+       let last = xs[4]; // last is 5
+   }
+   ```
+
+1. Iterating over an array:
+
+   ```rust
+   fn main() {
+       let xs: [i32; 5] = [1, 2, 3, 4, 5];
+       for x in xs.iter() { // x is an immutable reference to an element of xs
+           println!("{}", x);
+       }
+   }
+   ```
+
+1. Passing an array as an argument to a function:
+
+   ```rust
+   fn print_array(xs: &[i32]) {
+       for x in xs.iter() {
+           println!("{}", x);
+       }
+   }
+
+   fn main() {
+       let xs: [i32; 5] = [1, 2, 3, 4, 5];
+       print_array(&xs); // pass xs as a reference to print_array
+   }
+   ```
+
+1. Creating an array using a macro:
+
+   ```rust
+   fn main() {
+       let xs = [1, 2, 3, 4, 5]; // xs is an array of 5 i32 values
+
+       // equivalent
+       let arr = array![1, 2, 3, 4, 5];
+   }
+   ```
+
+1. Initializing an array with a default value:
+
+   ```rust
+   fn main() {
+       let xs: [i32; 5] = [0; 5]; // xs is an array of 5 i32 values, all initialized to 0
+   }
+   ```
+
+1. Checking the length of an array:
+
+   ```rust
+   fn main() {
+       let xs: [i32; 5] = [1, 2, 3, 4, 5];
+       let len = xs.len(); // len is 5
+   }
+   ```
+
+1. Slicing an array:
+
+   ```rust
+   fn main() {
+       let xs: [i32; 5] = [1, 2, 3, 4, 5];
+       let slice = &xs[1..3]; // slice is a slice of the second and third elements of xs
+   }
+   ```
+
+1. Sorting an array:
+
+   ```rust
+   fn main() {
+       let mut xs: [i32; 5] = [3, 1, 4, 5, 2];
+       xs.sort(); // xs is now [1, 2, 3, 4, 5]
+   }
+   ```
+
+1. Reversing an array:
+
+   ```rust
+   fn main() {
+       let mut xs: [i32; 5] = [1, 2, 3, 4, 5];
+       xs.reverse(); // xs is now [5, 4, 3, 2, 1]
+   }
+   ```
+
+1. Comparing two arrays:
+
+   ```rust
+   fn main() {
+       let xs: [i32; 5] = [1, 2, 3, 4, 5];
+       let ys: [i32; 5] = [1, 2, 3, 4, 5];
+       let zs: [i32; 5] = [5, 4, 3, 2, 1];
+       assert_eq!(xs, ys); // xs and ys are equal
+       assert_ne!(xs, zs); // xs and zs are not equal
+   }
+   ```
+
+1. Copying an array:
+
+   ```rust
+   fn main() {
+       let xs: [i32; 5] = [1, 2, 3, 4, 5];
+       let mut ys: [i32; 5] = [0; 5];
+       ys.copy_from_slice(&xs); // ys is now [1, 2, 3, 4, 5]
+   }
+   ```
+
+1. Checking if an array is empty:
+
+   ```rust
+   fn main() {
+       let xs: [i32; 0] = []; // xs is an empty array
+       assert!(xs.is_empty());
+   }
+   ```
+
+1. Creating an array of arrays:
+
+   ```rust
+   fn main() {
+       let xss: [[i32; 3]; 2] = [[1, 2, 3], [4, 5, 6]]; // xss is an array of two arrays
+   }
+   ```
+
+1. Using an array as an iterator:
+
+   ```rust
+   fn main() {
+       let xs: [i32; 5] = [1, 2, 3, 4, 5];
+       let mut iter = xs.iter();
+       assert_eq!(iter.next(), Some(&1)); // iter is now at the second element
+       assert_eq!(iter.next(), Some(&2)); // iter is now at the third element
+       assert_eq!(iter.next(), Some(&3)); // iter is now at the fourth element
+       assert_eq!(iter.next(), Some(&4)); // iter is now at the fifth element
+       assert_eq!(iter.next(), Some(&5)); // iter is at the end
+       assert_eq!(iter.next(), None); // iter is at the end
+   }
+   ```
