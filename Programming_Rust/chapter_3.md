@@ -1729,19 +1729,14 @@ Unsafe pointers are pointers that do not have the safety guarantees of reference
 
    It's important to use caution when working with unsafe pointers, as they can easily lead to undefined behavior and can be difficult to use correctly. In general, it is recommended to use references or boxes whenever possible, and to only use unsafe pointers when absolutely necessary.
 
-## Here's a comparison of the three types
+## Here is a more detailed comparison of the three types of memory addresses
 
-| Type           | Syntax                 | Properties                                                                                                                   |
-| -------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Reference      | `&T`                   | Immutable by default, has a limited lifetime, safe to use                                                                    |
-| Box            | `Box<T>`               | Stores a value on the heap, transfers ownership of the value                                                                 |
-| Unsafe pointer | `*const T` or `*mut T` | Does not have the safety guarantees of references or boxes, should be used with caution as it can lead to undefined behavior |
-
----
-
-| Type       | Modifiability of value | Owns memory location | Borrows value from another location |
-| ---------- | ---------------------- | -------------------- | ----------------------------------- |
-| `*const T` | No                     | Yes                  | No                                  |
-| `*mut T`   | Yes                    | Yes                  | No                                  |
-| `&T`       | No                     | No                   | Yes                                 |
-| `&mut T`   | Yes                    | No                   | Yes                                 |
+| Feature                             | References (`&T`)                                                                | Boxes (`Box<T>`)                                                                               | Unsafe Pointers (`*const T`, `*mut T`)                            |
+| ----------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Syntax                              | `&T`                                                                             | `Box<T>`                                                                                       | `*const T`, `*mut T`                                              |
+| Modifiability of value              | No                                                                               | No                                                                                             | Yes (`*mut T` only)                                               |
+| Ownership of memory location        | No                                                                               | Yes                                                                                            | Yes                                                               |
+| Borrows value from another location | Yes                                                                              | No                                                                                             | No                                                                |
+| Lifetime                            | Limited                                                                          | Independent                                                                                    | Independent                                                       |
+| Safety guarantees                   | Yes                                                                              | Yes                                                                                            | No                                                                |
+| Use                                 | Pass a value to a function without taking ownership, read-only access to a value | Store a value with a larger size than the stack can accommodate, transfer ownership of a value | Low-level system programming tasks, interacting with foreign code |
