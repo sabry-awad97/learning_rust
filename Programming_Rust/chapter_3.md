@@ -1604,11 +1604,9 @@ Here is the summary of tuple types
 
 In Rust, there are three types that represent memory addresses: references, boxes, and unsafe pointers.
 
-References are a way to borrow a value from one place and use it in another place. They are represented by the `&` operator and are immutable by default, have a limited lifetime, and are safe to use.
-
-Boxes are a way to store a value on the heap. They are represented by the `Box` type and are often used when a value is too large to fit on the stack or when transferring ownership of a value.
-
-Unsafe pointers are pointers that do not have the safety guarantees of references or boxes. They are represented by the `*const T` and `*mut T` types and are often used for low-level system programming tasks or when interacting with foreign code. They should be used with caution as they can lead to undefined behavior.
+- **References (`&T`)** are non-owning pointers that allow you to borrow a value from its owner. References are immutable by default, but you can use `&mut T` to create a mutable reference. References have a limited lifetime, which means that they can only be used as long as the value they refer to is still in scope. Using a reference after its lifetime has ended is undefined behavior and can lead to bugs or crashes.
+- **Boxes (`Box<T>`)** are pointers that store a value on the heap. Boxes transfer ownership of the value to the heap, so they are often used to store large values that cannot fit on the stack or to create recursive data structures. Boxes have a fixed size, which means that they can only store values of a specific type. You can use the `Box::new` function to create a new box.
+- **Unsafe pointers (`*const T` or `*mut T`)** are raw pointers that do not have the safety guarantees of references or boxes. Unsafe pointers do not have a lifetime or enforce any rules about how they are used, so you can use them to perform arbitrary operations on memory. They are often used for low-level system programming tasks or when interacting with foreign code However, using unsafe pointers can lead to undefined behavior if you do not use them correctly, so they should be used with caution.
 
 | Type           | Syntax                 | Properties                                                                                                                   |
 | -------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
