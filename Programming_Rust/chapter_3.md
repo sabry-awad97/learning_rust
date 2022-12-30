@@ -1920,3 +1920,46 @@ Here is a comparison of shared (`&T`) and mutable (`&mut T`) references in Rust:
 - Shared references have low overhead and are useful for allowing multiple parts of your code to read a value without needing to make copies of it.
 
 - Mutable references have low overhead and are useful for modifying values in place or for communicating changes
+
+---
+
+## Raw Pinters
+
+The Rust programming language has a feature called "raw pointers" that allow you to manipulate memory directly. Raw pointers are a low-level feature that can be dangerous to use, as they can easily lead to memory safety issues if used incorrectly.
+
+A raw pointer is a type of pointer that does not implement any safety checks. It is represented by the `*const T` and `*mut T` types, where `T` is the type of the data that the pointer points to. Raw pointers can be dereferenced using the `*` operator, just like regular pointers.
+
+One common use case for raw pointers is when interacting with foreign code or legacy systems that do not use Rust's borrowing and ownership rules. For example, you might need to use raw pointers when calling into a C library or when working with a low-level system that requires direct memory access.
+
+It's important to note that using raw pointers can easily lead to undefined behavior if you do not use them carefully. For example, if you dereference a raw pointer that is null, or if you try to access memory that has been freed, you will likely encounter a segmentation fault or other memory-related errors.
+
+In general, it's best to avoid using raw pointers whenever possible and instead use safer alternatives like reference-counted pointers (`Rc`) or smart pointers (such as `Box` or `Arc`). These types of pointers provide additional safety guarantees and can help you avoid common pitfalls when working with memory in Rust.
+
+## Smart pointers
+
+There are several types of smart pointers available in Rust, each with its own set of characteristics and trade-offs. Here's a brief comparison of some of the most commonly used smart pointers:
+
+- `Box`: A `Box` is a type of smart pointer that represents ownership of a value on the heap. It is implemented using a dynamically-allocated heap object and a pointer to it. When a `Box` goes out of scope, the value it points to is automatically deallocated. `Box` is useful when you want to store a value on the heap, but don't need to share ownership with other parts of your code. It has a fixed size regardless of the type of value it points to, which makes it useful for storing values of different types in the same data structure.
+- `Rc`: `Rc` (reference-counted pointers) allow multiple owners of the same heap-allocated value. When the last owner of an `Rc` goes out of scope, the value it points to is deallocated. `Rc` is useful when you need to share ownership of a value between multiple parts of your code, but don't need to modify the value. It is not thread-safe, so it should not be used in concurrent situations.
+- `Arc`: `Arc` (atomic reference-counted pointers) is similar to `Rc`, but it is thread-safe and can be used in concurrent situations. Like `Rc`, `Arc` allows multiple owners of the same heap-allocated value. When the last owner of an `Arc` goes out of scope, the value it points to is deallocated. `Arc` is useful when you need to share ownership of a value between multiple threads, but don't need to modify the value.
+- `Weak`: `Weak` is a variant of `Rc` that does not contribute to the reference count. It is used to create a non-owning reference to an `Rc`-allocated value. `Weak` pointers are useful when you want to avoid creating a cycle between two `Rc` pointers, as they do not prevent the value from being deallocated.
+
+It's important to note that each of these smart pointers has its own trade-offs and should be used appropriately based on your needs. In general, `Box` is the simplest and most lightweight option, but it does not allow for shared ownership. `Rc` and `Arc` allow for shared ownership, but have additional overhead due to the reference counting. `Weak` is a non-owning reference that can be used to break cycles between `Rc` pointers.
+
+Here's a comparison of some of pointer types available in Rust:
+
+| Pointer Type                 | Ownership       | Concurrency | Safety |
+| ---------------------------- | --------------- | ----------- | ------ |
+| `*const T`                   | None            | No          | Low    |
+| `*mut T`                     | None            | No          | Low    |
+| `Box<T>`                     | Single owner    | No          | High   |
+| `Rc<T>`                      | Multiple owners | No          | High   |
+| `Arc<T>`                     | Multiple owners | Yes         | High   |
+| `&T` (reference)             | Borrowed        | No          | High   |
+| `&mut T` (mutable reference) | Borrowed        | No          | High   |
+
+- **Ownership**: Whether the pointer type represents ownership of the value it points to or whether it is a borrowed reference. Raw pointers do not have any ownership semantics.
+- **Concurrency**: Whether the pointer type can be used in concurrent situations (e.g. shared between multiple threads). Raw pointers are not thread-safe.
+- **Safety**: The level of safety provided by the pointer type. Raw pointers provide the lowest level of safety, as they do not implement any safety checks and can easily lead to memory safety issues if used incorrectly.
+
+It's important to note that raw pointers should generally be avoided whenever possible and replaced with safer alternatives like reference-counted pointers (`Rc`) or smart pointers (such as `Box` or `Arc`). These types of pointers provide additional safety guarantees and can help you avoid common pitfalls when working with memory in Rust.
