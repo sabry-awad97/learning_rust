@@ -285,28 +285,30 @@ let h: usize = 18446744073709551615;
 
 - Byte literals are written as a single ASCII character preceded by a b and enclosed in single quotes. For example, the byte literal for the ASCII character A is b'A'.
 
-    Here is an example of using byte literals in Rust:
+  Here is an example of using byte literals in Rust:
 
-    ```rust
-    let b1: u8 = b'A'; // A byte literal representing the ASCII character 'A'
-    let b2: u8 = b'\n'; // A byte literal representing the ASCII character '\n'
-    let b3: u8 = b'\x7f'; // A byte literal representing the ASCII character '\x7f'
-    let b4: u8 = b'\xff'; // A byte literal representing the ASCII character '\xff'
+  ```rust
+  let b1: u8 = b'A'; // A byte literal representing the ASCII character 'A'
+  let b2: u8 = b'\n'; // A byte literal representing the ASCII character '\n'
+  let b3: u8 = b'\x7f'; // A byte literal representing the ASCII character '\x7f'
+  let b4: u8 = b'\xff'; // A byte literal representing the ASCII character '\xff'
 
-    let s1: &[u8] = b"hello"; // A byte string literal representing the ASCII string "hello"
-    let s2: &[u8] = b"\x00\x01\x02\x03"; // A byte string literal representing the bytes [0x00, 0x01, 0x02, 0x03]
-    ```
+  let s1: &[u8] = b"hello"; // A byte string literal representing the ASCII string "hello"
+  let s2: &[u8] = b"\x00\x01\x02\x03"; // A byte string literal representing the bytes [0x00, 0x01, 0x02, 0x03]
+  ```
 
 - Byte literals can also be written using escape sequences, which allow you to represent certain ASCII and Unicode characters using special codes. Some common escape sequences that can be used in byte literals are:
 
-    Here is a summary of the character byte literals and their corresponding numeric equivalents:
+  Here is a summary of the character byte literals and their corresponding numeric equivalents:
 
-    | Character       | Byte Literal | Numeric Equivalent |
-    | --------------- | ------------ | ------------------ |
-    | Single quote, ' | b'''         | 39u8               |
-    | Backslash, \    | b'\\'        | 92u8               |
-    | Newline         | b'\\n'       | 10u8               |
-    | Carriage return | b'\\r'       | 13u8               |
-    | Tab             | b'\\t'       | 9u8                |
+  | Character         | Byte Literal  | Numeric Equivalent   |
+  | ----------------- | ------------- | -------------------- |
+  | Single quote, '   | b'''          | 39u8                 |
+  | Backslash, \      | b'\\'         | 92u8                 |
+  | Newline           | b'\\n'        | 10u8                 |
+  | Carriage return   | b'\\r'        | 13u8                 |
+  | Tab               | b'\\t'        | 9u8                  |
+  | ASCII character   | b'\\xhh'      | hh (hexadecimal)     |
+  | Unicode character | b'\\u{hhhhh}' | hhhhhh (hexadecimal) |
 
-    Note that these byte literals are not the same as ASCII character literals, which are written using regular characters and are not preceded by a `b`. For example, the ASCII character literal for the single quote character is `'\''` (with no `b`), and the numeric equivalent is 39i8.
+  Note that these byte literals are not the same as ASCII character literals, which are written using regular characters and are not preceded by a `b`. For example, the ASCII character literal for the single quote character is `'\''` (with no `b`), and the numeric equivalent is 39i8.
