@@ -1553,3 +1553,27 @@ let t = (1, 2, 3);
 let size = mem::size_of_val(&t);
 assert_eq!(size, 3 * mem::size_of::<i32>());
 ```
+
+In Rust, tuples can contain a single value.
+
+```rust
+let t = (1,);
+let x = t[0];
+assert_eq!(x, 1);
+```
+
+Here is the summary of tuple types
+
+| Property                | Description                                                                                                                                                                                                                                                                                    |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Type                    | Fixed-size collection of values of possibly different types                                                                                                                                                                                                                                    |
+| Syntax                  | Parentheses and a comma-separated list of values: `(x, y, z)`                                                                                                                                                                                                                                  |
+| Access                  | Indexing notation: `tuple[0]` returns the first element                                                                                                                                                                                                                                        |
+| `std::tuple` module     | Provides a number of functions and macros for working with tuples, including `zip`, `zip_eq`, `hlist`, and `tuple_macros`                                                                                                                                                                      |
+| `std::iter` module      | Provides an iterator adaptor called `tuple_windows` that allows you to iterate over overlapping groups of values in a tuple                                                                                                                                                                    |
+| `std::convert` module   | Provides a number of functions and traits for converting between tuples and other types, including `From`, `Into`, `TryFrom`, and `TryInto`                                                                                                                                                    |
+| `std::ops` module       | Provides a number of trait implementations for tuples, including `Add`, `Sub`, `Mul`, `Div`, and `Rem`                                                                                                                                                                                         |
+| `std::cmp` module       | Provides a number of trait implementations for tuples, including `PartialEq`, `Eq`, `PartialOrd`, and `Ord`                                                                                                                                                                                    |
+| `std::fmt` module       | Provides a number of trait implementations for tuples, allowing you to format tuples for display or debugging purposes                                                                                                                                                                         |
+| Zero-tuple (unit type)  | Tuple with no elements; written as `()` and used to represent the absence of a value; often used as the return type of functions that do not need to return a value or as the parameter type of functions that do not take any arguments; `std::mem` module's `size_of_val` function returns 0 |
+| Tuple with single value | Tuple with a single element; treated the same as other tuples in most contexts                                                                                                                                                                                                                 |
