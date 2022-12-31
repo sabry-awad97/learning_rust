@@ -361,3 +361,30 @@ let mut v = vec![1973, 1968];
 ```
 
 Overall, Rust references and C++ references are similar in that they allow you to access a value without taking ownership of it, but they have some key differences in terms of lifetime, borrowing rules, nullability, and syntax.
+
+## Assigning References
+
+In Rust, assigning a reference to a variable makes the variable point to a new location in memory. This is different from C++ references, which do not allow you to change where they point after they have been initialized.
+
+For example, in Rust you can do the following:
+
+```rust
+let x = 10;
+let y = 20;
+let mut r = &x;
+if b { r = &y; }
+assert!(*r == 10 || *r == 20);
+```
+
+Here, the reference `r` initially points to `x`. If `b` is true, the code points it at `y` instead. This means that `r` can now point to either `x` or `y`, depending on the value of `b`.
+
+In C++, assigning a value to a reference stores the value in its referent. Once a C++ reference has been initialized, there is no way to make it point to anything else. For example:
+
+```rust
+int x = 10;
+int y = 20;
+int &r = x;
+if (b) { r = y; } // stores y in x, r still points to x
+```
+
+In this C++ code, the reference `r` is initialized to point to `x`. If `b` is true, the value of `y` is stored in `x`, but `r` still points to `x`. There is no way to make `r` point to `y`.
