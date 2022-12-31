@@ -3174,3 +3174,15 @@ Here is a comparison of `String` and `Vec<T>` in Rust:
 | Sorting methods      | \- `sort`: Sorts the characters in the string in-place.                                              | \- `sort`: Sorts the elements in the vector in-place.                                              |
 |                      | \- `sort_by`: Sorts the characters in the string in-place using a given comparison function.         | \- `sort_by`: Sorts the elements in the vector in-place using a given comparison function.         |
 |                      | \- `sort_by_key`: Sorts the characters in the string in-place using a given key extraction function. | \- `sort_by_key`: Sorts the elements in the vector in-place using a given key extraction function. |
+
+## String like types
+
+Rust provides a number of string-like types that can be used in different situations where the requirements for strings may be different from those of the standard `String` and `&str` types. Here is a summary of the string-like types and their uses in Rust:
+
+| Type                    | Used for                                                                                                   | Key features                                                                 | Best for                                                            |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `String` and `&str`     | Unicode text                                                                                               | \- Valid UTF-8 characters                                                    | Most text manipulation tasks                                        |
+| `PathBuf` and `&Path`   | Filenames and file paths                                                                                   | \- Designed for working with strings that represent paths on the file system | Working with file systems in Rust                                   |
+| `Vec<u8>` and `&[u8]`   | Binary data that is not UTF-8 encoded                                                                      | \- Designed for working with sequences of bytes                              | Working with binary data that does not need to be treated as text   |
+| `OsString` and `&OsStr` | Environment variable names and command-line arguments in the native form presented by the operating system | \- Designed for interoperating with the underlying operating system          | Working with system-level strings that may not be in Unicode format |
+| `CString` and `&CStr`   | Working with C libraries that use null-terminated strings                                                  | Designed for interoperating with C libraries                                 | Working with C libraries from Rust                                  |
