@@ -343,8 +343,63 @@ composers      |  +------------+
                |  |            |  |            |
                |  |            |  +------------+
                |  +------------+
-
-
 ```
 
 The variable `composers` is a vector that owns a heap-allocated array containing one element, which is a struct `Person`. The struct `Person` owns a heap-allocated string slice containing the text of its `name` field.
+
+## Moves and Control Flow
+
+```rust
+let x = vec![10, 20, 30];
+if c {
+    f(x); // ... ok to move from x here
+} else {
+    g(x); // ... and ok to also move from x here
+}
+h(x); // bad: x is uninitialized here if either path uses it
+```
+
+In this code, the variable `x` is a vector containing the values `10`, `20`, and `30`. The condition `c` is used to determine which of two functions, `f` and `g`, to call.
+
+If the condition `c` is true, then the function `f` is called and the value of `x` is moved into the function as an argument. If the condition `c` is false, then the func‐ tion `g` is called and the value of `x` is also moved into the function as an argument.
+
+After either function is called, the value of `x` is considered uninitialized because it has been moved away and has not definitely been given a new value since. Therefore, it is not allowed to use `x` in the call to `h`.
+
+```rust
+let x = vec![10, 20, 30];
+while f() {
+    g(x); // bad: x would be moved in first iteration,
+            // uninitialized in second
+}
+```
+
+In this code, the variable `x` is a vector containing the values `10`, `20`, and `30`. The `while` loop will execute as long as the function `f` returns true.
+
+If the function `f` returns true, then the function `g` is called and the value of `x` is moved into the function as an argument. However, after the first iteration of the loop, the value of `x` is considered uninitialized because it has been moved away and has not definitely been given a new value since. Therefore, it is not allowed to use `x` in subsequent iterations of the loop.
+
+To avoid this error:
+
+- You can make a copy of x before entering the loop, you can use the clone method,
+  which creates a deep copy of the value:
+
+  ```rust
+  let x = vec![10, 20, 30];
+  let mut x_copy = x.clone();
+
+  while f() {
+      g(x_copy);
+      x_copy = x.clone();
+  }
+  ```
+
+- Alternatively, you can declare x as a mutable variable and reassign it a new value
+  before each iteration of the loop:
+
+  ```rust
+  let mut x = vec![10, 20, 30];
+
+  while f() {
+      g(x); // move from x
+      x = some_new_value(); // give x a fresh value
+  }
+  ```
