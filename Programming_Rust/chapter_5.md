@@ -450,3 +450,82 @@ let r3 = &r2;
 In this code, `x` is changed to `20` by dereferencing `r3` three times: once to get the value of `r2`, once to get the value of `r1`, and a third time to get the value of `x`. This can be confusing, especially if you are working with long chains of references.
 
 It is generally recommended to avoid creating double references unless there is a specific need for them. If you do need to use double references, it is important to pay close attention to the number of levels of indirection involved, and to be careful when dereferencing them.
+
+## Comparing References
+
+In Rust, you can compare references with the `==` and `!=` operators, just like you would with other types. For example:
+
+```rust
+let x = 10;
+let y = 20;
+let r1 = &x;
+let r2 = &y;
+
+assert!(r1 != r2); // r1 and r2 point to different values
+```
+
+When you compare references, Rust compares the values that the references point to, rather than the references themselves. This means that two references are equal if and only if they point to the same value.
+
+It is important to note that you can only compare references of the same type. For example, you cannot compare a shared reference to an integer with a mutable reference to a string:
+
+```rust
+let x = 10;
+let y = "hello";
+let r1 = &x;
+let r2 = &mut y;
+
+assert!(r1 != r2); // cannot compare references of different types
+```
+
+In this example, the comparison between `r1` and `r2` is not allowed, because `r1` is a shared reference to an integer, while `r2` is a mutable reference to a string.
+
+It is also important to note that you cannot compare references to different lifetimes. For example:
+
+```rust
+fn compare_references(x: &i32, y: &i32) -> bool {
+    x == y
+}
+
+let x = 10;
+let y = 20;
+
+assert!(compare_references(&x, &y)); // okay
+assert!(compare_references(&x, &x)); // okay
+```
+
+In this example, the comparisons between `x` and `y`, and between `x` and `x`, are allowed, because both references have the same lifetime. However, the following code is not allowed:
+
+```rust
+fn compare_references(x: &i32, y: &i32) -> bool {
+    x == y
+}
+
+let x = 10;
+
+assert!(compare_references(&x, &10)); // not allowed
+```
+
+In this example, the comparison between `x` and `10` is not allowed, because the reference to `10` has a different lifetime than the reference to `x`. This is a safety feature of Rust that ensures that you cannot compare references to values that have already gone out of scope.
+
+If you want to compare the memory addresses of two references, you can use the `std::ptr::eq` function. This function takes two references as arguments and returns `true` if they point to the same memory address, and `false` otherwise.
+
+Here is an example:
+
+```rust
+use std::ptr;
+
+fn compare_memory_addresses(x: &i32, y: &i32) -> bool {
+    ptr::eq(x, y)
+}
+
+let x = 10;
+let y = 20;
+
+assert!(!compare_memory_addresses(&x, &y)); // x and y are stored at different memory addresses
+let r = &x;
+assert!(compare_memory_addresses(r, &x)); // r and &x point to the same memory address
+```
+
+In this example, the comparison between `&x` and `&y` returns `false`, because `x` and `y` are stored at different memory addresses. The comparison between `r` and `&x` returns `true`, because `r` and `&x` point to the same memory address.
+
+It is important to note that the `std::ptr::eq` function is not intended for general use, and should only be used in cases where you need to compare the memory addresses of references. In most cases, you should use the `==` operator to compare the values that the references point to, rather than the references themselves.
