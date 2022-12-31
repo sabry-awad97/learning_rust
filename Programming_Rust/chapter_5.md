@@ -493,7 +493,7 @@ assert!(compare_references(&x, &y)); // okay
 assert!(compare_references(&x, &x)); // okay
 ```
 
-In this example, the comparisons between `x` and `y`, and between `x` and `x`, are allowed, because both references have the same lifetime. However, the following code is not allowed:
+In this example, the comparisons between `x` and `y`, and between `x` and `x`, are allowed, because both references have the same lifetime (the scope in which the reference is valid). However, the following code is not allowed:
 
 ```rust
 fn compare_references(x: &i32, y: &i32) -> bool {
@@ -505,7 +505,9 @@ let x = 10;
 assert!(compare_references(&x, &10)); // not allowed
 ```
 
-In this example, the comparison between `x` and `10` is not allowed, because the reference to `10` has a different lifetime than the reference to `x`. This is a safety feature of Rust that ensures that you cannot compare references to values that have already gone out of scope.
+In this example, the comparison between `&x` and `&10` is not allowed, because the reference to `10` has a different lifetime than the reference to `x`. Specifically, the lifetime of the reference to `10` is the entire function `compare_references`, while the lifetime of the reference to `x` is the block in which x is defined.
+
+In general, you can only compare references if they have the same lifetime. This is a safety feature of Rust that ensures that you cannot compare references to values that have already gone out of scope.
 
 If you want to compare the memory addresses of two references, you can use the `std::ptr::eq` function. This function takes two references as arguments and returns `true` if they point to the same memory address, and `false` otherwise.
 
