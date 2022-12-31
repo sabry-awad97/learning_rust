@@ -1006,3 +1006,73 @@ fn main() {
     foo(&WORTH_POINTING_AT); // okay, WORTH_POINTING_AT is a static
 }
 ```
+
+## Passing References to Functions
+
+When you pass a reference to a function in Rust, the function is able to use the reference to access the value that the reference points to. This can be useful when you want to allow a function to modify a value without taking ownership of it or when you want to avoid copying large data structures.
+
+Here is an example of how you might pass a reference to a function in Rust:
+
+```rust
+fn add_one(x: &mut i32) {
+    *x += 1;
+}
+
+fn main() {
+    let mut x = 10;
+    add_one(&mut x);
+    println!("{}", x); // prints "11"
+}
+```
+
+In this example, the function `add_one` takes a mutable reference to an `i32` as an argument. The reference is marked with the `&mut` syntax, which indicates that the function is allowed to modify the value that the reference points to. Inside the body of `add_one`, the `*` operator is used to dereference the reference and access the value it points to. The value is then incremented by 1.
+
+When `add_one` is called with the argument `&mut x`, the function is able to modify the value of `x` through the reference. After the function returns, the value of `x` is 11.
+
+```rust
+fn g<'a>(p: &'a i32) { ... }
+let x = 10;
+g(&x);
+```
+
+In this code, the function `g` has a signature `fn g<'a>(p: &'a i32)`, which means it takes a reference to an `i32` with any given lifetime 'a. The function `g` is called with the argument `&x`, which is a reference to the variable `x`.
+
+When the reference `&x` is passed to `g`, the lifetime of `&x` is inferred to be the same as the lifetime of `x`. Since `x` has a local variable lifetime (it is only valid within the scope in which it is declared), the lifetime of `&x` is also a local variable lifetime. Therefore, the type of `&x` is `&'a i32`, where 'a is the lifetime of `x`.
+
+Since the type of `&x` matches the type expected by `g`, the call to `g` is valid. The function `g` can then use the reference `p` safely, without worrying about it becoming a dangling pointer.
+
+When you call a function in Rust, the compiler will infer the lifetimes of any references passed as arguments based on the context in which the function is called.
+
+It's worth noting that although `g` takes a lifetime parameter 'a, you don't need to specify it when calling `g`. Instead, the compiler will infer the lifetime for you based on the context in which `g` is called. You only need to worry about lifetime parameters when defining functions and types.
+
+```rust
+fn f(p: &'static i32) { ... }
+let x = 10;
+f(&x);
+```
+
+If you try to pass a reference with a local variable lifetime (such as `&x`) to a function that expects a reference with a 'static lifetime (such as `f`), the code will not compile. This is because a reference with a local variable lifetime may not be used after the variable it references goes out of scope, while a reference with the 'static lifetime is valid for the entire duration of the program.
+
+The function `f` has a signature `fn f(p: &'static i32)`, which means it expects a reference to an `i32` with the 'static lifetime. The variable `x` has a local variable lifetime, so the reference `&x` has a local variable lifetime as well. The lifetime of `&x` is not 'static, so it cannot be passed as an argument to `f`.
+
+If you want to pass a reference with a local variable lifetime to a function that expects a reference with a 'static lifetime, you must first convert the reference to a 'static lifetime. This can be done using the `std::mem::transmute` function from the standard library, which allows you to convert a reference from one type to another as long as the types have the same size. However, using `transmute` is generally not recommended, as it can lead to undefined behavior if the types are not compatible.
+
+Here's an example of how you might use `transmute` to pass a reference with a local variable lifetime to a function that expects a reference with a 'static lifetime:
+
+```rust
+fn f(p: &'static i32) {
+    println!("{}", p);
+}
+
+fn main() {
+    let x = 10;
+    let y: &'static i32 = unsafe { std::mem::transmute(&x) };
+    f(y);
+}
+```
+
+In this example, the reference `&x` is converted to the 'static lifetime using `transmute`. The `transmute` function allows you to convert a reference from one type to another as long as the types have the same size. In this case, the reference is converted from a reference with a local variable lifetime (`&'a i32`) to a reference with a 'static lifetime (`&'static i32`).
+
+After the reference is converted, it is stored in the variable `y`, which has the type `&'static i32`. The reference `y` can then be passed as an argument to `f`, which expects a reference with the 'static lifetime.
+
+It's worth noting that using `transmute` is generally not recommended, as it can lead to undefined behavior if the types are not compatible. In this case, it's safe to use `transmute` because both `&'a i32` and `&'static i32` are pointers to the same type (`i32`), and therefore have the same size. However, if you try to use `transmute` to convert between types that are not compatible, it could result in a runtime error or other unexpected behavior.
