@@ -628,7 +628,7 @@ fn print_slice(slice: &[i32]) {
 print_slice(slice); // prints "2 3"
 ```
 
-Trait objects are references to values that implement a particular trait, and they are represented by the type `&Trait`. For example, a trait object that allows you to call the draw method on any value that implements the `Draw` trait would be written as `&Draw`. Trait objects are useful when you need to **store a value of unknown type** in a struct or when you want to **call a method on a value without knowing its exact type**.
+Trait objects are references to values that implement a particular trait, and they are represented by the type `&Trait`. For example, a trait object that allows you to call the draw method on any value that implements the `Draw` trait would be written as `&Draw`. Trait objects are useful when you need to **store a value of unknown type** in a struct or when you want to **call a method on a value without knowing its exact type** (dynamic dispatch).
 
 ```rust
 trait Shape {
@@ -668,3 +668,49 @@ print_area(&rectangle); // prints "Area: 12.0"
 ```
 
 Both slices and trait objects are implemented using **fat pointers**, which are references that include both a pointer to the **data** and a pointer to **metadata**. The metadata includes information about the length of the slice or the type of the value being pointed to. This additional information allows slices and trait objects to be used safely and efficiently.
+
+## Fat Pointers
+
+Fat pointers are a type of data structure in Rust that contain two pieces of information: a pointer to some data, and the length of the data. In Rust, slices are a kind of fat pointer, represented by the type `&[T]`, where `T` is the type of the elements in the slice. Fat pointers are often used when working with slices, as they allow the slice to be passed around by reference, while also maintaining information about the length of the slice.
+
+Fat pointers are also used for trait objects, which are a way to represent a value of any type that implements a particular trait. Trait objects are implemented using fat pointers, with the first element of the fat pointer being a pointer to the value, and the second element being a pointer to a virtual table of functions that can be called on the value. This allows trait objects to be passed around by reference and for the correct function to be called on the value, even if the type of the value is not known at compile time.
+They allow for more information to be stored about a reference without requiring the use of unsafe code.
+
+Here is an example of using a slice fat pointer:
+
+```rust
+fn print_slice(slice: &[i32]) {
+    for element in slice {
+        println!("{}", element);
+    }
+}
+
+fn main() {
+    let array = [1, 2, 3, 4, 5];
+    let slice = &array[1..4];
+    print_slice(slice);  // Output: 2 3 4
+}
+```
+
+And here is an example of using a trait object fat pointer:
+
+```rust
+trait Printable {
+    fn print(&self);
+}
+
+impl Printable for i32 {
+    fn print(&self) {
+        println!("{}", self);
+    }
+}
+
+fn print_printable(p: &dyn Printable) {
+    p.print();
+}
+
+fn main() {
+    let x = 5;
+    print_printable(&x);  // Output: 5
+}
+```
