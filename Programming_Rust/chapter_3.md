@@ -3142,3 +3142,35 @@ Here is a summary of the main differences and characteristics of `&str` and `Str
 | Joining         |                           | `join`                    |
 | Checking        | `is_empty`,               | `is_empty`,               |
 | emptiness       | `is_not_empty`            | `is_not_empty`            |
+
+---
+
+## String vs Vector
+
+`Vec<T>` and `String` are similar in many ways, as they are both growable, heap-allocated data structures that can be modified and accessed through a variety of methods and functions. Here are a few additional points to consider when comparing `Vec<T>` and `String`:
+
+- Both `Vec<T>` and `String` automatically free their buffers when they go out of scope.
+- Both `Vec<T>` and `String` have type-associated functions, `::new()` and `::with_capacity()`, for creating new instances.
+- Both `Vec<T>` and `String` have `.reserve()` and `.capacity()` methods for reserving capacity in advance and querying the current capacity.
+- Both `Vec<T>` and `String` have `.push()` and `.pop()` methods for adding and removing elements or characters at the end of the data structure.
+- Both `Vec<T>` and `String` support range syntax, such as `v[start..stop]`, which returns a slice of the data structure. For `Vec<T>`, this returns a `&[T]`, while for `String`, this returns a `&str`.
+- Both `Vec<T>` and `String` support automatic conversion to a slice type. For `Vec<T>`, this is `&Vec<T>` to `&[T]`, while for `String`, this is `&String` to `&str`.
+- Both `Vec<T>` and `String` inherit a number of methods from their respective slice types. For `Vec<T>`, this is `&[T]`, while for `String`, this is `&str`.
+
+Here is a comparison of `String` and `Vec<T>` in Rust:
+
+| Feature              | `String`                                                                                             | `Vec<T>`                                                                                           |
+| -------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Purpose              | A growable, heap-allocated string data structure specifically designed for working with strings.     | A growable, heap-allocated data structure for working with sequences of any type.                  |
+| Data type            | A contiguous sequence of UTF-8-encoded characters.                                                   | A contiguous sequence of any type.                                                                 |
+| Modification methods | \- `push`: Appends a character to the end of the string.                                             | \- `push`: Appends an element to the end of the vector.                                            |
+|                      | \- `pop`: Removes the last character from the string.                                                | \- `pop`: Removes the last element from the vector.                                                |
+|                      | \- `clear`: Removes all characters from the string.                                                  | \- `clear`: Removes all elements from the vector.                                                  |
+|                      | \- `truncate`: Removes all characters from the string after a given index.                           | \- `truncate`: Removes all elements from the vector after a given length.                          |
+| Accessor methods     | \- `len`: Gets the number of characters in the string.                                               | \- `len`: Gets the number of elements in the vector.                                               |
+|                      | \- `is_empty`: Returns `true` if the string is empty, `false` otherwise.                             | \- `is_empty`: Returns `true` if the vector is empty, `false` otherwise.                           |
+|                      | \- `chars`: Returns an iterator over the characters in the string.                                   | \- `iter`: Returns an iterator over the elements in the vector.                                    |
+|                      | \- `bytes`: Returns an iterator over the bytes in the string.                                        |                                                                                                    |
+| Sorting methods      | \- `sort`: Sorts the characters in the string in-place.                                              | \- `sort`: Sorts the elements in the vector in-place.                                              |
+|                      | \- `sort_by`: Sorts the characters in the string in-place using a given comparison function.         | \- `sort_by`: Sorts the elements in the vector in-place using a given comparison function.         |
+|                      | \- `sort_by_key`: Sorts the characters in the string in-place using a given key extraction function. | \- `sort_by_key`: Sorts the elements in the vector in-place using a given key extraction function. |
