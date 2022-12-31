@@ -910,3 +910,99 @@ In this code, we have annotated the reference `r2` with the lifetime `'a`. This 
 This allows us to use the reference `r2` within the inner block of code, as it now has the same lifetime as `r1`, which has a longer lifetime that encompasses the inner block of code.
 
 Lifetime annotations are often used when working with references to references or when working with structs that contain references. They provide a way to specify the lifetime of a reference and ensure that references are always valid and cannot refer to values that have already gone out of scope.
+
+## Receiving References as Function Arguments
+
+Here are some of the key points:
+
+1. In Rust, when you pass a reference to a function as an argument, the function signature must specify the lifetime of the reference.
+
+```rust
+fn foo(x: &i32) {
+    // x is a reference to an i32 with an unknown lifetime
+}
+
+fn bar<'a>(x: &'a i32) {
+    // x is a reference to an i32 with the lifetime 'a
+}
+```
+
+1. This is to ensure that the reference is used safely and does not result in a dangling pointer.
+
+```rust
+fn foo(x: &i32) {
+    println!("{}", x);
+}
+
+fn main() {
+    let y = 5;
+    foo(&y); // okay, y is valid for the entire duration of the program
+}
+```
+
+1. If the function stores the reference in a global variable (static), the lifetime of the reference must be at least as long as the lifetime of the global variable.
+
+```rust
+static mut STASH: &i32 = &10;
+
+fn foo(x: &i32) {
+    unsafe {
+        STASH = x;
+    }
+}
+
+fn main() {
+    let y = 5;
+    foo(&y); // error: y has a shorter lifetime than STASH
+}
+```
+
+1. In Rust, the lifetime of a global variable is 'static, which means it lasts for the entire duration of the program.
+
+```rust
+static STASH: i32 = 10;
+
+fn main() {
+    let x = &STASH;
+    println!("{}", x); // okay, x has the lifetime 'static
+}
+```
+
+1. Therefore, the signature of the function must be changed to `fn f(p: &'static i32)` to indicate that it only accepts references with the 'static lifetime.
+
+```rust
+static mut STASH: &i32 = &10;
+
+fn foo(x: &'static i32) {
+    unsafe {
+        STASH = x;
+    }
+}
+
+fn main() {
+    let y = 5;
+    foo(&y); // error: y has a shorter lifetime than STASH
+    let z = 10;
+    foo(&z); // okay, z is a static
+}
+```
+
+1. After the signature of the function is changed, you can only apply the function to references to other statics, because the lifetime of a static is 'static.
+
+```rust
+static mut STASH: &i32 = &10;
+
+fn foo(x: &'static i32) {
+    unsafe {
+        STASH = x;
+    }
+}
+
+static WORTH_POINTING_AT: i32 = 1000;
+
+fn main() {
+    let y = 5;
+    foo(&y); // error: y has a shorter lifetime than STASH
+    foo(&WORTH_POINTING_AT); // okay, WORTH_POINTING_AT is a static
+}
+```
