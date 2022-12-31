@@ -2997,7 +2997,110 @@ Here is a comparison of arrays, vectors, and slices in Rust:
     ```
 
 - Rust provides a number of string manipulation libraries in its ecosystem, such as `strsim`, `regex`, and `shellexpand`, which provide additional functionality for tasks such as string matching, regular expression matching, and shell expansion.
+
+  ### `strsim`
+
+  The `strsim` crate is a library for string similarity and distance measures. It provides a number of algorithms for comparing and measuring the similarity between strings, such as Levenshtein distance, Damerau-Levenshtein distance, and Jaro distance.
+
+  Here is an example of using the `levenshtein` function from the `strsim` crate to calculate the Levenshtein distance between two strings:
+
+  ```rust
+  use strsim::levenshtein;
+
+  let s1 = "kitten";
+  let s2 = "sitting";
+  let distance = levenshtein(s1, s2);
+  // distance is now 3
+  ```
+
+  ### `regex`
+
+  The `regex` crate is a Rust library for regular expressions. It provides a number of functions and methods for matching, searching, and manipulating strings using regular expressions.
+
+  Here is an example of using the `is_match` function from the `regex` crate to check if a string matches a regular expression:
+
+  ```rust
+  use regex::Regex;
+
+  let re = Regex::new(r"\d{3}-\d{3}-\d{4}").unwrap();
+  let s = "123-456-7890";
+  let is_match = re.is_match(s);
+  // is_match is now true
+  ```
+
+  ### `shellexpand`
+
+  The `shellexpand` crate is a Rust library for shell expansion. It provides a number of functions and methods for expanding shell-like special characters and variables in strings.
+
+  Here is an example of using the `full` function to expand a string with shell-like special characters and variables:
+
+  ```rust
+  use shellexpand::full;
+
+  let s = "$HOME/.config";
+  let expanded = full(s).unwrap();
+  // expanded is now the expanded version of the string, with the $HOME variable replaced with the user's home directory
+  ```
+
+  You can also use the `tilde` function from the `shellexpand` crate to expand tilde characters (`~`) in strings:
+
+  ```rust
+  use shellexpand::tilde;
+
+  let s = "~/.config";
+  let expanded = tilde(s).unwrap();
+  // expanded is now the expanded version of the string, with the tilde character replaced with the user's home directory
+  ```
+
 - Rust also provides a number of libraries for working with Unicode strings, such as `unicode-segmentation` and `unicode-normalization`, which provide functions for working with Unicode grapheme clusters and normalizing Unicode strings.
+
+  ### `unicode-segmentation`
+
+  The `unicode-segmentation` crate is a Rust library for working with Unicode grapheme clusters. It provides a number of functions and methods for iterating over, counting, and manipulating grapheme clusters in Unicode strings.
+
+  Here is an example of using the `grapheme_indices` function from the `unicode-segmentation` crate to iterate over the grapheme clusters in a Unicode string:
+
+  ```rust
+  use unicode_segmentation::UnicodeSegmentation;
+
+  let s = "Hello, world! 😀";
+  for (i, grapheme) in s.grapheme_indices(true) {
+      println!("Grapheme cluster at index {}: {}", i, grapheme);
+  }
+  ```
+
+  This code will output the following:
+
+  ```rust
+  Grapheme cluster at index 0: H
+  Grapheme cluster at index 1: e
+  Grapheme cluster at index 2: l
+  Grapheme cluster at index 3: l
+  Grapheme cluster at index 4: o
+  Grapheme cluster at index 6: ,
+  Grapheme cluster at index 8:
+  Grapheme cluster at index 9: w
+  Grapheme cluster at index 10: o
+  Grapheme cluster at index 11: r
+  Grapheme cluster at index 12: l
+  Grapheme cluster at index 13: d
+  Grapheme cluster at index 14: !
+  Grapheme cluster at index 16:  😀
+  ```
+
+  ### `unicode-normalization`
+
+  The `unicode-normalization` crate is a Rust library for normalizing Unicode strings. It provides a number of functions and methods for normalizing Unicode strings using various normalization forms, such as NFC, NFD, NFKC, and NFKD.
+
+  Here is an example of using the `nfc` function from the `unicode-normalization` crate to normalize a Unicode string to NFC form:
+
+  ```rust
+  use unicode_normalization::UnicodeNormalization;
+
+  let s = "Ḧël̈l̈ö,̈ ̈ẅör̈l̈d̈!̈ 😀";
+  let normalized = s.nfc().collect::<String>();
+  // normalized is now "Ḧël̈l̈ö,̈ ̈ẅör̈l̈d̈!̈ 😀"
+  ```
 
 Here is a summary of the main differences and characteristics of `&str` and `String` in Rust:
 
