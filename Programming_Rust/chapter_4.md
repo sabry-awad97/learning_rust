@@ -785,3 +785,39 @@ let p = Person { name: "Alice".to_string(), age: 30 };
 In this example, the `Person` struct contains a `String` field and an `i32` field. The `String` field is a non-copy type, so the `Person` struct stores a pointer to the `String` on the heap on the stack. The `i32` field is a copy type, so it is stored directly on the stack.
 
 Structs can also contain fields that are pointers to values on the heap, such as `Box<T>` or `Rc<T>`. In these cases, the struct will store the pointer on the stack, and the pointed-to value will be stored on the heap.
+
+## Copy Trait
+
+In Rust, the `Copy` trait is a special trait that indicates that a type can be safely copied by simply copying its bits. This means that when you assign a value of a `Copy` type to another variable, or pass it as an argument to a function, the value is copied rather than moved.
+
+However, not all types in Rust are `Copy`. In fact, many types are not `Copy` because they own resources that need to be cleaned up when the value is no longer used. For example, the `String` type owns a heap-allocated buffer that holds the string data. If a `String` value were simply copied by bit-for-bit duplication, it would be unclear which value was now responsible for cleaning up the heap-allocated buffer. This is why `String` is not `Copy`.
+
+Similarly, the `Box<T>` type owns its heap-allocated referent, and duplicating it by bit-for-bit copying would leave it unclear which value was responsible for the referent. The `File` type, which represents a reference to an operating system file descriptor, is not `Copy` because duplicating it would entail asking the operating system for another file handle. The `MutexGuard` type, which represents a locked mutex, is not `Copy` because it is not meaningful to copy a value of this type at all, as only one thread may hold a mutex at a time.
+
+As a rule of thumb, any type that needs to do something special when a value is dropped (e.g. free its elements, close a file handle, unlock a mutex) cannot be `Copy`, because it is unclear which value would be responsible for the original's resources after a bit-for-bit duplication.
+
+To summarize, types that are not `Copy` in Rust include:
+
+- `String`, because it owns a heap-allocated buffer
+- `Box<T>`, because it owns its heap-allocated referent
+- `File`, because it represents a reference to an operating system file descriptor
+- `MutexGuard`, because it represents a locked mutex
+
+Here is an example of how to use the `Copy` trait in Rust:
+
+```rust
+#[derive(Copy, Clone)]
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+fn main() {
+    let p1 = Point { x: 1, y: 2 };
+    let p2 = p1; // p1 is copied to p2 here
+    println!("p1: ({}, {})", p1.x, p1.y);
+    println!("p2: ({}, {})", p2.x, p2.y);
+}
+```
+
+In this example, we have defined a `Point` struct with two fields: `x` and `y`. We have also added the `#[derive(Copy, Clone)]` attribute to the struct definition, which automatically implements the `Copy` and `Clone` traits for the `Point` type. This means that we can use the `Copy` trait to copy a `Point` value by simply assigning it to another variable.
