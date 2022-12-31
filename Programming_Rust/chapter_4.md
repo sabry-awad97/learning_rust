@@ -495,3 +495,214 @@ fn main() {
 ```
 
 In this example, the value of `i` is moved to `j` on each iteration of the loop, and the original value of `i` is no longer available for use.
+
+## Moves and Indexed Content
+
+In Rust, moves can affect indexed content in a few ways.
+
+First, it's important to understand that moves only occur when values are assigned to new variables. If a value is passed as an argument to a function or returned from a function, it is not moved, but rather passed by reference.
+
+With that in mind, let's consider some examples of how moves can affect indexed content.
+
+### Vectors
+
+If you assign a value from a vector to a new variable, the value will be moved.
+
+```rust
+fn main() {
+    let mut v = vec![1, 2, 3];
+    let x = v[0]; // x is moved from v[0]
+    println!("{}", v[0]); // error: v[0] has been moved
+}
+```
+
+In this example, the value of `v[0]` is moved to `x`, and the original value of `v[0]` is no longer available for use.
+
+```rust
+let mut v = Vec::new();
+for i in 101 .. 106 {
+    v.push(i.to_string());
+}
+// Pull out random elements from the vector.
+let third = v[2]; // error: Cannot move out of index of Vec
+let fifth = v[4]; // here too
+```
+
+In Rust, you cannot move elements out of a vector using indexing because vectors store their elements on the heap, and moving elements out of the vector would invalidate the vector's ownership of the elements.
+
+```rust
+fn main() {
+    let mut v = Vec::new();
+    for i in 101..106 {
+        v.push(i.to_string());
+    }
+    let third = v.remove(2); // third is a String
+    let fifth = v.remove(4); // fifth is a String
+}
+```
+
+```rust
+fn main() {
+    let mut v = Vec::new();
+    for i in 101..106 {
+        v.push(i.to_string());
+    }
+    // 1. Pop a value off the end of the vector:
+    let fifth = v.pop().expect("vector empty!");
+    assert_eq!(fifth, "105");
+    // 2. Move a value out of a given index in the vector,
+    // and move the last element into its spot:
+    let second = v.swap_remove(1);
+    assert_eq!(second, "102");
+    // 3. Swap in another value for the one we're taking out:
+    let third = std::mem::replace(&mut v[2], "substitute".to_string());
+    assert_eq!(third, "103");
+    // Let's see what's left of our vector.
+    assert_eq!(v, vec!["101", "104", "substitute"]);
+}
+```
+
+```rust
+let v = vec![
+    "liberté".to_string(),
+    "égalité".to_string(),
+    "fraternité".to_string(),
+];
+for mut s in v {
+    s.push('!');
+    println!("{}", s);
+}
+println!("{:?}", v);
+```
+
+The for loop's internal machinery takes ownership of the vector and dissects it into its elements. At each iteration, the loop moves another element to the variable s. Since s now owns the string, we’re able to modify it in the loop body before printing it.
+
+```rust
+fn main() {
+    struct Person {
+        name: Option<String>,
+        birth: i32,
+    }
+    let mut composers = Vec::new();
+    composers.push(Person {
+        name: Some("Palestrina".to_string()),
+        birth: 1525,
+    });
+    let first_name = composers[0].name;
+}
+```
+
+You cannot move the `name` field out of the `Person` struct using indexing, because the `Person` struct is stored on the heap, and moving the field would invalidate the struct's ownership of the field.
+
+To access the `name` field of the `Person` struct, you have a few options:
+
+#### 1\. Borrow the field
+
+You can borrow the `name` field of the `Person` struct using an immutable reference:
+
+```rust
+fn main() {
+    let mut composers = Vec::new();
+    composers.push(Person { name: Some("Palestrina".to_string()),
+    birth: 1525 });
+    let first_name = &composers[0].name; // first_name is a &Option<String>
+}
+```
+
+In this example, the `first_name` variable is a reference to the `name` field of the `Person` struct, and the original field is not moved.
+
+#### 2\. Clone the field
+
+You can clone the `name` field of the `Person` struct using the `clone` method:
+
+```rust
+fn main() {
+    let mut composers = Vec::new();
+    composers.push(Person { name: Some("Palestrina".to_string()),
+    birth: 1525 });
+    let first_name = composers[0].name.clone(); // first_name is a Option<String>
+}
+```
+
+In this example, the `first_name` variable is a copy of the `name` field of the `Person` struct, and the original field is not moved.
+
+#### 3\. Use a reference and take ownership
+
+You can take ownership of the `name` field of the `Person` struct by dereferencing the reference:
+
+```rust
+fn main() {
+    let mut composers = Vec::new();
+    composers.push(Person { name: Some("Palestrina".to_string()),
+    birth: 1525 });
+    let first_name = *composers[0].name.as_ref().unwrap(); // first_name is a String
+}
+```
+
+In this example, the `first_name` variable is a copy of the `name` field of the `Person` struct, and the original field is moved.
+
+It's worth noting that this approach requires the name field to be `Some`, and will panic if the field is `None`. You can use the `as_ref` method to safely unwrap the field and avoid panicking.
+
+#### 4\. Use `std::mem::replace`
+
+Yes, you can use the `std::mem::replace` function to move the `name` field out of the `Person` struct and set the field to a new value.
+
+```rust
+fn main() {
+    let mut composers = Vec::new();
+    composers.push(Person { name: Some("Palestrina".to_string()),
+    birth: 1525 });
+    let first_name = std::mem::replace(&mut composers[0].name, None); // first_name is a Option<String>
+    println!("{:?}", composers[0].name); // composers[0].name is None
+}
+```
+
+In this example, the `std::mem::replace` function moves the `name` field out of the `Person` struct and sets the field to a new value of `None`. The original value of the `name` field is returned as an `Option<String>`, which can be `Some` if the field was previously set, or `None` if the field was already `None`.
+
+It's worth noting that the `std::mem::replace` function can be used to move any type out of a mutable reference and set the reference to a new value. It is often used as a way to take ownership of a field and set it to a new value in a single operation.
+
+#### 4\. Use `take()` method
+
+Yes, you can use the `take` method to move the `name` field out of the `Person` struct and set the field to `None`.
+
+Here's an example of how to use the `take` method:
+
+```rust
+fn main() {
+    let mut composers = Vec::new();
+    composers.push(Person { name: Some("Palestrina".to_string()),
+    birth: 1525 });
+    let first_name = composers[0].name.take(); // first_name is a Option<String>
+    println!("{:?}", composers[0].name); // composers[0].name is None
+}
+```
+
+In this example, the `take` method moves the `name` field out of the `Person` struct and sets the field to `None`. The original value of the `name` field is returned as an `Option<String>`, which can be `Some` if the field was previously set, or `None` if the field was already `None`.
+
+It's worth noting that the `take` method is only available for fields that are `Option` types, and it is often used as a way to take ownership of a field and set it to `None` in a single operation.
+
+### Strings
+
+If you assign a character from a string to a new variable, the character will be moved.
+
+```rust
+fn main() {
+    let s = String::from("hello");
+    let c = s[0]; // c is moved from s[0]
+    println!("{}", s[0]); // error: s[0] has been moved
+}
+```
+
+In this example, the character at index `0` in `s` is moved to `c`, and the original character at index `0` is no longer available for use.
+
+It's worth noting that Rust strings are stored as UTF-8 encoded byte arrays, so indexing a string returns a byte, not a character. To get a character from a string, you can use the `chars` method, which returns an iterator of characters.
+
+```rust
+fn main() {
+    let s = String::from("hello");
+    let c = s.chars().nth(0).unwrap(); // c is a character, not a byte
+    println!("{}", s[0]); // s[0] is still valid
+}
+```
+
+In this example, the character at index `0` in `s` is moved to `c`, and the original value of `s[0]` is still available for use.
