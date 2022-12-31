@@ -172,3 +172,141 @@ In this example, we create a `String` called `s` and borrow it with a reference 
 Because references are just addresses under the hood, it is important to have these strict rules in place to ensure that they are used correctly and safely.
 
 The borrow checker is a system in Rust that enforces these rules and ensures that references are used correctly. It checks that references are not used after their referents have been deallocated or go out of scope, and it prevents the creation of references to data that does not have a clear owner.
+
+## References to Values
+
+```rust
+use std::collections::HashMap;
+type Table = HashMap<String, Vec<String>>;
+
+fn show(table: Table) {
+    for (artist, works) in table {
+        println!("works by {}:", artist);
+        for work in works {
+            println!(" {}", work);
+        }
+    }
+}
+
+fn main() {
+    let mut table = Table::new();
+    table.insert(
+        "Gesualdo".to_string(),
+        vec![
+            "many madrigals".to_string(),
+            "Tenebrae Responsoria".to_string(),
+        ],
+    );
+    table.insert(
+        "Caravaggio".to_string(),
+        vec![
+            "The Musicians".to_string(),
+            "The Calling of St. Matthew".to_string(),
+        ],
+    );
+    table.insert(
+        "Cellini".to_string(),
+        vec![
+            "Perseus with the head of Medusa".to_string(),
+            "a salt cellar".to_string(),
+        ],
+    );
+    show(table);
+}
+```
+
+In this code, `show` is defined to take a `Table` as an argument. When `show` is called with `table`, the `table` is moved into the function and the ownership of the `table` is transferred to `show`. This means that `main` can no longer access or modify the `table` after the call to `show`.
+
+The `for` loop in the `show` function takes ownership of the `table` and consumes it entirely. This means that the `table` is no longer accessible after the `for` loop finishes executing. Thanks Rust!
+
+If you want to retain ownership of the `table` in the `main` function and still be able to pass it to `show`, you can use a reference to the `table` instead. You can modify the code like this:
+
+```rust
+use std::collections::HashMap;
+type Table = HashMap<String, Vec<String>>;
+
+fn show(table: &Table) {
+    for (artist, works) in table {
+        println!("works by {}:", artist);
+        for work in works {
+            println!(" {}", work);
+        }
+    }
+}
+
+fn main() {
+    let mut table = Table::new();
+    table.insert(
+        "Gesualdo".to_string(),
+        vec![
+            "many madrigals".to_string(),
+            "Tenebrae Responsoria".to_string(),
+        ],
+    );
+    table.insert(
+        "Caravaggio".to_string(),
+        vec![
+            "The Musicians".to_string(),
+            "The Calling of St. Matthew".to_string(),
+        ],
+    );
+    table.insert(
+        "Cellini".to_string(),
+        vec![
+            "Perseus with the head of Medusa".to_string(),
+            "a salt cellar".to_string(),
+        ],
+    );
+    show(&table);
+}
+```
+
+In this version of the code, `show` is defined to take a reference to a `Table` rather than a `Table` itself. This allows the `main` function to retain ownership of the `table` and continue to modify it after the call to `show`. When calling `show`, the `&` operator is used to pass a reference to the `table` rather than the `table` itself.
+
+In Rust, references allow you to refer to a value without taking ownership of it. This can be useful in situations where you want to pass a value to a function but still retain ownership of it.
+
+There are two types of references in Rust: shared references and mutable references.
+
+Shared references allow you to read the value of the referent, but not modify it. They are written with the & operator and have the type &T, where T is the type of the referent. Shared references are Copy, which means that they can be copied freely without affecting the referent.
+
+Mutable references, on the other hand, allow you to both read and modify the value of the referent. They are written with the &mut operator and have the type &mut T, where T is the type of the referent. Mutable references are not Copy because they allow modification of the referent. You may only have one mutable reference to a particular value at a time, to prevent conflicts between multiple modifications.
+
+Using references can be a good way to avoid having to move values around and maintain ownership, especially when working with large or complex data structures.
+
+Here is a comparison of shared references and mutable references in Rust:
+
+|                              | Shared reference | Mutable reference |
+| ---------------------------- | ---------------- | ----------------- |
+| Syntax                       | `&T`             | `&mut T`          |
+| Can read value of referent   | Yes              | Yes               |
+| Can modify value of referent | No               | Yes               |
+| Can have multiple references | Yes              | No                |
+| Is `Copy`                    | Yes              | No                |
+
+The distinction between shared and mutable references is a way to enforce a multiple readers or single writer rule at compile time.
+
+A multiple readers or single writer rule is a way to control concurrent access to a shared resource. It specifies that either multiple readers can access the resource concurrently, or a single writer can access the resource exclusively.
+
+By enforcing the multiple readers or single writer rule at compile time, Rust helps to ensure that concurrent access to shared resources is safe and correct.
+
+When you pass a shared reference to a value as an argument to a function, the function receives a non-owning pointer to the value. This means that the function can access the value, but it does not take ownership of the value and the original owner retains ownership.
+
+In the case of the `show` function, the parameter `table` has the type `&Table`, which means it is a shared reference to a `Table`. When `show` is called, it receives a shared reference to the `table` and can access the keys and values of the `table`, but it does not take ownership of the `table` and the original owner (`main`) retains ownership.
+
+Iterating over a shared reference to a `HashMap` is defined to produce shared references to each entry's key and value. This means that the type of `artist` in the `for` loop is `&String` and the type of `works` is `&Vec<String>`. Similarly, iterating over a shared reference to a vector is defined to produce shared references to its elements, so the type of `work` in the inner `for` loop is `&String`.
+
+Since `show` is not taking ownership of the `table` and is only passing around shared references, no ownership changes hands anywhere in this function. It's just passing around non-owning pointers.
+
+That's correct! When you want to modify a value that is being borrowed, you need to use a mutable reference. A mutable reference, written with the `&mut` operator and having the type `&mut T`, allows you to both read and modify the value of the referent. However, you may not have any other references (shared or mutable) to that value active at the same time. This is to prevent conflicts between multiple modifications.
+
+In the case of the `sort_works` function, the parameter `table` has the type `&mut Table`, which means it is a mutable reference to a `Table`. When `sort_works` is called, it receives a mutable reference to the `table` and can read and modify the values of the `table`.
+
+To pass a mutable reference to a value as an argument to a function, you need to use the `&mut` operator. In the example you provided, the `sort_works` function is called with `&mut table`, which passes a mutable reference to the `table` to the function. This allows the function to modify the values of the `table`.
+
+Passing a value to a function in a way that moves ownership of the value to the function is called passing the value by value. Passing a reference to the value, on the other hand, is called passing the value by reference. In Rust, it is important to distinguish between passing a value by value and passing it by reference because it affects how ownership is affected.
+
+When you pass a value by value, the value is moved into the function and the original owner no longer has access to it. This means that the function takes ownership of the value and is responsible for releasing any resources that the value holds when it is finished with the value.
+
+On the other hand, when you pass a value by reference, the function receives a non-owning pointer to the value. This means that the function can access the value, but it does not take ownership of the value and the original owner retains ownership.
+
+In Rust, it is important to carefully consider whether to pass a value by value or by reference, depending on whether you want the function to take ownership of the value or just access it.
