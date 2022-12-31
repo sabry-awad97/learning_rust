@@ -279,3 +279,25 @@ Heap:
 ```
 
 The value of `s` has been moved to `t`, so the variable `s` is now uninitialized and does not contain a valid pointer. The variable `t` now contains a pointer to the heap-allocated array that was previously owned by `s`, as well as the length and capacity of the array. The values in the heap are unchanged, as the elements themselves are not moved. Only the ownership of the heap-allocated array is transferred from `s` to `t`.
+
+To make u vector you must ask for a copy
+
+```rust
+let s = vec!["udon".to_string(), "ramen".to_string(), "soba".to_string()];
+let t = s.clone();
+let u = s.clone();
+```
+
+In this version, `s` is an immutable variable and its value is cloned into `t` and u using the clone method. This creates new values on the heap that are copies of the original value in `s`.
+
+The ownership tree in the heap after these three lines are executed would look like this:
+
+```rust
+       u  ->  ["udon", "ramen", "soba"]
+        \
+s  ->  ["udon", "ramen", "soba"]
+        \
+       t  ->  ["udon", "ramen", "soba"]
+```
+
+In this version of the code, `s`, `t`, and `u` all own separate values on the heap, and the original value of `s` is still valid and can be used after the clones are created.
