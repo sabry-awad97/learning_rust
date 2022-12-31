@@ -2998,109 +2998,109 @@ Here is a comparison of arrays, vectors, and slices in Rust:
 
 - Rust provides a number of string manipulation libraries in its ecosystem, such as `strsim`, `regex`, and `shellexpand`, which provide additional functionality for tasks such as string matching, regular expression matching, and shell expansion.
 
-  ### `strsim`
+### `strsim`
 
-  The `strsim` crate is a library for string similarity and distance measures. It provides a number of algorithms for comparing and measuring the similarity between strings, such as Levenshtein distance, Damerau-Levenshtein distance, and Jaro distance.
+The `strsim` crate is a library for string similarity and distance measures. It provides a number of algorithms for comparing and measuring the similarity between strings, such as Levenshtein distance, Damerau-Levenshtein distance, and Jaro distance.
 
-  Here is an example of using the `levenshtein` function from the `strsim` crate to calculate the Levenshtein distance between two strings:
+Here is an example of using the `levenshtein` function from the `strsim` crate to calculate the Levenshtein distance between two strings:
 
-  ```rust
-  use strsim::levenshtein;
+```rust
+use strsim::levenshtein;
 
-  let s1 = "kitten";
-  let s2 = "sitting";
-  let distance = levenshtein(s1, s2);
-  // distance is now 3
-  ```
+let s1 = "kitten";
+let s2 = "sitting";
+let distance = levenshtein(s1, s2);
+// distance is now 3
+```
 
-  ### `regex`
+### `regex`
 
-  The `regex` crate is a Rust library for regular expressions. It provides a number of functions and methods for matching, searching, and manipulating strings using regular expressions.
+The `regex` crate is a Rust library for regular expressions. It provides a number of functions and methods for matching, searching, and manipulating strings using regular expressions.
 
-  Here is an example of using the `is_match` function from the `regex` crate to check if a string matches a regular expression:
+Here is an example of using the `is_match` function from the `regex` crate to check if a string matches a regular expression:
 
-  ```rust
-  use regex::Regex;
+```rust
+use regex::Regex;
 
-  let re = Regex::new(r"\d{3}-\d{3}-\d{4}").unwrap();
-  let s = "123-456-7890";
-  let is_match = re.is_match(s);
-  // is_match is now true
-  ```
+let re = Regex::new(r"\d{3}-\d{3}-\d{4}").unwrap();
+let s = "123-456-7890";
+let is_match = re.is_match(s);
+// is_match is now true
+```
 
-  ### `shellexpand`
+### `shellexpand`
 
-  The `shellexpand` crate is a Rust library for shell expansion. It provides a number of functions and methods for expanding shell-like special characters and variables in strings.
+The `shellexpand` crate is a Rust library for shell expansion. It provides a number of functions and methods for expanding shell-like special characters and variables in strings.
 
-  Here is an example of using the `full` function to expand a string with shell-like special characters and variables:
+Here is an example of using the `full` function to expand a string with shell-like special characters and variables:
 
-  ```rust
-  use shellexpand::full;
+```rust
+use shellexpand::full;
 
-  let s = "$HOME/.config";
-  let expanded = full(s).unwrap();
-  // expanded is now the expanded version of the string, with the $HOME variable replaced with the user's home directory
-  ```
+let s = "$HOME/.config";
+let expanded = full(s).unwrap();
+// expanded is now the expanded version of the string, with the $HOME variable replaced with the user's home directory
+```
 
-  You can also use the `tilde` function from the `shellexpand` crate to expand tilde characters (`~`) in strings:
+You can also use the `tilde` function from the `shellexpand` crate to expand tilde characters (`~`) in strings:
 
-  ```rust
-  use shellexpand::tilde;
+```rust
+use shellexpand::tilde;
 
-  let s = "~/.config";
-  let expanded = tilde(s).unwrap();
-  // expanded is now the expanded version of the string, with the tilde character replaced with the user's home directory
-  ```
+let s = "~/.config";
+let expanded = tilde(s).unwrap();
+// expanded is now the expanded version of the string, with the tilde character replaced with the user's home directory
+```
 
 - Rust also provides a number of libraries for working with Unicode strings, such as `unicode-segmentation` and `unicode-normalization`, which provide functions for working with Unicode grapheme clusters and normalizing Unicode strings.
 
-  ### `unicode-segmentation`
+### `unicode-segmentation`
 
-  The `unicode-segmentation` crate is a Rust library for working with Unicode grapheme clusters. It provides a number of functions and methods for iterating over, counting, and manipulating grapheme clusters in Unicode strings.
+The `unicode-segmentation` crate is a Rust library for working with Unicode grapheme clusters. It provides a number of functions and methods for iterating over, counting, and manipulating grapheme clusters in Unicode strings.
 
-  Here is an example of using the `grapheme_indices` function from the `unicode-segmentation` crate to iterate over the grapheme clusters in a Unicode string:
+Here is an example of using the `grapheme_indices` function from the `unicode-segmentation` crate to iterate over the grapheme clusters in a Unicode string:
 
-  ```rust
-  use unicode_segmentation::UnicodeSegmentation;
+```rust
+use unicode_segmentation::UnicodeSegmentation;
 
-  let s = "Hello, world! 😀";
-  for (i, grapheme) in s.grapheme_indices(true) {
-      println!("Grapheme cluster at index {}: {}", i, grapheme);
-  }
-  ```
+let s = "Hello, world! 😀";
+for (i, grapheme) in s.grapheme_indices(true) {
+    println!("Grapheme cluster at index {}: {}", i, grapheme);
+}
+```
 
-  This code will output the following:
+This code will output the following:
 
-  ```rust
-  Grapheme cluster at index 0: H
-  Grapheme cluster at index 1: e
-  Grapheme cluster at index 2: l
-  Grapheme cluster at index 3: l
-  Grapheme cluster at index 4: o
-  Grapheme cluster at index 6: ,
-  Grapheme cluster at index 8:
-  Grapheme cluster at index 9: w
-  Grapheme cluster at index 10: o
-  Grapheme cluster at index 11: r
-  Grapheme cluster at index 12: l
-  Grapheme cluster at index 13: d
-  Grapheme cluster at index 14: !
-  Grapheme cluster at index 16:  😀
-  ```
+```rust
+Grapheme cluster at index 0: H
+Grapheme cluster at index 1: e
+Grapheme cluster at index 2: l
+Grapheme cluster at index 3: l
+Grapheme cluster at index 4: o
+Grapheme cluster at index 6: ,
+Grapheme cluster at index 8:
+Grapheme cluster at index 9: w
+Grapheme cluster at index 10: o
+Grapheme cluster at index 11: r
+Grapheme cluster at index 12: l
+Grapheme cluster at index 13: d
+Grapheme cluster at index 14: !
+Grapheme cluster at index 16:  😀
+```
 
-  ### `unicode-normalization`
+### `unicode-normalization`
 
-  The `unicode-normalization` crate is a Rust library for normalizing Unicode strings. It provides a number of functions and methods for normalizing Unicode strings using various normalization forms, such as NFC, NFD, NFKC, and NFKD.
+The `unicode-normalization` crate is a Rust library for normalizing Unicode strings. It provides a number of functions and methods for normalizing Unicode strings using various normalization forms, such as NFC, NFD, NFKC, and NFKD.
 
-  Here is an example of using the `nfc` function from the `unicode-normalization` crate to normalize a Unicode string to NFC form:
+Here is an example of using the `nfc` function from the `unicode-normalization` crate to normalize a Unicode string to NFC form:
 
-  ```rust
-  use unicode_normalization::UnicodeNormalization;
+```rust
+use unicode_normalization::UnicodeNormalization;
 
-  let s = "Ḧël̈l̈ö,̈ ̈ẅör̈l̈d̈!̈ 😀";
-  let normalized = s.nfc().collect::<String>();
-  // normalized is now "Ḧël̈l̈ö,̈ ̈ẅör̈l̈d̈!̈ 😀"
-  ```
+let s = "Ḧël̈l̈ö,̈ ̈ẅör̈l̈d̈!̈ 😀";
+let normalized = s.nfc().collect::<String>();
+// normalized is now "Ḧël̈l̈ö,̈ ̈ẅör̈l̈d̈!̈ 😀"
+```
 
 Here is a summary of the main differences and characteristics of `&str` and `String` in Rust:
 
@@ -3175,6 +3175,8 @@ Here is a comparison of `String` and `Vec<T>` in Rust:
 |                      | \- `sort_by`: Sorts the characters in the string in-place using a given comparison function.         | \- `sort_by`: Sorts the elements in the vector in-place using a given comparison function.         |
 |                      | \- `sort_by_key`: Sorts the characters in the string in-place using a given key extraction function. | \- `sort_by_key`: Sorts the elements in the vector in-place using a given key extraction function. |
 
+---
+
 ## String like types
 
 Rust provides a number of string-like types that can be used in different situations where the requirements for strings may be different from those of the standard `String` and `&str` types. Here is a summary of the string-like types and their uses in Rust:
@@ -3186,3 +3188,104 @@ Rust provides a number of string-like types that can be used in different situat
 | `Vec<u8>` and `&[u8]`   | Binary data that is not UTF-8 encoded                                                                      | \- Designed for working with sequences of bytes                              | Working with binary data that does not need to be treated as text   |
 | `OsString` and `&OsStr` | Environment variable names and command-line arguments in the native form presented by the operating system | \- Designed for interoperating with the underlying operating system          | Working with system-level strings that may not be in Unicode format |
 | `CString` and `&CStr`   | Working with C libraries that use null-terminated strings                                                  | Designed for interoperating with C libraries                                 | Working with C libraries from Rust                                  |
+
+---
+
+## Type Alias
+
+Here is a summary of the main points about type aliases in Rust:
+
+Certainly! Here are examples of each point about type aliases in Rust:
+
+1. Type aliases are created using the `type` keyword.
+
+1. Type aliases allow you to create a new name for an existing type.
+
+   ```rust
+   type Kilometers = i32;
+   ```
+
+1. Type aliases can be used to make code easier to read and understand by giving more meaningful names to types.
+
+   ```rust
+   type Kilometers = i32;
+
+   fn main() {
+       let distance: Kilometers = 100;
+       println!("The distance is {} kilometers", distance);
+   }
+   ```
+
+1. Type aliases can be used to reduce duplication of type names in long or complex types.
+
+   ```rust
+   type Kilometers = i32;
+
+   struct Point {
+       x: i32,
+       y: i32,
+       z: i32,
+   }
+
+   struct Line {
+       start: Point,
+       end: Point,
+       length: Kilometers,
+   }
+   ```
+
+1. Type aliases can be used to allow you to use types that have the same underlying representation but different names in different contexts.
+
+   ```rust
+   type Kilometers = i32;
+
+   fn main() {
+       let distance: Kilometers = 100;
+       println!("The distance is {} kilometers", distance);
+   }
+
+   fn distance_in_miles(distance: Kilometers) -> f32 {
+       distance as f32 * 0.62137
+   }
+
+   fn main() {
+       let distance: Kilometers = 100;
+       println!("The distance is {} miles", distance_in_miles(distance));
+   }
+   ```
+
+1. Type aliases can be used with any type, including primitive types, structs, enums, and other type aliases.
+
+   ```rust
+   type Kilometers = i32;
+
+   struct Point {
+       x: i32,
+       y: i32,
+   }
+
+   type Point3D = Point;
+
+   fn main() {
+       let point: Point3D = Point { x: 0, y: 0 };
+       println!("Point: ({}, {})", point.x, point.y);
+   }
+   ```
+
+1. Type aliases can be generic, allowing you to create type aliases that can be used with different types depending on the context in which they are used.
+
+   ```rust
+   type Result<T> = std::result::Result<T, String>;
+
+   fn read_file(file_name: &str) -> Result<String> {
+       let contents = std::fs::read_to_string(file_name).map_err(|e| e.to_string())?;
+       Ok(contents)
+   }
+
+   fn main() {
+       let contents = read_file("file.txt").unwrap();
+       println!("File contents: {}", contents);
+   }
+   ```
+
+   In this example, we create a generic type alias called `Result` that is equivalent to the `std::result::Result` type, with a `String` error type. We then use the `Result` type alias in the return type of the `read_file` function, which reads the contents of a file into a `String`. If the file cannot be read, an error `String` is returned.
