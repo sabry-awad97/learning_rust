@@ -388,3 +388,65 @@ if (b) { r = y; } // stores y in x, r still points to x
 ```
 
 In this C++ code, the reference `r` is initialized to point to `x`. If `b` is true, the value of `y` is stored in `x`, but `r` still points to `x`. There is no way to make `r` point to `y`.
+
+## References to References
+
+It is possible to create references to references in Rust, which are known as "double references" or "reference of reference" types. These types can be useful in certain scenarios, such as when working with raw pointers or when writing generic code that needs to accept a variety of different reference types.
+
+Here is an example of creating a double reference in Rust:
+
+```rust
+let x = 10;
+let r1 = &x; // r1 is a shared reference to x
+let r2 = &r1; // r2 is a shared reference to r1, which is a reference to x
+```
+
+In this example, `r1` is a shared reference to `x`, and `r2` is a shared reference to `r1`. This means that `r2` is effectively a reference to `x`, but it is represented as a reference to a reference.
+
+You can dereference a double reference with the `**` operator:
+
+```rust
+let x = 10;
+let r1 = &x;
+let r2 = &r1;
+let y = **r2; // y is now 10
+```
+
+In this example, `y` is assigned the value of `x` by dereferencing `r2` twice: once to get the value of `r1`, and a second time to get the value of `x`.
+
+It is also possible to create mutable double references in Rust by using the `&mut` operator:
+
+```rust
+let mut x = 10;
+let r1 = &mut x; // r1 is a mutable reference to x
+let r2 = &r1; // r2 is a shared reference to r1, which is a mutable reference to x
+```
+
+In this example, `r1` is a mutable reference to `x`, and `r2` is a shared reference to `r1`. This means that `r2` is effectively a reference to a mutable reference to `x`.
+
+You can dereference a mutable double reference with the `*` operator:
+
+```rust
+let mut x = 10;
+let r1 = &mut x;
+let r2 = &r1;
+*r2 = 20; // x is now 20
+```
+
+In this example, the value of `x` is changed.
+
+It is important to note that creating double references can be dangerous, because it can be easy to lose track of how many levels of indirection are involved. This can lead to bugs, especially when working with raw pointers, where the type system does not provide any safety guarantees.
+
+For example, consider the following code:
+
+```rust
+let x = 10;
+let r1 = &x;
+let r2 = &r1;
+let r3 = &r2;
+**r3 = 20; // x is now 20
+```
+
+In this code, `x` is changed to `20` by dereferencing `r3` three times: once to get the value of `r2`, once to get the value of `r1`, and a third time to get the value of `x`. This can be confusing, especially if you are working with long chains of references.
+
+It is generally recommended to avoid creating double references unless there is a specific need for them. If you do need to use double references, it is important to pay close attention to the number of levels of indirection involved, and to be careful when dereferencing them.
