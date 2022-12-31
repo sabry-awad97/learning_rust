@@ -722,3 +722,108 @@ Reference safety in Rust is ensured through a combination of compile-time checks
 At runtime, Rust also checks that references are valid. For example, if you try to dereference a shared reference to a value that has already been dropped, the program will panic. This helps to prevent data races and other concurrency issues that can arise when working with shared references.
 
 Overall, the combination of compile-time and runtime checks helps to ensure that Rust programs are safe to run and free from the kinds of bugs that can be caused by invalid or improperly used references.
+
+## Borrowing a Local Variable
+
+```rust
+fn main() {
+    let x = 10;
+    {
+        let r = &x;
+        assert_eq!(*r, 10);
+    }
+    assert_eq!(x, 10);
+}
+```
+
+This code works just fine: the variable `x` is in scope for the entire body of the outer block, and `r` is a reference to `x`, so everything is in order.
+
+However, if we try to modify the reference in a local block, Rust will complain:
+
+```rust
+fn main() {
+    let mut x = 10;
+    {
+        let r = &x;
+        *r = 10
+    }
+    assert_eq!(x, 10);
+}
+```
+
+This error message is a bit cryptic, but it’s trying to tell you that the borrow of `x` is still in effect after the inner block has completed. In other words, you’re trying to modify a borrowed value.
+
+We're not allowed to modify `x` through `r` because `r` has been borrowed (not owned).
+
+- We can only modify `x` in the **same block** where it’s declared.
+
+This rule is in place to prevent you from inadvertently modifying a borrowed value through a shared reference.
+
+If the reference were to last longer than the block, the value might have changed out from under you, which could be confusing.
+
+If you really want to modify a value through a borrowed reference, you have to use a mutable reference:
+
+```rust
+let mut x = 10;
+{
+    let mut r = &mut x;
+    *r += 20;
+}
+assert_eq!(x, 30);
+```
+
+Now the code works as expected, because you have exclusive access to `x` through `r`.
+Thus, the borrowing rules ensure that Rust prevents data races and other threading errors at compile time.
+
+When you create a reference to a local variable, Rust checks that the reference will be valid for the entire duration that the reference will be used.
+This is called the reference's lifetime.
+
+- If the lifetime of the reference is shorter than the lifetime of the variable, Rust reports an error.
+
+For example, consider the following code:
+
+```rust
+fn main() {
+    let x = 10;
+    let r = &x; // r has lifetime 'a
+    drop(x); // x has lifetime 'b
+    //
+}
+```
+
+In this code, the variable `x` has a lifetime of `'b` and the reference `r` has a lifetime of `'a`. Since the lifetime of `r` is longer than the lifetime of `x`, Rust will report an error because it is not safe to use `r` after `x` has been dropped.
+
+To fix this error, we need to ensure that the lifetime of `r` is shorter than the lifetime of `x`. We can do this by creating the reference before we declare `x`:
+
+```rust
+fn main() {
+    let r; // r has lifetime 'a
+    {
+        let x = 10;
+        r = &x; // r's lifetime is now tied to x's lifetime
+    } // x goes out of scope, so r is no longer valid
+}
+```
+
+In this code, the lifetime of `r` is now tied to the lifetime of `x`, so it is safe to use `r` within the curly braces where `x` is defined. Once `x` goes out of scope at the end of the curly braces, `r` is no longer valid.
+
+- You can't borrow a reference to a local variable and take it out of the variable’s scope.
+
+```rust
+{
+    let r;
+    {
+        let x = 1;
+        r = &x;
+    }
+    assert_eq!(*r, 1); // bad: reads memory `x` used to occupy
+}
+```
+
+This code tries to create a reference to the local variable `x` and then store it in the variable `r`.
+
+But when `x` goes out of scope, Rust invalidates all references to it, so the final line of the code tries to access memory that has already been deallocated.
+
+This is what the `assert_eq!` statement does, and Rust will not let you do it: it won't even compile. If you remove the `assert_eq!` statement and try to run the code, Rust will complain that `r` is not initialized.
+
+This protection is a key feature of Rust. It prevents you from creating a reference to something that’s not supposed to be accessed anymore.
