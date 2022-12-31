@@ -566,3 +566,47 @@ In this example, the function `find_first_even` takes a slice of integers and re
 Using the `Option<T>` type instead of null pointers allows Rust to ensure that you always check for the presence of a value before using it, which helps prevent null reference errors.
 
 It is also worth noting that Rust has a number of other features that help prevent null reference errors, such as the `NonNull<T>` type, which is a reference-like type that is guaranteed to be non-null, and the `MaybeUninit<T>` type, which allows you to temporarily store uninitialized values. These types can be used in conjunction with the `unsafe` keyword to provide more fine-grained control over null references in Rust. However, it is generally recommended to use Rust's built-in borrowing and ownership system and explicit lifetime annotations to avoid null reference errors, as these features are safer and easier to use in most cases.
+
+## Borrowing References to Arbitrary Expressions
+
+In Rust, you can borrow a reference to any expression, not just variables. The reference will be valid for the lifetime of the expression. For example, you can borrow a reference to a constant value, like this:
+
+```rust
+let x = 10;
+let y = 20;
+
+let r1 = &(x + y); // r1: &i32
+assert_eq!(*r1, 30);
+```
+
+Here, `r1` is a shared reference to the result of the `x + y` expression, which is a constant value of `30`.
+
+You can also borrow a reference to a more complex expression, like this:
+
+```rust
+let v = vec![1, 2, 3];
+
+let r2 = &v[1..]; // r2: &[i32]
+assert_eq!(*r2, [2, 3]);
+```
+
+Here, `r2` is a shared reference to a slice of the `v` vector, which includes the elements at indices 1 and 2.
+
+```rust
+
+fn factorial(n: usize) -> usize {
+    (1..n+1).product()
+}
+
+let r = &factorial(6);
+// Arithmetic operators can see through one level of references.
+assert_eq!(r + &1009, 1729);
+```
+
+This code defines a function called `factorial` that takes in a `usize` parameter called `n`, and returns a `usize` value. It calculates the factorial of `n` by using the `product` method of an iterator over the range `1..n+1`.
+
+Then, it creates a reference `r` to the value returned by calling the `factorial` function with the argument `6`.
+
+Finally, it uses the `assert_eq!` macro to assert that the value of `r` plus the value of `1009` is equal to `1729`. The `+` operator is able to see through one level of references, so the addition is performed on the values pointed to by `r` and `&1009`. If this assertion is true, the code will continue to execute. If it is false, the program will panic.
+
+Borrowing a reference to an expression can be useful when you want to pass the result of the expression to a function or method that expects a reference, without creating a new variable to store the result. However, it is important to keep in mind that the reference will only be valid for the lifetime of the expression, and you cannot use the reference after the expression goes out of scope.
