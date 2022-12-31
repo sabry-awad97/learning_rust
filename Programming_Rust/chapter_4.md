@@ -821,3 +821,14 @@ fn main() {
 ```
 
 In this example, we have defined a `Point` struct with two fields: `x` and `y`. We have also added the `#[derive(Copy, Clone)]` attribute to the struct definition, which automatically implements the `Copy` and `Clone` traits for the `Point` type. This means that we can use the `Copy` trait to copy a `Point` value by simply assigning it to another variable.
+
+Here is a summarization of Copy trait:
+
+- The `Copy` trait in Rust indicates that a type can be safely copied by bit-for-bit duplication.
+- Types that own resources that need to be cleaned up when the value is no longer used, such as heap-allocated memory or file handles, cannot be `Copy`.
+- Making a type `Copy` represents a serious commitment on the part of the implementer, as it limits the types that the type can contain and restricts the ways in which the type can be used.
+- In contrast to C++, Rust does not permit the customization of copy and move operations.
+- Every move in Rust is a byte-for-byte, shallow copy that leaves the source uninitialized.
+- This means that basic operations like assignment, passing parameters, and returning values from functions are more predictable in Rust, as the costs of these operations are more explicit and apparent to the programmer.
+- In C++, assigning one variable to another can require arbitrary amounts of memory and processor time.
+- Rust's approach makes basic operations simple and potentially expensive operations explicit, like calls to `clone` that make deep copies of vectors and their contents.
