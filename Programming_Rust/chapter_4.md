@@ -150,3 +150,125 @@ Some of the ways that Rust extends the concept of ownership include:
 - References: In Rust, you can create a reference to a value, which is a non-owning pointer to the value with a limited lifetime. References allow you to access a value without taking ownership of it, and they are often used to pass values to functions or to work with data structures that do not have a single owner.
 
 Overall, these extensions to the concept of ownership in Rust allow you to use values in more flexible and powerful ways while still maintaining the safety guarantees provided by the ownership system.
+
+## Moves
+
+In Rust, a move is the act of transferring ownership of a value from one owner to another. When a value is moved, the original value is no longer valid and cannot be used.
+
+- Moves are often used to pass values to functions or to rearrange the ownership tree
+
+  ```rust
+  fn main() {
+      let x = vec![1, 2, 3];
+      let y = x;
+
+      println!("{:?}", x);
+  }
+  ```
+
+- Moves are also used when returning values from functions
+
+  ```rust
+  fn create_vec() -> Vec<i32> {
+      let x = vec![1, 2, 3];
+      x
+  }
+
+  fn main() {
+      let y = create_vec();
+      println!("{:?}", y);
+  }
+  ```
+
+In Rust, most types are moved rather than copied when they are assigned to a new variable, passed to a function, or returned from a function. This means that the source relinquishes ownership of the value to the destination, and the value's lifetime is now controlled by the destination
+
+Yes, it is true that the use of moves in Rust may be surprising to some people, as assignment is a fundamental operation in programming languages that is typically well-defined. However, different programming languages handle assignment in different ways, and Rust's decision to use moves is a result of its design goals and the safety guarantees it aims to provide.
+
+In many languages, assignment simply copies the value from the source to the destination, leaving the original value unchanged. This is known as "copy semantics." However, Rust uses "move semantics," which means that assignment transfers ownership of the value from the source to the destination, rendering the original value invalid.
+
+One reason for this is that Rust's design goals include memory safety and the prevention of common memory safety issues such as dangling pointers and use of uninitialized memory. Using move semantics helps ensure that values are not used after they are no longer needed and that memory is properly managed.
+
+Additionally, Rust's move semantics can make it easier to reason about the lifetime of values in your code. Since a value can only have one owner, it is clear when a value will be dropped and when its memory will be freed. This can make it easier to understand and predict the behavior of your code.
+
+Overall, Rust's use of move semantics is a key part of its ownership system and helps ensure memory safety and make the lifetime of values in your code more predictable.
+
+## Stack and Heap
+
+```rust
+fn main() {
+    let s = vec!["udon".to_string(), "ramen".to_string(), "soba".to_string()];
+    let t = s;
+    let u = s;
+}
+```
+
+The first line creates a new vector `s` on the heap, containing three strings. Each of these strings is also allocated on the heap and contains the text "udon", "ramen", and "soba" respectively.
+
+In the second line, the value of `s` is moved to `t`. This means that the value of `s` is no longer valid, and attempting to use it will result in a compile-time error. The vector `t` now owns the values that were previously owned by s.
+
+In the third line, the value of s is used agin. This would result in a compile-time error because the value of s is no longer valid after it has been moved.
+
+After these three lines are executed, the ownership tree in the heap looks like this:
+
+```rust
+t  ->  ["udon", "ramen", "soba"]
+```
+
+The vector t owns the strings "udon", "ramen", and "soba".
+
+In the stack, the variables s and t are all valid and contain references to the vectors on the heap. However, the value of s has been moved to t, so attempting to use s after this point would result in a compile-time error.
+
+Before the move, the stack and heap would be as follows:
+
+```rust
+Stack:
++------------+
+|  s         |  +------------+
+|  Pointer   |  |  Pointer   |  ---->  [Heap]
+|  Length    |  +------------+
+|  Capacity  |  |  Length    |
++------------+  +------------+
+|  t         |  |  Capacity  |
+|  Pointer   |  +------------+
+|  Length    |
+|  Capacity  |
++------------+
+
+Heap:
++-------------------+
+|  "udon"           |
++-------------------+
+|  "ramen"          |
++-------------------+
+|  "soba"           |
++-------------------+
+```
+
+The variable `s` contains a pointer to the heap-allocated array that contains the elements of the vector, as well as the length and capacity of the array. The variable `t` is uninitialized and does not contain a valid pointer. The heap-allocated array contains the elements of the vector, each element being a string slice containing the text of the element.
+
+After the move, the stack and heap would be as follows:
+
+```rustStack:
++------------+
+|  s         |  +------------+
+|  Pointer   |  |  Pointer   |
+|  Length    |  +------------+
+|  Capacity  |  |  Length    |
++------------+  +------------+
+|  t         |  |  Capacity  |
+|  Pointer   |  +------------+
+|  Length    |
+|  Capacity  |
++------------+
+
+Heap:
++-------------------+
+|  "udon"           |
++-------------------+
+|  "ramen"          |
++-------------------+
+|  "soba"           |
++-------------------+
+```
+
+The value of `s` has been moved to `t`, so the variable `s` is now uninitialized and does not contain a valid pointer. The variable `t` now contains a pointer to the heap-allocated array that was previously owned by `s`, as well as the length and capacity of the array. The values in the heap are unchanged, as the elements themselves are not moved. Only the ownership of the heap-allocated array is transferred from `s` to `t`.
