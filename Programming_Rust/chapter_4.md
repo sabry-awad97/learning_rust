@@ -706,3 +706,43 @@ fn main() {
 ```
 
 In this example, the character at index `0` in `s` is moved to `c`, and the original value of `s[0]` is still available for use.
+
+## Copy Types: The Exception to Moves
+
+In Rust, values of certain types are "copyable", meaning that they can be assigned or passed by value without moving the original value. These types are called "copy types".
+
+Copy types are implemented using the `Copy` trait, which is automatically implemented for certain types, such as integers, floating-point numbers, booleans, and character types.
+
+Here's an example of using a copy type:
+
+```rust
+fn main() {
+    let x = 5; // x is an i32
+    let y = x; // y is also an i32
+    println!("x = {}, y = {}", x, y);
+}
+```
+
+In this example, the value of `x` is copied into `y` when `y` is assigned, and the original value of `x` is not moved. Both variables are independent copies of the same value.
+
+It's worth noting that copy types are not moved when they are passed as function arguments or returned as function results. Instead, the values are copied.
+
+Here is a list of some common copy types in Rust:
+
+1. Integers: `i8`, `i16`, `i32`, `i64`, `i128`, `u8`, `u16`, `u32`, `u64`, `u128`
+1. Floating-point numbers: `f32`, `f64`
+1. Booleans: `bool`
+1. Character types: `char`
+1. Tuples containing only copy types
+
+It's worth noting that arrays and slices of copy types are also copy types, as long as the array or slice is not mutable.
+
+```rust
+fn main() {
+    let a = [1, 2, 3]; // a is an array of i32
+    let b = a; // b is also an array of i32
+    println!("a = {:?}, b = {:?}", a, b);
+}
+```
+
+The value of `a` is copied into `b` when `b` is assigned, and the original value of `a` is not moved. Both variables are independent copies of the same array.
