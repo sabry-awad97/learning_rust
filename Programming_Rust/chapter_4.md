@@ -746,3 +746,42 @@ fn main() {
 ```
 
 The value of `a` is copied into `b` when `b` is assigned, and the original value of `a` is not moved. Both variables are independent copies of the same array.
+
+Here is a list of some common types in Rust that own a heap-allocated buffer:
+
+1. `String`: This type represents an owned, growable string. It is stored on the heap and can be mutated.
+1. `Vec<T>`: This type represents an owned, growable vector. It is stored on the heap and can be mutated.
+1. `Box<T>`: This type represents an owned pointer to a value on the heap. It is used to store values that have an unknown size at compile time or to store values in a context where ownership is required.
+1. `Rc<T>`: This type represents a shared reference to a value on the heap. It is used to store values that have an unknown size at compile time or to store values in a context where multiple owners are needed.
+
+These types all own a heap-allocated buffer, but they may also store other data on the stack. For example, a `String` stores its length and capacity on the stack, and a `Vec<T>` stores its length, capacity, and a pointer to the heap-allocated buffer on the stack.
+
+Structs in Rust can contain fields that are stored on the stack or on the heap.
+
+If a struct contains fields that are copy types, then the entire struct can be stored on the stack. For example:
+
+```rust
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+let p = Point { x: 1, y: 2 };
+```
+
+In this example, the `Point` struct contains two `i32` fields, which are copy types. The entire `Point` struct can be stored on the stack.
+
+If a struct contains fields that are non-copy types, then the struct may need to store a pointer to the heap-allocated data on the stack. For example:
+
+```rust
+struct Person {
+    name: String,
+    age: i32,
+}
+
+let p = Person { name: "Alice".to_string(), age: 30 };
+```
+
+In this example, the `Person` struct contains a `String` field and an `i32` field. The `String` field is a non-copy type, so the `Person` struct stores a pointer to the `String` on the heap on the stack. The `i32` field is a copy type, so it is stored directly on the stack.
+
+Structs can also contain fields that are pointers to values on the heap, such as `Box<T>` or `Rc<T>`. In these cases, the struct will store the pointer on the stack, and the pointed-to value will be stored on the heap.
