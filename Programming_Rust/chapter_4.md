@@ -221,18 +221,21 @@ In the stack, the variables s and t are all valid and contain references to the 
 Before the move, the stack and heap would be as follows:
 
 ```rust
-Stack:
-+------------+
-|  s         |  +------------+
-|  Pointer   |  |  Pointer   |  ---->  [Heap]
-|  Length    |  +------------+
-|  Capacity  |  |  Length    |
-+------------+  +------------+
-|  t         |  |  Capacity  |
-|  Pointer   |  +------------+
-|  Length    |
-|  Capacity  |
-+------------+
+s: +------------+
+    |  Pointer   |  ---->  [Heap]
+    +------------+
+    |  Length    |
+    +------------+
+    |  Capacity  |
+    +------------+
+
+t: +------------+
+    |  Pointer   |
+    +------------+
+    |  Length    |
+    +------------+
+    |  Capacity  |
+    +------------+
 
 Heap:
 +-------------------+
@@ -249,17 +252,21 @@ The variable `s` contains a pointer to the heap-allocated array that contains th
 After the move, the stack and heap would be as follows:
 
 ```rustStack:
-+------------+
-|  s         |  +------------+
-|  Pointer   |  |  Pointer   |
-|  Length    |  +------------+
-|  Capacity  |  |  Length    |
-+------------+  +------------+
-|  t         |  |  Capacity  |
-|  Pointer   |  +------------+
-|  Length    |
-|  Capacity  |
-+------------+
+s: +------------+
+    |  Pointer   |
+    +------------+
+    |  Length    |
+    +------------+
+    |  Capacity  |
+    +------------+
+
+t: +------------+
+    |  Pointer   |  ---->  [Heap]
+    +------------+
+    |  Length    |
+    +------------+
+    |  Capacity  |
+    +------------+
 
 Heap:
 +-------------------+
