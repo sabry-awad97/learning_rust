@@ -827,3 +827,86 @@ But when `x` goes out of scope, Rust invalidates all references to it, so the fi
 This is what the `assert_eq!` statement does, and Rust will not let you do it: it won't even compile. If you remove the `assert_eq!` statement and try to run the code, Rust will complain that `r` is not initialized.
 
 This protection is a key feature of Rust. It prevents you from creating a reference to something that’s not supposed to be accessed anymore.
+
+## Lifetimes
+
+Lifetimes are a way to specify the lifetime of a reference in Rust. A lifetime is a period of time during which a reference is valid. Every reference has a lifetime, which is the scope within which the reference is guaranteed to be valid.
+
+For example, consider the following code:
+
+```rust
+fn main() {
+    let x = 10;
+    let r = &x;
+
+    println!("The value of x is {}", x);
+    println!("The value of r is {}", r);
+}
+```
+
+In this code, the reference `r` has the same lifetime as the variable `x`. This means that the reference `r` is valid for as long as the variable `x` is in scope. In this case, `r` is a valid reference until the end of the `main` function, at which point the variable `x` goes out of scope and the reference `r` becomes invalid.
+
+Lifetimes are particularly important when working with references to references, as the lifetime of the inner reference must be a subset of the lifetime of the outer reference.
+
+For example, consider the following code:
+
+```rust
+fn main() {
+    let x = 10;
+    let r1 = &x;
+    let r2 = &r1;
+
+    println!("The value of r1 is {}", r1);
+    println!("The value of r2 is {}", r2);
+}
+```
+
+In this code, the reference `r1` has the same lifetime as the variable `x`, and the reference `r2` has the same lifetime as the reference `r1`. This means that the reference `r2` is valid for as long as the reference `r1` is valid, which in turn is valid for as long as the variable `x` is in scope.
+
+It is important to note that the lifetime of a reference cannot be longer than the lifetime of the value it refers to. This ensures that references are always valid and cannot refer to values that have already gone out of scope.
+
+Lifetimes are often inferred by the Rust compiler, but in some cases you may need to annotate your code with explicit lifetime annotations to provide additional information to the compiler.
+
+For example, consider the following code:
+
+```rust
+fn main() {
+    let x = 10;
+    let r1 = &x;
+
+    {
+        let y = 20;
+        let r2 = &y;
+
+        println!("The value of r1 is {}", r1);
+        println!("The value of r2 is {}", r2);
+    }
+}
+```
+
+In this code, the reference `r1` has the same lifetime as the variable `x`, and the reference `r2` has the same lifetime as the variable `y`. However, the lifetime of `y` is only within the inner block of code, and so the reference `r2` is only valid within that block.
+
+If we try to use the reference `r2` outside of that block, the Rust compiler will give us an error because the value `y` has already gone out of scope and the reference `r2` is no longer valid.
+
+To fix this error, we can use explicit lifetime annotations to specify that the lifetime of the reference `r2` should be the same as the lifetime of the reference `r1`, which has a longer lifetime:
+
+```rust
+fn main() {
+    let x = 10;
+    let r1 = &x;
+
+    {
+        let y = 20;
+        let r2: &'a i32 = &y;
+
+        println!("The value of r1 is {}", r1);
+        println!("The value of r2 is {}", r2);
+    }
+}
+```
+
+In this code, we have annotated the reference `r2` with the lifetime `'a`. This specifies that the lifetime of `r2` is the same as the lifetime `'a`, which we have chosen to be the same as the lifetime of `r1`.
+
+This allows us to use the reference `r2` within the inner block of code, as it now has the same lifetime as `r1`, which has a longer lifetime that encompasses the inner block of code.
+
+Lifetime annotations are often used when working with references to references or when working with structs that contain references. They provide a way to specify the lifetime of a reference and ensure that references are always valid and cannot refer to values that have already gone out of scope.
