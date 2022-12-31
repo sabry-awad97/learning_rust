@@ -714,3 +714,11 @@ fn main() {
     print_printable(&x);  // Output: 5
 }
 ```
+
+## Reference Safety
+
+Reference safety in Rust is ensured through a combination of compile-time checks and runtime checks. At compile time, Rust checks that references are always valid and will not allow you to create a reference to an invalid location in memory. This ensures that the program is safe to run, as there is no risk of a null or dangling reference causing a segmentation fault or other runtime error.
+
+At runtime, Rust also checks that references are valid. For example, if you try to dereference a shared reference to a value that has already been dropped, the program will panic. This helps to prevent data races and other concurrency issues that can arise when working with shared references.
+
+Overall, the combination of compile-time and runtime checks helps to ensure that Rust programs are safe to run and free from the kinds of bugs that can be caused by invalid or improperly used references.
