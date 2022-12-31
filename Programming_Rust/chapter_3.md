@@ -224,6 +224,24 @@ In this example, `res` is a `Result` type that represents the result of an opera
 
 ---
 
+## Types categories
+
+In Rust, there are several types, which can be broadly classified into the following categories:
+
+1. Scalar types: These are the most basic types in Rust and represent a single value. They include integers (e.g. `i32`, `u64`), floating-point numbers (e.g. `f32`, `f64`), Booleans (`bool`), and characters (`char`).
+
+1. Compound types: These types are composed of multiple values and can be either owned or borrowed. They include arrays (e.g. `[i32; 5]`), tuples (e.g. `(i32, f32)`), and structs (e.g. `struct Point { x: i32, y: i32 }`).
+
+1. Reference types: These types represent a reference to a value, either owned or borrowed. They include `&T`, `&mut T`, and `Box<T>`.
+
+1. Pointer types: These types represent a pointer to a value, either owned or borrowed. They include `*const T` and `*mut T`.
+
+1. Closure types: These types represent anonymous functions that can be stored, passed around, and called like regular values. They include `Fn`, `FnMut`, and `FnOnce`.
+
+1. Trait types: These types represent a set of behaviors that a type can implement. They are used to define traits, which are like interfaces in other languages.
+
+1. Unsafe types: These types are used to represent low-level concepts that are not safe to use in Rust. They include `*const T` and `*mut T`, as well as the `unsafe` keyword.
+
 ## Fixed-Width Numeric Types
 
 ### Integer Types
