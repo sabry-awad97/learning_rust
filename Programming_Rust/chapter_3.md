@@ -242,6 +242,18 @@ In Rust, there are several types, which can be broadly classified into the follo
 
 1. Unsafe types: These types are used to represent low-level concepts that are not safe to use in Rust. They include `*const T` and `*mut T`, as well as the `unsafe` keyword.
 
+Here is a summary of the categories
+
+| Type      | Description                         | Example                                                     |
+| --------- | ----------------------------------- | ----------------------------------------------------------- |
+| Scalar    | Single values                       | `i32`, `f64`, `bool`, `char`                                |
+| Compound  | Multiple values                     | `[i32; 5]`, `(f32, i64)`, `struct Point { x: i32, y: i32 }` |
+| Reference | References to values                | `&T`, `&mut T`, `Box<T>`                                    |
+| Pointer   | Pointers to values                  | `*const T`, `*mut T`                                        |
+| Closure   | Anonymous functions                 | `Fn`, `FnMut`, `FnOnce`                                     |
+| Trait     | Behaviors that a type can implement | `Copy`, `Debug`, `IntoIterator`                             |
+| Unsafe    | Low-level concepts                  | `*const T`, `*mut T`, `unsafe`                              |
+
 ## Fixed-Width Numeric Types
 
 ### Integer Types
