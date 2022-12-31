@@ -192,6 +192,44 @@ Additionally, Rust's move semantics can make it easier to reason about the lifet
 
 Overall, Rust's use of move semantics is a key part of its ownership system and helps ensure memory safety and make the lifetime of values in your code more predictable.
 
+Here are some key points about moves in Rust:
+
+- Ownership is a system that prevents data races and segmentation faults by ensuring that each piece of data is owned by exactly one variable at a time.
+- Ownership is implemented through the use of "moves."
+- When a value is moved, the original value is no longer available for use.
+- When a value is moved, the value is transferred to a new owner without making a copy.
+- When a value is moved, any references to the original value become invalid.
+- When a value is moved, the ownership of the value is transferred to the new owner.
+- When a value is moved, the value is moved "by value," meaning that the value itself is transferred, not just a reference to it.
+
+Here is an example of a move:
+
+```rust
+fn main() {
+    let s1 = String::from("hello");
+    let s2 = s1; // s1 is moved to s2
+    println!("{}, world!", s1); // error: s1 has been moved
+}
+```
+
+In this example, the value of `s1` is moved to `s2`, and the original value of `s1` is no longer available for use. Any attempt to use `s1` after the move will result in a compile-time error.
+
+It's important to note that moves only occur when values are assigned to new variables. If a value is passed as an argument to a function or returned from a function, it is not moved, but rather passed by reference.
+
+```rust
+fn main() {
+    let s1 = String::from("hello");
+    let s2 = foo(s1); // s1 is not moved, but rather passed by reference
+    println!("{}, world!", s1); // s1 is still valid
+}
+
+fn foo(s: &str) -> String {
+    s.to_string() // s is not moved, but rather passed by reference
+}
+```
+
+In this example, the value of `s1` is passed by reference to the `foo` function, and the original value of `s1` is still available for use after the function call.
+
 ## Stack and Heap
 
 ```rust
@@ -349,6 +387,28 @@ The variable `composers` is a vector that owns a heap-allocated array containing
 
 ## Moves and Control Flow
 
+In Rust, moves can affect control flow in a few ways.
+
+First, it's important to understand that moves only occur when values are assigned to new variables. If a value is passed as an argument to a function or returned from a function, it is not moved, but rather passed by reference.
+
+With that in mind, let's consider some examples of how moves can affect control flow.
+
+### `if` Statements
+
+If you assign a value to a new variable inside an `if` statement, the value will be moved if the `if` condition is true.
+
+```rust
+fn main() {
+    let s = String::from("hello");
+    if s.len() > 5 {
+        let t = s; // s is moved to t if the condition is true
+    }
+    println!("{}", s); // error: s has been moved
+}
+```
+
+In this example, the value of `s` is moved to `t` if the `if` condition is true, and the original value of `s` is no longer available for use. If the `if` condition is false, the value of `s` is not moved and remains available for use.
+
 ```rust
 let x = vec![10, 20, 30];
 if c {
@@ -364,6 +424,22 @@ In this code, the variable `x` is a vector containing the values `10`, `20`, and
 If the condition `c` is true, then the function `f` is called and the value of `x` is moved into the function as an argument. If the condition `c` is false, then the func‐ tion `g` is called and the value of `x` is also moved into the function as an argument.
 
 After either function is called, the value of `x` is considered uninitialized because it has been moved away and has not definitely been given a new value since. Therefore, it is not allowed to use `x` in the call to `h`.
+
+### `while` Loops
+
+If you assign a value to a new variable inside a `while` loop, the value will be moved on each iteration of the loop.
+
+```rust
+fn main() {
+    let mut s = String::from("hello");
+    while s.len() > 5 {
+        let t = s; // s is moved to t on each iteration
+        s = t; // error: t has been moved
+    }
+}
+```
+
+In this example, the value of `s` is moved to `t` on each iteration of the loop, and the original value of `s` is no longer available for use. Any attempt to reassign a value to `s` will result in a compile-time error.
 
 ```rust
 let x = vec![10, 20, 30];
@@ -403,3 +479,19 @@ To avoid this error:
       x = some_new_value(); // give x a fresh value
   }
   ```
+
+### `for` Loops
+
+If you assign a value to a new variable inside a `for` loop, the value will be moved on each iteration of the loop.
+
+```rust
+fn main() {
+    let v = vec![1, 2, 3];
+    for i in v {
+        let j = i; // i is moved to j on each iteration
+        println!("{}", i); // error: i has been moved
+    }
+}
+```
+
+In this example, the value of `i` is moved to `j` on each iteration of the loop, and the original value of `i` is no longer available for use.
