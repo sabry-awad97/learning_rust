@@ -832,3 +832,152 @@ Here is a summarization of Copy trait:
 - This means that basic operations like assignment, passing parameters, and returning values from functions are more predictable in Rust, as the costs of these operations are more explicit and apparent to the programmer.
 - In C++, assigning one variable to another can require arbitrary amounts of memory and processor time.
 - Rust's approach makes basic operations simple and potentially expensive operations explicit, like calls to `clone` that make deep copies of vectors and their contents.
+
+## Rc and Arc: Shared Ownership
+
+`Rc` (short for "reference counted") and `Arc` (short for "atomic reference counted") are types that provide shared ownership of a value. This means that multiple `Rc` or `Arc` values can point to the same value, and the value will be dropped only when the last `Rc` or `Arc` value pointing to it is dropped.
+
+`Rc` is used for single-threaded situations, while `Arc` is used for multi-threaded situations. Both types implement the `Deref` trait, so they can be used like regular references. However, because `Rc` and `Arc` values can be cloned, they do not implement the `Drop` trait, so they do not take ownership when they go out of scope.
+
+Using `Rc` and `Arc` can be useful in situations where you want to share a value between multiple parts of your program, but you don't want to clone the value or move it around. However, because `Rc` and `Arc` values are reference counted, they come with some overhead in terms of performance and memory usage. They are also not thread-safe, so you need to be careful when using them in multi-threaded situations.
+
+It's important to note that `Rc` and `Arc` are both types that provide shared ownership of a value. This means that multiple `Rc` or `Arc` values can point to the same value, and the value will be dropped only when the last `Rc` or `Arc` value pointing to it is dropped.
+
+`Rc` is used for single-threaded situations, while `Arc` is used for multi-threaded situations. Both types implement the `Deref` trait, so they can be used like regular references. However, because `Rc` and `Arc` values can be cloned, they do not implement the `Drop` trait, so they do not take ownership when they go out of scope.
+
+Using `Rc` and `Arc` can be useful in situations where you want to share a value between multiple parts of your program, but you don't want to clone the value or move it around. However, because `Rc` and `Arc` values are reference counted, they come with some overhead in terms of performance and memory usage. They are also not thread-safe, so you need to be careful when using them in multi-threaded situations.
+
+It's important to note that `Rc` does not provide any protection against concurrent access to shared data. If you need to access shared data concurrently, you should use a synchronization mechanism such as a mutex.
+
+One common use case for `Rc` and `Arc` is in building tree-like data structures, where each node has a reference to its parent. In this case, using `Rc` or `Arc` allows multiple nodes to refer to the same parent without causing a circular ownership problem.
+
+```rust
+use std::rc::Rc;
+
+struct Node {
+    value: i32,
+    parent: Option<Rc<Node>>,
+}
+
+fn main() {
+    let mut root = Node { value: 0, parent: None };
+    let child1 = Node { value: 1, parent: Some(Rc::new(root)) };
+    let child2 = Node { value: 2, parent: Some(Rc::new(root)) };
+}
+```
+
+In the example above, both `child1` and `child2` have a reference to the `root` node, but because they are using `Rc`, there is no circular ownership problem. The `root` node will be dropped only when the last `Rc` value pointing to it is dropped.
+
+Here is an example of using `Rc`:
+
+```rust
+use std::rc::Rc;
+
+fn main() {
+    let s1 = Rc::new("Hello".to_string());
+    let s2 = s1.clone();
+    let s3 = s1.clone();
+
+    println!("{} {} {}", s1, s2, s3);
+}
+```
+
+This code will create an `Rc` object `s1` that points to a heap-allocated `String` value containing the text "Hello". It will then create two more `Rc` objects, `s2` and `s3`, that both point to the same value as `s1`. This is done by calling the `clone` method on `s1`, which increments the reference count of the value and returns a new `Rc` object pointing to the same value.
+
+The `println!` statement will then print the values of `s1`, `s2`, and `s3`, which will all be the same "Hello" string.
+
+When the `main` function goes out of scope, `s1`, `s2`, and `s3` will all be dropped, and the reference count of the "Hello" string will be decremented. When the reference count reaches 0, the "Hello" string will be deallocated from the heap.
+
+Here is an example of using `Arc`:
+
+```rust
+use std::sync::Arc;
+
+fn main() {
+    let s1 = Arc::new("Hello".to_string());
+    let s2 = s1.clone();
+    let s3 = s1.clone();
+
+    println!("{} {} {}", s1, s2, s3);
+}
+```
+
+This code will create an `Arc` object `s1` that points to a heap-allocated `String` value containing the text "Hello". It will then create two more `Arc` objects, `s2` and `s3`, that both point to the same value as `s1`. This is done by calling the `clone` method on `s1`, which increments the reference count of the value in an atomic manner and returns a new `Arc` object pointing to the same value.
+
+The `println!` statement will then print the values of `s1`, `s2`, and `s3`, which will all be the same "Hello" string.
+
+When the `main` function goes out of scope, `s1`, `s2`, and `s3` will all be dropped, and the reference count of the "Hello" string will be decremented in an atomic manner. When the reference count reaches 0, the "Hello" string will be deallocated from the heap.
+
+The difference between this example and the previous one using `Rc` is that `Arc` is safe to use in a multi-threaded environment, while `Rc` is not. `Arc` uses atomic operations to increment and decrement the reference count, ensuring that the reference count can be safely updated from multiple threads without the need for a mutex or other synchronization mechanism. `Rc`, on the other hand, does not provide any concurrent access protection, and attempting to use it in a multi-threaded environment can lead to race conditions and data races.
+
+Here is a summary of the main points of interest:
+
+1. `Rc` and `Arc` are types that provide shared ownership of a value.
+1. `Rc` is used for single-threaded situations, while `Arc` is used for multi-threaded situations.
+1. `Rc` and `Arc` implement the `Deref` trait and can be used like regular references, but do not implement the `Drop` trait.
+1. `Rc` and `Arc` values are reference counted and come with some overhead in terms of performance and memory usage.
+1. `Rc` does not provide any protection against concurrent access to shared data.
+1. `Rc` and `Arc` are commonly used in building tree-like data structures.
+
+|                              | `Rc`                      | `Arc`                                                |
+| ---------------------------- | ------------------------- | ---------------------------------------------------- |
+| Meaning                      | Reference counted         | Atomic reference counted                             |
+| Use cases                    | Single-threaded           | Multi-threaded                                       |
+| Implements `Deref` trait     | Yes                       | Yes                                                  |
+| Implements `Drop` trait      | No                        | No                                                   |
+| Overhead                     | Reference count           | Reference count + atomic operations                  |
+| Concurrent access protection | None                      | Yes                                                  |
+| Common use cases             | Tree-like data structures | Tree-like data structures in concurrent environments |
+
+### Reference Cycle
+
+Reference cycles occur when two or more values have references to each other, creating a circular reference. Because each value holds a reference to the other, the reference count for each value will never reach zero, and the values will never be deallocated from memory. This can lead to a memory leak, where the values continue to occupy memory even though they are no longer needed.
+
+Here is an example of a reference cycle using Rc pointers:
+
+```rust
+use std::rc::Rc;
+
+struct Node {
+    value: i32,
+    next: Option<Rc<Node>>,
+}
+
+fn main() {
+    let a = Rc::new(Node { value: 1, next: None });
+    let b = Rc::new(Node { value: 2, next: Some(a.clone()) });
+    let c = Rc::new(Node { value: 3, next: Some(b.clone()) });
+
+    // Create a reference cycle by setting a's next value to c
+    a.next = Some(c.clone());
+
+    // The reference count for a, b, and c will never reach zero,
+    // so they will never be deallocated from memory.
+}
+```
+
+To avoid reference cycles, it is important to ensure that there are no circular references in your data structures. In the example above, we could avoid the reference cycle by setting `a.next` to `None` instead of `Some(c.clone())`.
+
+Alternatively, we can use weak pointers (`std::rc::Weak`) to break the reference cycle. Weak pointers do not increase the reference count, so they do not contribute to the lifetime of the value. In the example above, we could use a weak pointer for the `next` field in the `Node` struct to avoid the reference cycle:
+
+```rust
+use std::rc::{Rc, Weak};
+
+struct Node {
+    value: i32,
+    next: Option<Weak<Node>>,
+}
+
+fn main() {
+    let a = Rc::new(Node { value: 1, next: None });
+    let b = Rc::new(Node { value: 2, next: Some(Rc::downgrade(&a)) });
+    let c = Rc::new(Node { value: 3, next: Some(Rc::downgrade(&b)) });
+
+    // Set a's next value to c
+    a.next = Some(Rc::downgrade(&c));
+
+    // The reference count for a, b, and c will reach zero and they will be deallocated from memory.
+}
+```
+
+By using weak pointers, we can allow values to reference each other without creating a reference cycle. This can be useful in situations where it is necessary to create circular references, but we still want to ensure that the values are properly deallocated when they are no longer needed.
