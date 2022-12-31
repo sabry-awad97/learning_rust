@@ -2882,8 +2882,6 @@ Here is a comparison of arrays, vectors, and slices in Rust:
 
 ## Miscellaneous
 
----
-
 - You can convert a string to uppercase or lowercase using the `to_uppercase` or `to_lowercase` method.
 
   ```rust
@@ -2957,7 +2955,47 @@ Here is a comparison of arrays, vectors, and slices in Rust:
 
 ## Additional Types and Libraries
 
-- Rust provides several types for representing strings in different encodings, such as `OsString`, `OsStr`, `CString`, and `CStr`. These types are useful when interacting with the operating system or with foreign code that uses a different encoding.
+- Rust provides several types for representing strings in different encodings, such as `OsString`, `OsStr`, `CString`, and `CStr`. These types are useful when interacting with the operating system or with foreign code that uses a different encoding. These types are defined in the `std::ffi` and `std::os` modules of the Rust standard library.
+
+  - `OsString` is a growable, heap-allocated string type that is not guaranteed to be encoded in UTF-8. It is similar to `String`, but it is intended for use with the operating system's native string representation.
+  - `OsStr` is a slice that points to a string that is not guaranteed to be encoded in UTF-8. It is similar to `&str`, but it is intended for use with the operating system's native string representation.
+
+    ````rust
+        use std::ffi::OsString;
+        use std::os::unix::ffi::OsStringExt;
+
+        let s = OsString::from("Hello, world!");
+        let v: Vec<u8> = s.into_vec();
+        // v is now a vector of bytes representing the string
+
+        let v = vec![72, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 33];
+        let s = OsString::from_vec(v);
+        // s is now an OsString with the value "Hello, world!"
+
+        let s = OsString::from("Hello, world!");
+        let string = s.into_string();
+        ```
+
+    ````
+
+  - `CString` is a growable, heap-allocated string type that is null-terminated and encoded in ASCII. It is intended for use with foreign functions that expect null-terminated strings.
+  - `CStr` is a slice that points to a null-terminated string that is encoded in ASCII. It is intended for use with foreign functions that expect null-terminated strings.
+
+    ```rust
+    use std::ffi::CString;
+    use std::os::raw::c_char;
+
+    // Create a CString from a string literal
+    let s = CString::new("Hello, world!").unwrap();
+    // Get a raw pointer to the CString's data
+    let p: *const c_char = s.as_ptr();
+    // Create a CStr from the raw pointer
+    let c_str = unsafe { CStr::from_ptr(p) };
+    // Convert the CStr to a Rust string slice
+    let rust_str = c_str.to_str().unwrap();
+    // rust_str is now "Hello, world!"
+    ```
+
 - Rust provides a number of string manipulation libraries in its ecosystem, such as `strsim`, `regex`, and `shellexpand`, which provide additional functionality for tasks such as string matching, regular expression matching, and shell expansion.
 - Rust also provides a number of libraries for working with Unicode strings, such as `unicode-segmentation` and `unicode-normalization`, which provide functions for working with Unicode grapheme clusters and normalizing Unicode strings.
 
