@@ -310,3 +310,54 @@ When you pass a value by value, the value is moved into the function and the ori
 On the other hand, when you pass a value by reference, the function receives a non-owning pointer to the value. This means that the function can access the value, but it does not take ownership of the value and the original owner retains ownership.
 
 In Rust, it is important to carefully consider whether to pass a value by value or by reference, depending on whether you want the function to take ownership of the value or just access it.
+
+## Rust References Versus C++ References
+
+Here is a comparison of Rust references and C++ references:
+
+|                          | Rust references | C++ references |
+| ------------------------ | --------------- | -------------- |
+| Syntax                   | `&T`            | `&T`           |
+| Creating references      | `&T`            | Implicit       |
+| Dereferencing references | `*T`            | Implicit       |
+| Lifetime                 | Yes             | No             |
+| Borrowing rules          | Yes             | No             |
+| Nullability              | No              | Yes            |
+| Implicit dereference     | `.` operator    | Yes            |
+
+In Rust, references are created explicitly with the `&` operator and dereferenced explicitly with the `*` operator.
+
+In C++, references are created and dereferenced implicitly and can appear anywhere they are needed.
+
+```c++
+int x = 10;
+int &r = x; // initialization creates reference implicitly
+```
+
+Rust references have a lifetime, which is a compile-time concept that specifies the scope in which a reference is valid. This means that a Rust reference can only be used within the lifetime of the value it refers to. C++ references, on the other hand, do not have a lifetime and can be used for the lifetime of the program.
+
+```rust
+let x = 10;
+let r = &x; // &x is a shared reference to x
+let z = *r
+```
+
+Rust has a borrowing system that enforces rules around when a value can be borrowed and how it can be borrowed. For example, you can only have one mutable reference to a value at a time, and you cannot have any other references (shared or mutable) to the value while a mutable reference is active. C++ does not have these borrowing rules and allows you to have multiple references to a value at the same time.
+
+Rust references cannot be null, which means that they always refer to a valid value. C++ references can be null, which means that they may not always refer to a valid value.
+
+In Rust, the `.` operator can also implicitly borrow a reference to its left operand if needed for a method call. For example, you can call the `sort` method on a vector like this:
+
+```rust
+let mut v = vec![1973, 1968];
+v.sort(); // implicitly borrows a mutable reference to v
+```
+
+This is equivalent to calling `sort` with a more explicit, verbose syntax:
+
+```rust
+let mut v = vec![1973, 1968];
+(&mut v).sort(); // equivalent, but more verbose
+```
+
+Overall, Rust references and C++ references are similar in that they allow you to access a value without taking ownership of it, but they have some key differences in terms of lifetime, borrowing rules, nullability, and syntax.
