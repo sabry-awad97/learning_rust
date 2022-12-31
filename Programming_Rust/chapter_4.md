@@ -301,3 +301,50 @@ s  ->  ["udon", "ramen", "soba"]
 ```
 
 In this version of the code, `s`, `t`, and `u` all own separate values on the heap, and the original value of `s` is still valid and can be used after the clones are created.
+
+```rust
+struct Person {
+    name: String,
+    birth: i32,
+}
+let mut composers = Vec::new();
+composers.push(Person {
+    name: "Palestrina".to_string(),
+    birth: 1525,
+});
+```
+
+```rust
+Variable       |  Value
+---------------+------------------------------------------------
+composers      |  +------------+
+               |  |  Pointer   |  ---->  [Heap]
+               |  +------------+
+               |  |  Length    |
+               |  +------------+
+               |  |  Capacity  |
+               |  +------------+
+               |  |  Person 1  |  +------------+
+               |  |            |  |  Pointer   |  ---->  [Heap]
+               |  |            |  +------------+
+               |  |            |  |  Length    |
+               |  |            |  +------------+
+               |  |            |  |  Capacity  |
+               |  |            |  +------------+
+               |  |            |  |"Palestrina"     |  +------------+
+               |  |            |  |                 |  |  Pointer   |  ---->  [Heap]
+               |  |            |  |                 |  +------------+
+               |  |            |  |                 |  |  Length    |
+               |  |            |  |                 |  +------------+
+               |  |            |  |                 |  |  Capacity  |
+               |  |            |  |                 |  +------------+
+               |  |            |  |                 |  |"Palestrina"|
+               |  |            |  |                 |  +------------+
+               |  |            |  |                 |
+               |  |            |  +------------+
+               |  +------------+
+
+
+```
+
+The variable `composers` is a vector that owns a heap-allocated array containing one element, which is a struct `Person`. The struct `Person` owns a heap-allocated string slice containing the text of its `name` field.
