@@ -71,3 +71,11 @@ The expressions in Rust include:
 | Closure                  | \|x, y\| x + y                          |                         |
 
 These expressions represent most of the operations that can be performed in Rust, and are used to construct complex logic and computation in the language.
+
+## Precedence and Associativity
+
+Precedence and associativity are the rules that determine the order in which operations are executed in an expression.
+
+Precedence refers to the order in which operations are performed when multiple operations are combined in a single expression. For example, in the expression "2 + 3 - 4", the multiplication operation (\*) has a higher precedence than the addition operation (+), so the multiplication is performed first, resulting in the value 12.
+
+Associativity refers to the order in which operations are performed when multiple operations of the same precedence are combined in a single expression. For example, in the expression "2 - 3 - 4", subtraction is left-associative, so the operations are performed from left to right, resulting in the value -5.
