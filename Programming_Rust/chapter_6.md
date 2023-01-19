@@ -269,3 +269,33 @@ It's important to note that the `match` expression is also an expression, it can
 One of the key features of the match expression is that it must be exhaustive, meaning that it must cover all possible values of the type being matched. If the match expression does not cover all possible values, the Rust compiler will raise an error.
 
 To handle the case where none of the patterns match, it's common to use a catch-all pattern \_, which matches any value and is executed if no other patterns match. This is useful when we want to handle all possible cases but don't know what they are.
+
+## if let
+
+`if let` is a shorthand syntax in Rust for an `if` expression that only has a single `match` arm. It is used to match a value and extract the inner value if the match is successful.
+
+The basic syntax for an `if let` expression is:
+
+```rust
+if let pattern = value {
+    // code to execute if pattern matches value
+}
+```
+
+The `if let` construct is useful when you want to match a value and extract the inner value, and you only care about one of the possible values. It's a more concise and readable way to write a similar match statement with a single arm.
+
+```rust
+if let Some(x) = maybe_value {
+    // code to execute if maybe_value is Some(x)
+}
+```
+
+It's also possible to add an `else` branch to an `if let` expression to execute code when the match fails.
+
+```rust
+if let pattern = value {
+    // code to execute if pattern matches value
+} else {
+    // code to execute if pattern does not match value
+}
+```
