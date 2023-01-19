@@ -1112,3 +1112,25 @@ Adding lifetimes in this way allows the Rust compiler to ensure that the returne
 ```
 
 It's good practice to include lifetimes when returning references to ensure that the returned references are valid and safe to use.
+
+## Structs Containing References
+
+Structs in Rust can contain references to other values, including other structs. When a struct contains a reference, it is called a "borrowing" the value that the reference points to. The lifetime of the reference is usually tied to the lifetime of the struct.
+
+Whenever a reference type appears inside another type’s definition, you must write out its lifetime.
+
+```rust
+struct Data {
+    value: i32,
+}
+
+struct Container<'a> {
+    data: &'a Data,
+}
+```
+
+The struct `Container` has a lifetime parameter `'a`, which is used to indicate that the reference to the `Data` struct is tied to the lifetime of the `Container` struct. This means that the reference to `Data` is only valid as long as the `Container` struct is still in scope.
+
+It's important to note that the `Container` struct does not own the data it references, it only borrows it. This means that the data will not be deallocated when the `Container` struct goes out of scope.
+
+It's also possible to use `Rc` or `Arc` smart pointers to wrap the references, which allows multiple structs to reference the same data and control the data ownership.
