@@ -7,3 +7,67 @@ Rust is considered an expression-based language, which is a tradition that dates
 The use of expressions in Rust provides a more concise and expressive way of expressing logic and computation. This can make the code more readable and maintainable, as well as more powerful, as expressions can be used to perform complex operations. Additionally, the use of expressions in Rust also makes the language more type-safe, as the type of an expression is known at compile-time, which can help prevent runtime errors.
 
 However, the use of expressions in Rust also has some limitations. For example, the use of expressions can make code more difficult to read and understand, especially when dealing with complex logic. Additionally, since expressions in Rust are type-safe, it can make it more difficult to perform certain operations, such as working with different types of data.
+
+The expressions in Rust include:
+
+| Expression Type          | Example                                 | Related Traits          |
+| ------------------------ | --------------------------------------- | ----------------------- |
+| Array literal            | \[1, 2, 3\]                             |                         |
+| Repeat array literal     | \[0; 50\]                               |                         |
+| Tuple                    | (6, "crullers")                         |                         |
+| Grouping                 | (2 + 2)                                 |                         |
+| Block                    | { f(); g() }                            |                         |
+| Control flow expressions | if ok { f() }                           |                         |
+|                          | if ok { 1 } else { 0 }                  |                         |
+|                          | if let Some(x) = f() { x } else { 0 }   |                         |
+|                          | match x { None => 0, \_ => 1 }          |                         |
+|                          | for v in e { f(v); }                    | std::iter::IntoIterator |
+|                          | while ok { ok = f(); }                  |                         |
+|                          | while let Some(x) = it.next() { f(x); } |                         |
+|                          | loop { next_event(); }                  |                         |
+|                          | break                                   |                         |
+|                          | continue                                |                         |
+|                          | return 0                                |                         |
+| Macro invocation         | println!("ok")                          |                         |
+| Path                     | std::f64::consts::PI                    |                         |
+| Struct literal           | Point {x: 0, y: 0}                      |                         |
+| Tuple field access       | pair.0                                  | Deref, DerefMut         |
+| Struct field access      | point.x                                 | Deref, DerefMut         |
+| Method call              | point.translate(50, 50)                 | Deref, DerefMut         |
+| Function call            | stdin()                                 |                         |
+| Index                    | arr\[0\]                                |                         |
+| Error check              | create_dir("tmp")?                      |                         |
+| Logical/bitwise NOT      | !ok                                     | Not                     |
+| Negation                 | -num                                    | Neg                     |
+| Dereference              | \*ptr                                   | Deref, DerefMut         |
+| Borrow                   | &val                                    |                         |
+| Type cast                | x as u32                                |                         |
+| Multiplication           | n \* 2                                  | Mul                     |
+| Division                 | n / 2                                   | Div                     |
+| Remainder                | n % 2                                   | Rem                     |
+| Addition                 | n + 1                                   | Add                     |
+| Subtraction              | n - 1                                   | Sub                     |
+| Left shift               | n << 1                                  | Shl                     |
+| Right shift              | n >> 1                                  | Shr                     |
+| Bitwise AND              | n & 1                                   | BitAnd                  |
+| Bitwise exclusive OR     | n ^ 1                                   | BitXor                  |
+| Bitwise OR               | n                                       | 1                       |
+| Less than                | n < 1                                   | std::cmp::PartialOrd    |
+| Less than or equal       | n <= 1                                  | std::cmp::PartialOrd    |
+| Greater than             | n > 1                                   | std::cmp::PartialOrd    |
+| Greater than or equal    | n >= 1                                  | std::cmp::PartialOrd    |
+| Equal                    | n == 1                                  | std::cmp::PartialEq     |
+| Not equal                | n != 1                                  | std::cmp::PartialEq     |
+| Logical AND              | x.ok && y.ok                            |                         |
+| Logical OR               | x.ok                                    |                         |
+| End-exclusive range      | start .. stop                           |                         |
+| End-inclusive range      | start ..= stop                          |                         |
+| Assignment               | x = val                                 |                         |
+| Compound assignment      | x \*= 1                                 | MulAssign               |
+|                          | x /= 1                                  | DivAssign               |
+|                          | x %= 1                                  | RemAssign               |
+|                          | x += 1                                  | AddAssign               |
+|                          | x -= 1                                  | SubAssign               |
+| Closure                  | \|x, y\| x + y                          |                         |
+
+These expressions represent most of the operations that can be performed in Rust, and are used to construct complex logic and computation in the language.
