@@ -1134,3 +1134,40 @@ The struct `Container` has a lifetime parameter `'a`, which is used to indicate 
 It's important to note that the `Container` struct does not own the data it references, it only borrows it. This means that the data will not be deallocated when the `Container` struct goes out of scope.
 
 It's also possible to use `Rc` or `Arc` smart pointers to wrap the references, which allows multiple structs to reference the same data and control the data ownership.
+
+## Distinct Lifetime Parameters
+
+```rust
+struct S<'a> {
+    x: &'a i32,
+    y: &'a i32
+}
+
+let x = 10;
+let r;
+{
+    let y = 20;
+    {
+        let s = S { x: &x, y: &y };
+        r = s.x;
+    }
+}
+println!("{}", r);
+```
+
+The code would not compile.
+
+When initializing the struct `S` with `&x` and `&y`, Rust must ensure that the lifetime of `'a` is valid for both references, but in this case, the lifetime of `'a` cannot be shorter than the lifetime of `y` and also longer than the lifetime of `r` which is defined in the outermost scope.
+
+`y` is defined in an inner scope and goes out of scope before the outermost scope, and the lifetime of `r` is defined in the outermost scope, so the lifetime of `'a` must enclose the lifetime of `r`, but it cannot enclose the lifetime of `y` because `y` goes out of scope before the outermost scope.
+
+Rust would prevent you from creating such struct with such lifetime parameters, since the constraints are impossible to satisfy. This is to prevent creating references that might point to invalid memory, and to ensure the safety of the program.
+
+```rust
+struct S<'a, 'b> {
+    x: &'a i32,
+    y: &'b i32
+}
+```
+
+The struct `S` has two lifetime parameters `'a` and `'b` which are used to indicate that the references stored in `x` and `y` fields have different lifetimes.
