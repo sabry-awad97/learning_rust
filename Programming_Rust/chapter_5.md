@@ -1171,3 +1171,78 @@ struct S<'a, 'b> {
 ```
 
 The struct `S` has two lifetime parameters `'a` and `'b` which are used to indicate that the references stored in `x` and `y` fields have different lifetimes.
+
+## Lifetime elision
+
+Lifetime elision is a feature in Rust that allows the compiler to infer the lifetime of references in some cases, without the need to explicitly declare the lifetime parameters.
+
+The Rust compiler uses a set of rules, called the elision rules, to infer the lifetime of references in structs, functions, and other types. The elision rules apply when the references have the same lifetime and can be inferred from the context.
+
+Here are the three elision rules:
+
+1. The first rule, called the "input lifetime rule," states that if a function or method has exactly one parameter that is a reference, the lifetime of that reference is assigned to all references in the return value.
+
+```rust
+fn foo<'a>(x: &'a i32) -> &i32 {
+    x
+}
+
+fn foo(x: &i32) -> &i32 {
+    x
+}
+```
+
+1. The second rule, called the "output lifetime rule," states that if a function or method has exactly one return value that is a reference, the lifetime of that reference is assigned to all references in the parameters.
+
+```rust
+fn bar<'a>(x: &i32, y: &i32) -> &'a i32 {
+    x
+}
+
+fn bar(x: &i32, y: &i32) -> &i32 {
+    x
+}
+```
+
+1. The third rule, called the "lifetime elision in structs," states that if a struct has exactly one field that is a reference, the lifetime of that reference is assigned to all references in the struct.
+
+```rust
+struct S<'a> {
+    x: &'a i32,
+    y: &'a i32,
+}
+
+struct S {
+    x: &i32,
+    y: &i32,
+}
+```
+
+When the elision rules are not sufficient, you have to explicitly declare the lifetime parameters to indicate the lifetime of the references.
+
+In general, the elision rules are designed to make the code more readable by reducing the amount of explicit lifetime annotations required. But, if you are unsure about the lifetimes of the references, it's a good practice to explicitly declare the lifetime parameters, to make it clear to the reader and to the compiler what the intended lifetimes are.
+
+```rust
+struct StringTable {
+    elements: Vec<String>,
+}
+
+impl StringTable {
+    fn find_by_prefix(&self, prefix: &str) -> Option<&String> {
+        for i in 0 .. self.elements.len() {
+            if self.elements[i].starts_with(prefix) {
+                return Some(&self.elements[i]);
+            }
+        }
+        None
+    }
+}
+```
+
+The `StringTable` struct has a field called `elements` which is a vector of `String`s. The `find_by_prefix` method takes a reference to a string as an argument, and it iterates over the vector of `String`s in the `elements` field. It checks if each `String` in the vector starts with the prefix passed as a parameter. If it does, it returns a reference to that `String` wrapped in a `Some` variant. If the prefix is not found in any of the `String`s in the vector, it returns `None`.
+
+It's worth noting that, the lifetime of the returned reference is the same as the lifetime of the `self` reference. This is because the returned reference is pointing to an element of the `elements` vector, which is owned by the `StringTable` struct.
+
+This method does not use lifetime elision since the return value is a reference, and the lifetime of the reference is explicitly specified by the lifetime of the self parameter.
+
+Also, as the method is not modifying the struct it is marked with `&` making it a immutable borrow. If the method needed to modify the struct it would be marked with `&mut` making it a mutable borrow.
