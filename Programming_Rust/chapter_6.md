@@ -266,4 +266,6 @@ match value {
 
 It's important to note that the `match` expression is also an expression, it can be used to return a value or assign it to a variable.
 
-In summary, `match` expressions in Rust are used to compare a value against a pattern and execute code based on the first match. They have a basic syntax with the ability to include a guard and catch-all pattern to handle all possible cases. They are often used with enums, and also commonly used with structs and other types that have a well-defined set of possibilities. `match` expressions.
+One of the key features of the match expression is that it must be exhaustive, meaning that it must cover all possible values of the type being matched. If the match expression does not cover all possible values, the Rust compiler will raise an error.
+
+To handle the case where none of the patterns match, it's common to use a catch-all pattern \_, which matches any value and is executed if no other patterns match. This is useful when we want to handle all possible cases but don't know what they are.
