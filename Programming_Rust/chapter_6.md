@@ -79,3 +79,32 @@ Precedence and associativity are the rules that determine the order in which ope
 Precedence refers to the order in which operations are performed when multiple operations are combined in a single expression. For example, in the expression "2 + 3 - 4", the multiplication operation (\*) has a higher precedence than the addition operation (+), so the multiplication is performed first, resulting in the value 12.
 
 Associativity refers to the order in which operations are performed when multiple operations of the same precedence are combined in a single expression. For example, in the expression "2 - 3 - 4", subtraction is left-associative, so the operations are performed from left to right, resulting in the value -5.
+
+## Blocks and Semicolons
+
+In Rust, blocks are used to group multiple expressions together and can be used as expressions themselves. Blocks are enclosed in curly braces { } and can contain any number of statements or expressions. They are commonly used in control flow statements like if, while, and for, as well as in function and method definitions.
+
+A semicolon (;) is used to separate statements in Rust. Each statement must end with a semicolon, except for when a block is used as the last element in a statement. In this case, the semicolon is optional. For example:
+
+```rust
+let x = {
+    let y = 1;
+    y + 1
+}; //This is a valid statement, semicolon is optional here
+
+let msg = {
+    // let-declaration: semicolon is always required
+    let dandelion_control = puffball.open();
+    // expression + semicolon: method is called, return value dropped
+    dandelion_control.release_all_seeds(launch_codes);
+    // expression with no semicolon: method is called,
+    // return value stored in `msg`
+    dandelion_control.get_status()
+};
+```
+
+However, in most cases, it's recommended to use a semicolon to separate statements, as it makes the code more clear and consistent.
+
+It's also important to note that semicolons can also be used to separate expressions in Rust, but it is not recommended to use them to do so, as it can make the code more difficult to read and understand, especially when dealing with complex logic.
+
+In summary, blocks are used in Rust to group multiple statements together, and semicolons are used to separate statements. While semicolons can be used to separate expressions as well, it's not recommended as it can make the code more difficult to read.
