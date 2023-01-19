@@ -299,3 +299,45 @@ if let pattern = value {
     // code to execute if pattern does not match value
 }
 ```
+
+## Loops
+
+In Rust, there are several types of loops that can be used to repeat a block of code multiple times.
+
+- `while` loops: A `while` loop repeatedly executes a block of code as long as a certain condition is true. The syntax for a `while` loop is:
+
+  ```rust
+  while condition {
+      // code to execute
+  }
+  ```
+
+- `for` loops: A `for` loop is used to iterate over a collection of items, such as an array or a vector. The syntax for a `for` loop is:
+
+  ```rust
+  for variable in collection {
+      // code to execute
+  }
+  ```
+
+- `loop`: A `loop` is used to create an infinite loop. The syntax for a `loop` is:
+
+  ```rust
+  loop {
+      // code to execute
+  }
+  ```
+
+- `while let`: `while let` is a shorthand syntax in Rust for a `while` loop that only has a single `match` arm. It is used to match a value and extract the inner value on each iteration, as long as the match is successful.
+
+  ```rust
+  while let pattern = value {
+      // code to execute while pattern matches value
+  }
+
+  while let Some(x) = iterator.next() {
+      // code to execute while iterator has values
+  }
+  ```
+
+It's important to note that the `break` and `continue` statements can be used to control the execution of loops. The `break` statement is used to exit a loop, and the `continue` statement is used to skip to the next iteration of a loop.
