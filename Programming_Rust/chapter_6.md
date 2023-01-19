@@ -108,3 +108,85 @@ However, in most cases, it's recommended to use a semicolon to separate statemen
 It's also important to note that semicolons can also be used to separate expressions in Rust, but it is not recommended to use them to do so, as it can make the code more difficult to read and understand, especially when dealing with complex logic.
 
 In summary, blocks are used in Rust to group multiple statements together, and semicolons are used to separate statements. While semicolons can be used to separate expressions as well, it's not recommended as it can make the code more difficult to read.
+
+## Declarations
+
+In Rust, a declaration is used to introduce a new binding, which is a name associated with a value. There are several types of declarations in Rust, including:
+
+- Variable declaration: A variable declaration is used to create a new binding with a specific name, and assigns a value to it. The value can be changed later on. The syntax for variable declaration is:
+
+  ```rust
+  let var_name = value;
+  ```
+
+- Constant declaration: A constant declaration is similar to a variable declaration, but the value cannot be changed after the initial assignment. Constants are declared using the `const` keyword instead of `let`. The syntax for constant declaration is:
+
+  ```rust
+  const CONST_NAME: type = value;
+  ```
+
+- Function declaration: A function declaration is used to create a new binding that refers to a function. The syntax for function declaration is:
+
+  ```rust
+  fn function_name(parameters) -> return_type {
+      // function body
+  }
+  ```
+
+- Struct declaration: A struct declaration is used to define a new struct type. Structs are used to group related data together in a single structure. The syntax for struct declaration is:
+
+  ```rust
+  struct StructName {
+      field1: type1,
+      field2: type2,
+      ...
+  }
+  ```
+
+- Enum declaration: An enum declaration is used to define a new enumerated type. Enums are used to define a set of named constants. The syntax for enum declaration is:
+
+  ```rust
+  enum EnumName {
+      Variant1,
+      Variant2,
+      ...
+  }
+  ```
+
+- Trait declaration: A trait declaration is used to define a new trait, which is a collection of method signatures. Traits can be implemented by structs and enums. The syntax for trait declaration is:
+
+  ```rust
+  trait TraitName {
+      fn method1(&self);
+      fn method2(&self) -> ReturnType;
+      ...
+  }
+  ```
+
+- Type alias: A type alias creates a new name for an existing type. The syntax for type alias is:
+
+  ```rust
+  type TypeName = ExistingType;
+  ```
+
+- Static variable: A static variable is a variable that is stored in the global memory, and its value is shared by all instances of the program. The syntax for static variable is:
+
+  ```rust
+  static VAR_NAME: type = value;
+  ```
+
+- Unsafe code block : An unsafe block is a block of code that is marked as unsafe and therefore can access memory in ways that are not guaranteed to be safe. The syntax for unsafe code block is:
+
+  ```rust
+  unsafe {
+      // unsafe code
+  }
+  ```
+
+- Macros : Macros are a way to extend the syntax of Rust, they are implemented as functions that are expanded at compile-time. There are two types of macros: macro_rules and built-in macros. The syntax for macro is:
+
+  ```rust
+  macro_rules! macro_name {
+  // macro code
+  }
+  ```
