@@ -542,3 +542,9 @@ let second_half = &game_moves[midpoint .. end];
 ```
 
 The range operator can also be used to produce various types of ranges, including end-exclusive (half-open) ranges, end-inclusive (closed) ranges, and full ranges. Only ranges that include a start value are iterable, as a loop must have somewhere to start.
+
+## Reference Operators
+
+There are two reference operators: & and &mut. These operators allow you to work with the memory address of a value rather than the value itself. The & operator creates an immutable reference to a value, while the &mut operator creates a mutable reference.
+
+In addition to these reference operators, there is also a unary \* operator. This operator is used to access the value pointed to by a reference. When you use the . operator to access a field or method of a reference, Rust automatically dereferences the reference for you. However, in some cases you may need to explicitly access the value pointed to by a reference. This is where the \* operator comes in. By using the \* operator, you can read or write the entire value that the reference points to.
