@@ -434,3 +434,44 @@ In Rust, the type system is affected by control flow, which means that the way c
 The loop expression in Rust is offered as a solution to the issue of normal type matching by offering a way to express the intended flow of control. Writing divergent functions, such as those that never return, is a natural part of the Rust programming model, and can be achieved by using the ! type in function signatures.
 
 In Rust, it is considered an error if a function with the ! type can return normally, as this would be contradictory to its intended behavior.
+
+## Function and Method Calls
+
+Function and method calls are a way to execute code that is stored in a separate function or method, respectively. In Rust, a function call is written using the function name followed by its arguments in parentheses, like this:
+
+```rs
+let result = function_name(arg1, arg2, ...); // function call
+```
+
+A method call, on the other hand, is called on an object (also known as an instance) of a struct, enum, or trait, and is written using the instance name, followed by the method name and its arguments in parentheses, like this:
+
+```rs
+let result = object_instance.method_name(arg1, arg2, ...); // method call
+```
+
+In this example, `object_instance` is an instance of a struct or enum, and `method_name` is a method defined for this instance.
+
+Type-associated functions, also known as associated functions, are a special kind of method that are called on the type of the struct, enum, or object rather than on an instance. The syntax for calling associated functions is as follows:
+
+```rs
+let result = StructType::associated_function(arg1, arg2, ...);
+```
+
+When using generic types in a function or method call, the usual syntax `Vec<T>` does not work, as `<` is the less-than operator. In this case, you should use `::<T>`, which is called the "turbofish". However, if the type parameters can be inferred, it is considered good style to omit them.
+
+```rs
+return Vec<i32>::with_capacity(1000); // error: something about chained comparisons
+let ramp = (0 .. n).collect<Vec<i32>>(); // same error
+```
+
+```rs
+return Vec::<i32>::with_capacity(1000); // ok, using ::<T>
+let ramp = (0 .. n).collect::<Vec<i32>>(); // ok, using ::<T>
+```
+
+This syntax is necessary because otherwise the angle brackets would be parsed as the bitwise left shift operator.
+
+```rs
+return Vec::with_capacity(10); // ok, if the fn return type is Vec<i32>
+let ramp: Vec<i32> = (0 .. n).collect(); // ok, variable's type is given
+```
