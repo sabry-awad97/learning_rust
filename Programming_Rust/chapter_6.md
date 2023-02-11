@@ -475,3 +475,70 @@ This syntax is necessary because otherwise the angle brackets would be parsed as
 return Vec::with_capacity(10); // ok, if the fn return type is Vec<i32>
 let ramp: Vec<i32> = (0 .. n).collect(); // ok, variable's type is given
 ```
+
+## Fields and Elements
+
+One of its key features is the ability to access fields and elements in various data structures such as structs, tuples, arrays, slices, and vectors.
+
+### Struct Fields
+
+Structs are composite data types that allow you to group multiple values together into a single object.
+A struct is a composite type made up of smaller parts called fields. Each field has a name and a type.
+
+```rs
+struct User {
+    username: String,
+    email: String,
+    sign_in_count: u64,
+    active: bool,
+}
+
+let user1 = User {
+    email: String::from("someone@example.com"),
+    username: String::from("someusername123"),
+    active: true,
+    sign_in_count: 1,
+};
+```
+
+To access the fields of a struct, you use the dot operator (.) followed by the field name:
+
+```rs
+user1.email
+```
+
+If the value to the left of the dot operator is a reference or smart pointer type, it will be automatically dereferenced, just as for method calls. This makes it easy to work with complex data structures without having to worry about memory management.
+
+### Tuple Elements
+
+Tuples are similar to structs, but their fields have numbers rather than names. To access the elements of a tuple, you use the dot operator (.) followed by the element number:
+
+```rs
+coords.1
+```
+
+### Array Elements
+
+Arrays are fixed-sized data structures that allow you to store multiple values of the same type. To access the elements of an array, you use square brackets ([ ]) followed by the element number:
+
+```rs
+pieces[i]
+```
+
+The value to the left of the square brackets will be automatically dereferenced. Expressions like these are known as lvalues, because they can appear on the left side of an assignment. For example:
+
+```rs
+pieces[2] = Some(Piece::new(Black, Knight, coords));
+```
+
+Note that to make an assignment, the array must be declared as a mutable variable.
+
+### Slices
+
+Slices are views into arrays or vectors that allow you to reference a contiguous subset of the data. To extract a slice from an array or vector, you use the range operator (..) followed by the start and end indices:
+
+```rs
+let second_half = &game_moves[midpoint .. end];
+```
+
+The range operator can also be used to produce various types of ranges, including end-exclusive (half-open) ranges, end-inclusive (closed) ranges, and full ranges. Only ranges that include a start value are iterable, as a loop must have somewhere to start.
