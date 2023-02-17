@@ -548,3 +548,231 @@ The range operator can also be used to produce various types of ranges, includin
 There are two reference operators: & and &mut. These operators allow you to work with the memory address of a value rather than the value itself. The & operator creates an immutable reference to a value, while the &mut operator creates a mutable reference.
 
 In addition to these reference operators, there is also a unary \* operator. This operator is used to access the value pointed to by a reference. When you use the . operator to access a field or method of a reference, Rust automatically dereferences the reference for you. However, in some cases you may need to explicitly access the value pointed to by a reference. This is where the \* operator comes in. By using the \* operator, you can read or write the entire value that the reference points to.
+
+## Type Casts
+
+There are two kinds of type casts: explicit type casts and type coercion.
+
+Explicit type casts, also known as "type conversions", are done using the as keyword. These allow you to convert a value from one type to another.
+
+```rs
+let x: u32 = 42;
+let y: i32 = x as i32;
+```
+
+In this example, the value `x` of type `u32` is explicitly cast to type `i32` using the `as` keyword, and assigned to the variable `y`.
+
+Type coercion, on the other hand, is an implicit conversion of a value's type to a different type. This happens automatically in certain situations, such as when you pass an argument to a function that expects a different type.
+
+```rs
+fn add_one(x: i32) -> i32 {
+    x + 1
+}
+
+let y: u32 = 42;
+let z = add_one(y as i32);
+```
+
+In Rust, casting between two types is only safe if the two types have the same **size** and **alignment**.
+
+Size refers to the number of bytes that the type occupies in memory. For example, `i32` and `u32` both have a size of 4 bytes, which means they have the same number of bytes and are considered to be the same size.
+
+Alignment refers to the memory address at which a value of a particular type must be stored. For example, an `i32` value must be stored at an address that is a multiple of 4 bytes (i.e., its alignment is 4 bytes). If two types have different alignment requirements, casting between them can result in undefined behavior.
+
+When two types have the same size and alignment, Rust will ensure that the cast is safe and valid at compile time. However, if the two types have different size or alignment, the cast can result in undefined behavior or memory safety issues. In these cases, it is generally recommended to use other methods such as transmutation, conversion or conversion traits like From and Into to convert between types safely.
+
+Several kinds of casts are permitted, including:
+
+1. Numeric casts: These allow you to convert a value from one numeric type to another. For example, you might cast an `i32` to a `u32`, or a `f32` to an `f64`.
+
+   ```rs
+   let x: i32 = 42;
+   let y: u32 = x as u32;
+   ```
+
+1. Pointer casts: These allow you to convert a pointer from one type to another. For example, you might cast a raw pointer to a typed pointer, or a mutable reference to an immutable reference.
+
+   ```rs
+   let x: *mut i32 = &mut 42;
+   let y: *const i32 = x as *const i32;
+   ```
+
+1. Reference casts: These allow you to convert a reference from one type to another. For example, you might cast an `&i32` to an `&u32`.
+
+   ```rs
+   let x: &i32 = &42;
+   let y: &u32 = unsafe { &*(x as *const i32 as *const u32) };
+   ```
+
+1. Trait object casts: These allow you to convert a trait object from one type to another. For example, you might cast a `&dyn Any` trait object to a `&dyn Debug` trait object.
+
+   ```rs
+   use std::any::Any;
+
+   let x: &dyn Any = &42;
+   let y: &dyn std::fmt::Debug = x as &dyn std::fmt::Debug;
+   ```
+
+There are several rules that should be followed when using casts to ensure that the code is correct and safe:
+
+1. Only use casts when necessary: In general, you should avoid casts whenever possible and instead use Rust's type system to ensure that your code is correct and safe. Only use casts when there is no other way to achieve the desired behavior.
+
+1. Only use safe casts: Rust provides several safe casts that are guaranteed to be correct and safe, such as numeric casts and pointer casts. Make sure that you only use these safe casts and avoid using unsafe casts.
+
+1. Check for overflow and underflow: Numeric casts can result in overflow or underflow if the value being casted is outside the range of the target type. Make sure to check for overflow and underflow when using numeric casts, or use the `checked_` methods provided by Rust to perform the cast safely.
+
+1. Avoid casting between unrelated types: Casting between unrelated types can result in undefined behavior and should be avoided whenever possible. Only cast between types that are related in some way, such as numeric types or pointer types.
+
+1. Use explicit casts when necessary: When performing a cast, make sure to use an explicit cast (using the `as` keyword) instead of relying on type coercion. This makes your code clearer and easier to understand.
+
+1. Use unsafe code with caution: Some casts can only be performed using unsafe code. When using unsafe code, make sure that you understand the risks involved and use it carefully to ensure that your code is correct and safe.
+
+Here are some examples of following the rules for casting in Rust:
+
+1. Casting pointers to integers:
+
+   ```rs
+   let x: *mut i32 = &mut 42;
+   let y: usize = x as usize;
+   ```
+
+   In this example, we are casting a mutable pointer `x` to an integer `y`. This is safe to do as long as the resulting integer is not used to perform any arithmetic or logical operations, as pointer arithmetic requires a pointer type.
+
+1. Avoiding invalid pointer casts:
+
+   ```rs
+   let x: *mut i32 = &mut 42;
+   let y: *mut u32 = x as *mut u32;
+   ```
+
+   In this example, we are attempting to cast a mutable pointer `x` to a mutable pointer `y` of a different type. This is only safe to do if the two types have the same size and alignment, otherwise it can result in undefined behavior.
+
+1. Casting between references:
+
+   ```rs
+   let x: &i32 = &42;
+   let y: &u32 = unsafe { &*(x as *const i32 as *const u32) };
+   ```
+
+   In this example, we are casting a reference `x` to a reference `y` by first casting it to a raw pointer and then dereferencing it as an unsigned integer reference. This is safe to do as long as the resulting reference is not used to modify the original value, as this can result in undefined behavior.
+
+1. Using `transmute` to cast between types:
+
+   ```rs
+   use std::mem::transmute;
+
+   let x: i32 = 42;
+   let y: u32 = unsafe { transmute(x) };
+   ```
+
+   In this example, we are using the `transmute` function from the mem module to cast a signed integer `x` to an unsigned integer `y`. This is only safe to do if the two types have the same size and alignment, and if the resulting value is valid for the target type.
+
+Rules for casting numbers:
+
+1. Only cast between compatible types: Rust provides several numeric types, such as i32, u32, f32, and f64. Make sure that you only cast between compatible types, such as i32 to u32, or f32 to f64. Casting between incompatible types, such as from a floating-point type to an integer type, can result in undefined behavior.
+
+   ```rs
+   let x: i32 = 42;
+   let y: u32 = x as u32;
+   ```
+
+   In this example, we are casting a signed integer `x` to an unsigned integer `y`, which are compatible types.
+
+1. Check for overflow and underflow: Numeric casts can result in overflow or underflow if the value being casted is outside the range of the target type. Make sure to check for overflow and underflow when using numeric casts, or use the `checked_` methods provided by Rust to perform the cast safely.
+
+   ```rs
+   let x: i32 = 2_147_483_647;
+   let y: u32 = x.checked_add(1).unwrap_or(u32::MAX);
+   ```
+
+   In this example, we are checking for overflow by adding 1 to the maximum value of a signed integer `x`, and using `checked_add` method to return `None` if overflow occurred. We then use `unwrap_or` method to set the result to the maximum value of an unsigned integer `y` in case of overflow.
+
+1. Use explicit casts: When performing a cast, make sure to use an explicit cast (using the as keyword) instead of relying on type coercion. This makes your code clearer and easier to understand.
+
+   ```rs
+   let x: i32 = 42;
+   let y: u32 = x as u32;
+   ```
+
+   In this example, we are using an explicit cast with the as keyword to cast the signed integer `x` to an unsigned integer `y`.
+
+1. Avoid narrowing conversions: Casting from a wider type to a narrower type can result in data loss if the value being casted is too large to fit in the target type. Make sure to avoid narrowing conversions whenever possible, or use the `checked_` methods provided by Rust to perform the cast safely.
+
+   ```rs
+   let x: u64 = 2_147_483_647;
+   let y: u32 = x.try_into().unwrap_or(u32::MAX);
+   ```
+
+   In this example, we are avoiding a narrowing conversion by using the `try_into` method to attempt to cast the unsigned integer `x` to a smaller unsigned integer `y`. If the value of `x` is too large to fit in `y`, the method returns `Err`, and we use `unwrap_or` to set the result to the maximum value of `y`.
+
+1. Be aware of sign extension: When casting from a signed type to an unsigned type, the sign bit is automatically extended to fill the extra bits in the target type. Make sure to be aware of sign extension when performing these kinds of casts, as it can result in unexpected behavior.
+
+   ```rs
+   let x: i32 = -42;
+   let y: u32 = x as u32;
+   ```
+
+   In this example, we are casting a negative signed integer `x` to an unsigned integer `y`. Since `y` is wider than `x`, the sign bit of `x` is automatically extended to fill the extra bits in `y`, resulting in a large positive value for `y`.
+
+1. Use saturating casts when appropriate: Rust provides saturating casts that will truncate the value being casted to fit within the target type, rather than causing an overflow or underflow. Use saturating casts when appropriate to ensure that your code is correct and safe.
+
+   ```rs
+   let x: u8 = 255;
+   let y: i8 = x as i8;
+   let z: i8 = x.try_into().unwrap_or_else(|_| i8::MAX);
+   ```
+
+   In this example, we are using saturating casts to ensure that the value being casted fits within the target type. In the first line, we are casting the maximum value of an unsigned 8-bit integer `x` to a signed 8-bit integer `y`, resulting in an overflow that sets `y` to the minimum value of `i8`. In the second line, we are using `try_into` to perform a saturating cast that sets the result to the maximum value of `i8`.
+
+- In Rust, some conversions involving reference types can be performed without a cast thanks to deref coercions.
+- Deref coercion applies to types that implement the Deref built-in trait.
+- Deref coercion allows smart pointer types to behave as much like the underlying value as possible.
+- Examples of automatic conversions that involve reference types implementing the Deref trait include:
+  - Converting a mutable reference to a non-mutable reference.
+  - Converting a `&String` value to a `&str` value.
+  - Converting a `&Vec<i32>` value to a `&[i32]` value.
+  - Converting a `&Box<Chessboard>` value to a `&Chessboard` value.
+- User-defined types can implement the Deref trait to enable deref coercion for their own smart pointer types.
+
+  ```rs
+  use std::ops::Deref;
+
+  struct MyString(String);
+
+  impl Deref for MyString {
+      type Target = String;
+
+      fn deref(&self) -> &Self::Target {
+          &self.0
+      }
+  }
+
+  fn print_string(s: &str) {
+      println!("{}", s);
+  }
+
+  fn main() {
+      let my_string = MyString("hello".to_string());
+
+      // The MyString type implements Deref, so we can pass a &MyString to a function
+      // that takes a &str. The compiler will automatically apply deref coercion to
+      // convert the &MyString to a &String, which can then be converted to a &str.
+      print_string(&my_string);
+  }
+  ```
+
+Here's an example of how deref coercion can be used to convert a &String value to a &str value:
+
+```rs
+fn print_string(s: &str) {
+    println!("{}", s);
+}
+
+fn main() {
+    let my_string = String::from("hello");
+
+    // We can pass a &String to a function that takes a &str thanks to deref coercion.
+    // The &String value will be automatically converted to a &str.
+    print_string(&my_string);
+}
+```
