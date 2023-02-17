@@ -776,3 +776,78 @@ fn main() {
     print_string(&my_string);
 }
 ```
+
+## Rust Closures
+
+- Closures are anonymous functions that can be used to capture values from their surrounding environment and then be called like regular functions. They can be defined using the `|...| ...` syntax, where the `|...|` part specifies the closure's parameters and the `...` part defines the code to be executed.
+
+- Closures can capture variables from their surrounding environment and store them for later use. This is called "capturing variables by reference" or "capturing variables by value".
+
+```rs
+fn main() {
+    let x = 5;
+    let square = |y: i32| y * x; // Captures x by reference
+    println!("The square of {} is {}", x, square(x));
+}
+```
+
+- Closures are implemented using traits in Rust, which means that they are fully type-safe and can be used as function arguments or return values.
+
+```rs
+
+// Closures can implement traits, like Fn, FnMut, and FnOnce.
+fn repeat<F>(f: F, n: u32) where F: Fn() {
+    for i in 0..n {
+        f();
+    }
+}
+
+fn main() {
+    let closure = || println!("Hello, world!");
+    repeat(closure, 3);
+}
+```
+
+- Closures can be defined in a variety of different ways, including using the `move` keyword to explicitly capture variables by value.
+
+```rs
+fn main() {
+    let x = vec![1, 2, 3];
+    let print_x = move || println!("{:?}", x); // Captures x by value (the closure takes the ownership)
+    print_x();
+}
+```
+
+- Rust's closure syntax supports a shorthand notation that allows you to omit the parameter types and return type if they can be inferred by the compiler.
+
+```rs
+fn main() {
+    let x = 5;
+    let y = 7;
+    let add = |a, b| a + b; // No parameter or return type annotations needed
+    println!("{} + {} = {}", x, y, add(x, y));
+}
+```
+
+- Closures can be used in a variety of contexts, including iterators, event handling, and concurrency.
+
+```rs
+fn main() {
+    let nums = vec![1, 2, 3, 4, 5];
+    let squared: Vec<_> = nums.iter().map(|x| x * x).collect(); // Use closure with map
+    let evens = numbers.iter().filter(|x| x % 2 == 0).collect::<Vec<_>>();
+    println!("{:?}", evens);
+}
+```
+
+```rs
+use std::thread;
+fn main() {
+    let handle = thread::spawn(|| {
+        // Task to run in a new thread
+    });
+
+    // Wait for the thread to finish
+    let result = handle.join().unwrap();
+}
+```
