@@ -606,3 +606,18 @@ Here, we're creating an instance of Point2D where x is a reference to the variab
 Structs with lifetime parameters can be useful for a variety of use cases, such as when defining data structures that contain references to other values, or when working with APIs that require lifetime parameters to ensure that references are valid for as long as they are needed.
 
 Without proper lifetime annotations, Rust cannot ensure that these references are valid at all times, which can lead to memory safety issues such as use-after-free errors or data races.
+
+## Deriving Common Traits for Struct Types
+
+It is possible to automatically derive implementations for common traits for struct types using the derive attribute. The derive attribute allows you to generate implementations for traits like `Debug`, `Clone`, `PartialEq`, `Eq`, `PartialOrd`, and `Ord` without writing the code yourself.
+
+To use derive, simply add it to the struct declaration and list the traits you want to derive:
+
+```rs
+#[derive(Debug, Clone, PartialEq)]
+struct MyStruct {
+    // struct fields here
+}
+```
+
+The `Debug` trait is useful for printing the struct in a human-readable format, while the `Clone` trait allows you to create a new instance of the struct with the same values as the original. The `PartialEq` trait is used to implement equality comparison between instances of the struct.
