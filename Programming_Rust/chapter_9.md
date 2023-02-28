@@ -506,3 +506,25 @@ Here's a table comparing Box, Rc, and Arc in Rust:
 | Usage                                | Suitable for single ownership scenarios | Suitable for multiple ownership scenarios where immutability is required | Suitable for multiple ownership scenarios where mutability is required |
 
 It's important to note that the choice of which to use depends on the specific use case and requirements of the program.
+
+## Associated Consts
+
+An associated constant is a constant that is associated with a struct or an enum. It's defined using the const keyword within the impl block of the struct or enum.
+
+```rs
+struct Circle {
+    radius: f64,
+}
+
+impl Circle {
+    const PI: f64 = 3.14159265359;
+
+    fn area(&self) -> f64 {
+        Circle::PI * self.radius * self.radius
+    }
+}
+```
+
+We can then use this constant within the methods of the Circle struct by referencing it as `Circle::PI`.
+
+Associated constants are useful for defining values that are associated with a type and are used by its methods. They are also useful for ensuring that certain values are constant across all instances of the type.
