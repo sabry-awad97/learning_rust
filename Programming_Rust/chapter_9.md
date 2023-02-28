@@ -234,3 +234,18 @@ fn main() {
 ```
 
 However, since the fields are unnamed, we use the position of the field in the tuple to access it, starting from `0`.
+
+## Unit-Like Structs
+
+A unit-like struct is a struct that has no fields, and is used to represent a value that has no meaningful information. It is defined using the struct keyword, followed by the struct name, and then an empty set of curly braces.
+
+```rs
+struct EmptyStruct;
+
+fn main() {
+    let empty = EmptyStruct;
+    println!("This struct is empty!");
+}
+```
+
+Unit-like structs can be useful in a few cases. For example, if you need to define a type that has no meaningful information, but you want to distinguish it from other types, you can use a unit-like struct. They can also be used to implement traits or derive implementations, without needing to store any actual data in the struct.
