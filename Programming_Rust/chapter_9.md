@@ -283,3 +283,42 @@ When data is stored in memory, it is often stored in units of the word size. For
 In Rust, the alignment of a type is determined by its size and type. For example, an `i32` has a size of 4 bytes, and is aligned on a 4-byte boundary. A `u64` has a size of 8 bytes, and is aligned on an 8-byte boundary.
 
 When a struct is defined in Rust, the alignment of the struct is determined by the alignment requirements of its fields. Each field is aligned on its natural alignment boundary, which is determined by the size and type of the field. The largest alignment requirement of any field in the struct determines the alignment of the entire struct.
+
+## Defining Methods with impl
+
+Methods are defined using the impl keyword followed by the name of the struct or enum, and then the body of the method. The impl block can appear anywhere in the code, and can contain multiple methods.
+
+```rs
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+}
+
+fn main() {
+    let rect = Rectangle { width: 30, height: 50 };
+    let area = rect.area();
+    println!("The area of the rectangle is {} square pixels.", area);
+}
+```
+
+Rust also allows us to define "associated functions" within an `impl` block, which are functions that are associated with the `struct` or `enum`, but don't take a reference to `self` as a parameter. These functions are similar to `static` methods in other languages.
+
+```rs
+impl Rectangle {
+    fn new(width: u32, height: u32) -> Rectangle {
+        Rectangle { width, height }
+    }
+}
+
+fn main() {
+    let rect = Rectangle::new(30, 50);
+}
+```
+
+This syntax is different from the syntax we used to call the `area` method, because `new` doesn't require an instance of `Rectangle` to be created first. Instead, we call it directly on the `Rectangle` struct, using the double colon syntax.
