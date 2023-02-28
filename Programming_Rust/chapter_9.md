@@ -528,3 +528,54 @@ impl Circle {
 We can then use this constant within the methods of the Circle struct by referencing it as `Circle::PI`.
 
 Associated constants are useful for defining values that are associated with a type and are used by its methods. They are also useful for ensuring that certain values are constant across all instances of the type.
+
+## Generic Structs
+
+Generic structs are structs that can be instantiated with any type as a parameter. They are defined using the angle brackets `<T>` to specify the generic type parameter, which can then be used as the type of the struct's fields or in the implementation of its methods.
+
+```rs
+struct Pair<T> {
+    first: T,
+    second: T,
+}
+
+impl<T> Pair<T> {
+    fn new(first: T, second: T) -> Self {
+        Self {
+            first,
+            second,
+        }
+    }
+
+    fn get_first(&self) -> &T {
+        &self.first
+    }
+
+    fn get_second(&self) -> &T {
+        &self.second
+    }
+}
+```
+
+We can then create instances of the `Pair<T>` struct with different types as the type parameter `T`, like so:
+
+```rs
+let pair_of_ints = Pair::new(1, 2);
+let pair_of_strings = Pair::new("hello", "world");
+```
+
+Generic structs are useful for creating reusable code that can work with any type. They are commonly used in Rust's standard library and in third-party libraries.
+
+Rust's type inference mechanism is able to determine the type of the `Pair<T>` struct from the arguments passed to the new method, so we don't need to specify the type parameter explicitly in the constructor call.
+
+However, when defining the `Pair<T>` struct and its methods, we need to specify the type parameter explicitly so that Rust knows which types the struct and its methods can work with. This is because Rust's type inference works on a per-function basis, inferring the types of variables and expressions within a function's body based on the types of the function's parameters and return value, as well as any type annotations in the function's body.
+
+So while Rust's type inference can save us some typing in certain situations, we still need to be explicit about types in function signatures and type definitions so that Rust can correctly infer types within function bodies.
+
+When calling an associated function that uses a generic type parameter, you can specify the concrete type for the type parameter using the `::<T>` syntax (often called the "turbofish" syntax) after the function name.
+
+```rs
+let pair = Pair::<i32>::new(1, 2);
+```
+
+Using the `::<T>` syntax is especially useful when there are multiple possible types that could be used as the concrete type parameter for a generic function or struct, or when the type parameter can't be inferred from the context.
