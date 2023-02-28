@@ -217,3 +217,20 @@ fn main() {
 }
 ```
 
+## Tuple-Like Structs
+
+A tuple-like struct is a struct that has unnamed fields, just like a tuple. It is defined using the `struct` keyword, followed by the struct name, and then a tuple of the field types.
+
+The values held by a tuple-like struct are called `elements`.
+
+```rs
+struct Point(f32, f32);
+
+fn main() {
+    let p = Point(1.0, 2.0);
+    println!("The x-coordinate is: {}", p.0);
+    println!("The y-coordinate is: {}", p.1);
+}
+```
+
+However, since the fields are unnamed, we use the position of the field in the tuple to access it, starting from `0`.
