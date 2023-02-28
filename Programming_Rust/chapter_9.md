@@ -249,3 +249,37 @@ fn main() {
 ```
 
 Unit-like structs can be useful in a few cases. For example, if you need to define a type that has no meaningful information, but you want to distinguish it from other types, you can use a unit-like struct. They can also be used to implement traits or derive implementations, without needing to store any actual data in the struct.
+
+## Struct Layout
+
+In Rust, the memory layout of a struct is determined by the layout of its fields. The Rust compiler determines this layout based on the following rules:
+
+- The layout of a struct is determined by the layout of its fields, in the order they are defined. Each field is aligned to its natural alignment, which is determined by its type.
+
+- The size of a struct is the sum of the sizes of its fields, rounded up to the nearest multiple of the largest alignment of any of its fields.
+
+- These rules ensure that the memory layout of a struct is well-defined and predictable, which can be important when working with low-level code or interfacing with other languages.
+
+To see the layout of a struct, you can use the std::mem::size_of function, which returns the size of a value in bytes. Here's an example:
+
+```rs
+struct Foo {
+    a: u8,
+    b: u16,
+    c: u32,
+}
+
+fn main() {
+    println!("The size of Foo is {} bytes", std::mem::size_of::<Foo>());
+}
+```
+
+The output will depend on the size of the various integer types on your system, but it should be `8` bytes on most systems.
+
+Alignment refers to the positioning of data in memory on boundaries that are multiples of the data's size. In computer memory, data is accessed in blocks of a certain size, called the "word size". The word size is typically either 32 bits (4 bytes) or 64 bits (8 bytes), depending on the architecture of the computer.
+
+When data is stored in memory, it is often stored in units of the word size. For example, a 32-bit integer might be stored in a single 32-bit word, while a 64-bit integer might be stored in two consecutive 32-bit words. However, some types of data have alignment requirements that dictate how they must be stored in memory. For example, a 64-bit integer might need to be stored in a memory location that is aligned on an 8-byte boundary, so that it is accessed efficiently by the CPU.
+
+In Rust, the alignment of a type is determined by its size and type. For example, an `i32` has a size of 4 bytes, and is aligned on a 4-byte boundary. A `u64` has a size of 8 bytes, and is aligned on an 8-byte boundary.
+
+When a struct is defined in Rust, the alignment of the struct is determined by the alignment requirements of its fields. Each field is aligned on its natural alignment boundary, which is determined by the size and type of the field. The largest alignment requirement of any field in the struct determines the alignment of the entire struct.
