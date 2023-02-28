@@ -322,3 +322,187 @@ fn main() {
 ```
 
 This syntax is different from the syntax we used to call the `area` method, because `new` doesn't require an instance of `Rectangle` to be created first. Instead, we call it directly on the `Rectangle` struct, using the double colon syntax.
+
+## Passing Self as a Box, Rc, or Arc
+
+In Rust, it's common to pass ownership of an object from one part of the code to another using a `Box`, `Rc`, or `Arc`. These are all types of "smart pointers" that allow you to manage the lifetime of an object by keeping track of how many references to the object exist at any given time.
+
+When defining a method that takes ownership of self and returns a new instance of the struct, it's possible to use one of these smart pointers to return the new instance. This can be useful when you want to create a new instance of the struct that has a longer lifetime than the original instance.
+
+Here's an example of defining a method that returns a new instance of the struct, using a `Box` to manage ownership:
+
+```rs
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    // define a method named double that takes ownership of self using a Box<Self> parameter.
+    fn double(self: Box<Self>) -> Box<Self> {
+        // create a new instance of the Rectangle struct with twice the width and height of the original instance,
+        // and return it wrapped in a Box.
+        Box::new(Rectangle {
+            width: self.width * 2,
+            height: self.height * 2,
+        })
+    }
+}
+
+
+fn main() {
+    // create an instance of Rectangle and wrap it in a Box
+    let rect = Box::new(Rectangle { width: 10, height: 20 });
+    // a new Box containing the new instance of Rectangle with double the width and height of the original instance.
+    let doubled_rect = rect.double();
+    println!("{:?}", doubled_rect);
+}
+```
+
+We can also use `Rc` or `Arc` instead of `Box` to manage ownership in a similar way.
+
+```rs
+use std::rc::Rc;
+
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    fn double(self: Rc<Self>) -> Rc<Self> {
+        Rc::new(Rectangle {
+            width: self.width * 2,
+            height: self.height * 2,
+        })
+    }
+}
+
+fn main() {
+    let rect = Rc::new(Rectangle { width: 10, height: 20 });
+    let doubled_rect = rect.double();
+}
+```
+
+Using `Arc` is similar to using `Rc`, but it allows the reference count to be shared across multiple threads.
+
+```rs
+use std::sync::Arc;
+
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    fn double(self: Arc<Self>) -> Arc<Self> {
+        Arc::new(Rectangle {
+            width: self.width * 2,
+            height: self.height * 2,
+        })
+    }
+}
+
+fn main() {
+    let rect = Arc::new(Rectangle { width: 10, height: 20 });
+    let doubled_rect = rect.double();
+}
+```
+
+Box, Rc, and Arc are smart pointer types in Rust that provide different ownership and borrowing semantics for managing heap-allocated memory.
+
+- `Box<T>`: is a simple pointer type that represents ownership of a heap-allocated T value. Box is used when you need to allocate memory on the heap and manage its lifetime. A common use case is when you have a large data structure that needs to be moved around between functions or stored in a collection.
+
+- `Rc<T>`: is a reference-counted pointer type that represents shared ownership of a heap-allocated T value. Rc is used when you need multiple owners of a value and you don't want to transfer ownership or mutate the value. A common use case is when you have a data structure that needs to be shared between multiple parts of a program, such as a tree or graph data structure.
+
+- `Arc<T>`: is an atomic reference-counted pointer type that represents shared ownership of a heap-allocated T value, similar to `Rc<T>`. However, it is used in a multi-threaded environment where multiple threads need to share ownership of a value. Arc provides thread-safe shared ownership of a value by using atomic operations to increment and decrement the reference count.
+
+1. Using Box:
+
+   ```rs
+   struct Node<T> {
+       value: T,
+       next: Option<Box<Node<T>>>, // allocate memory on the heap for each node.
+   }
+
+   let mut head = Node {
+       value: 1,
+       next: None,
+   };
+
+   let tail = Node {
+       value: 2,
+       next: None,
+   };
+
+   head.next = Some(Box::new(tail));
+   ```
+
+1. Using Rc:
+
+   ```rs
+   use std::rc::Rc;
+
+   struct Node<T> {
+       value: T,
+       next: Option<Rc<Node<T>>>, // share ownership of each node between multiple parts of the program.
+   }
+
+   let mut head = Rc::new(Node {
+       value: 1,
+       next: None,
+   });
+
+   let tail = Rc::new(Node {
+       value: 2,
+       next: None,
+   });
+
+   head.next = Some(tail.clone());
+   ```
+
+1. Using Arc:
+
+   ```rs
+   use std::sync::Arc;
+   use std::thread;
+
+   struct Counter {
+       count: Arc<u32>,
+   }
+
+   let counter = Arc::new(Counter { count: Arc::new(0) });
+
+   let mut handles = Vec::new();
+
+   for i in 0..10 {
+       let counter = counter.clone();
+       let handle = thread::spawn(move || {
+           *counter.count += 1;
+       });
+       handles.push(handle);
+   }
+
+   for handle in handles {
+       handle.join().unwrap();
+   }
+
+   println!("Final count: {}", *counter.count);
+   ```
+
+   The Arc type ensures thread-safe shared ownership of the counter value.
+
+Here's a table comparing Box, Rc, and Arc in Rust:
+
+|                                      | `Box<T>`                                | `Rc<T>`                                                                  | `Arc<T>`                                                               |
+| ------------------------------------ | --------------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| Ownership                            | Unique ownership                        | Shared ownership                                                         | Shared ownership                                                       |
+| Thread-safe                          | Yes                                     | No                                                                       | Yes                                                                    |
+| Performance                          | Fast and efficient                      | Fast but less efficient                                                  | Slower but more efficient                                              |
+| Use case                             | Storing data on the heap                | Sharing immutable data                                                   | Sharing mutable data                                                   |
+| Cloning                              | Deep copy of the entire object          | Increment reference count                                                | Increment reference count                                              |
+| Dropped when reference count is zero | Yes                                     | Yes                                                                      | Yes                                                                    |
+| Usage                                | Suitable for single ownership scenarios | Suitable for multiple ownership scenarios where immutability is required | Suitable for multiple ownership scenarios where mutability is required |
+
+It's important to note that the choice of which to use depends on the specific use case and requirements of the program.
