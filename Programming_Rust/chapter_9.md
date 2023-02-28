@@ -579,3 +579,30 @@ let pair = Pair::<i32>::new(1, 2);
 ```
 
 Using the `::<T>` syntax is especially useful when there are multiple possible types that could be used as the concrete type parameter for a generic function or struct, or when the type parameter can't be inferred from the context.
+
+## Structs with Lifetime Parameters
+
+Structs with lifetime parameters are similar to generic structs, except that they allow you to define types that contain references with specific lifetimes. This is useful when you need to express relationships between references and values in a struct, and ensure that the references are valid for as long as the struct exists.
+
+To define a struct with lifetime parameters, you use the same syntax as for generic structs, but with the addition of one or more lifetime parameters in angle brackets after the struct name.
+
+```rs
+struct Point2D<'a> {
+    x: &'a i32,
+    y: &'a mut i32,
+}
+```
+
+Both of `x` and `y` references have a lifetime parameter `'a`, which means that they are guaranteed to be valid for at least as long as `'a`.
+
+```rs
+let x = 42;
+let mut y = 99;
+let point = Point2D { x: &x, y: &mut y };
+```
+
+Here, we're creating an instance of Point2D where x is a reference to the variable x, and y is a reference to the variable y. Both of these references will have the same lifetime as the point variable itself, because the lifetime parameter `'a` has been implicitly instantiated to the lifetime of point.
+
+Structs with lifetime parameters can be useful for a variety of use cases, such as when defining data structures that contain references to other values, or when working with APIs that require lifetime parameters to ensure that references are valid for as long as they are needed.
+
+Without proper lifetime annotations, Rust cannot ensure that these references are valid at all times, which can lead to memory safety issues such as use-after-free errors or data races.
