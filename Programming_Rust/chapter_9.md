@@ -621,3 +621,129 @@ struct MyStruct {
 ```
 
 The `Debug` trait is useful for printing the struct in a human-readable format, while the `Clone` trait allows you to create a new instance of the struct with the same values as the original. The `PartialEq` trait is used to implement equality comparison between instances of the struct.
+
+## Interior Mutability
+
+Interior mutability is a Rust pattern that allows you to mutate data even when there are immutable references to it. This can be useful in situations where you want to enforce certain invariants or make certain guarantees about the state of the data, while still allowing it to be modified.
+
+> **Mutable** data inside an **immutable** value
+
+Rust has a few types that implement interior mutability, such as `Cell`, `RefCell`, and `Mutex`. These types are typically used in conjunction with shared ownership types like `Arc` or `Rc` to provide thread-safe interior mutability.
+
+### `Cell<T>`
+
+`Cell<T>` is a type provided by the standard library in Rust that provides interior mutability to its contained single private value.
+
+It allows you to mutate the value contained within it, even if the `Cell<T>` is immutable.
+
+The `Cell<T>` type has two methods: `get` and `set`. The get method returns a shared reference (copy) to the value contained in the cell, and the set method sets the value contained in the cell, dropping the previously stored value.
+
+```rs
+use std::cell::Cell;
+
+struct Point {
+    x: Cell<i32>,
+}
+
+impl Point {
+    fn new() -> Point {
+        Point { x: Cell::new(0) }
+    }
+
+    fn add_one(&self) {
+        let x = self.x.get();
+        self.x.set(x + 1);
+    }
+
+    fn get_x(&self) -> i32 {
+        self.x.get()
+    }
+}
+
+fn main() {
+    let point = Point::new();
+    point.add_one();
+    point.add_one();
+    println!("x: {}", point.get_x()); // Prints "x: 2"
+}
+```
+
+One important thing to note about `Cell<T>` is that it can only be used with types that implement Copy. This is because the get method returns a shared reference to the contained value, which means it must be able to be copied without moving the original value.
+
+`Cell<T>` is useful for cases where you need interior mutability but don't want to use mut everywhere, or when you need to mutate a value within an immutable context (such as a shared reference). However, it should be used with caution, as it can lead to unexpected behavior if not used correctly.
+
+They’re simply a safe way of bending the rules on immutability - no more, no less.
+
+### `RefCell<T>`
+
+`RefCell<T>` is another type that provides interior mutability in Rust, but with a different approach than `Cell<T>`. `RefCell<T>` allows multiple immutable references (`&T`) to coexist at the same time, and provides a way to obtain a mutable reference (`&mut T`) in certain circumstances, but dynamically enforces the borrowing rules at runtime rather than at compile-time.
+
+The difference between `Cell<T>` and `RefCell<T>` is that `Cell<T>` can be used for single-threaded code only, whereas `RefCell<T>` can be used for multi-threaded code using `Rc<T>` and `Arc<T>` for shared ownership.
+
+`RefCell<T>` has two methods that are used to obtain references: `borrow()` and `borrow_mut()`. The `borrow()` method returns an immutable reference (`&T`), while `borrow_mut()` returns a mutable reference (`&mut T`). If a mutable reference already exists, `borrow()` will return an error (a panic), this is called a "runtime borrow check", while `borrow_mut()` will wait until all existing references have gone out of scope before providing the mutable reference.
+
+```rs
+use std::cell::RefCell;
+
+struct Person {
+    name: String,
+    age: RefCell<u8>,
+}
+
+fn main() {
+    let person = Person {
+        name: String::from("Alice"),
+        age: RefCell::new(30),
+    };
+
+    let age1 = person.age.borrow(); // immutable borrow
+    let age2 = person.age.borrow();
+    println!("Age: {}, {}", *age1, *age2); // Prints "Age: 30, 30"
+
+    let mut age3 = person.age.borrow_mut(); // mutable borrow
+    *age3 = 31;
+    drop(age3); // Release the mutable borrow before the immutable borrows
+    println!("Age: {}, {}", *age1, *age2); // Prints "Age: 31, 31"
+}
+```
+
+Note that using `RefCell<T>` can lead to runtime errors (panics) if borrowing rules are violated, so it's important to use it carefully and with the proper understanding of its limitations.
+
+### Mutex
+
+In Rust, a `Mutex` is a synchronization primitive used to ensure that only one thread can access a shared resource at a time. It is short for "mutual exclusion". The `Mutex` provides a way to protect a shared resource from race conditions that can occur when multiple threads try to access it at the same time.
+
+The `Mutex` type is defined in the standard library as a struct that wraps the data it is protecting. The struct has two methods: `lock()` and `unlock()`. The `lock()` method returns a guard object that represents the lock. The guard object implements the `Deref` and `DerefMut` traits, which allows the locked data to be accessed as if it were a normal reference or mutable reference. When the guard object goes out of scope, it automatically releases the lock by calling the `unlock()` method.
+
+```rs
+use std::sync::Mutex;
+
+fn main() {
+    // protect a counter variable
+    let counter = Mutex::new(0);
+
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let handle = std::thread::spawn(|| {
+            // lock() returns a guard object that can be used to access the data
+            // unwrap() extracts the value of the guard object
+            let mut num = counter.lock().unwrap();
+
+            // The counter data is then incremented
+            *num += 1;
+
+            // the guard object is automatically released when it goes out of scope
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("Result: {}", *counter.lock().unwrap());
+}
+```
+
+The Mutex is a commonly used synchronization primitive in Rust, but it has some limitations. One limitation is that it can only be used to protect data within a single process. If you need to protect data across multiple processes, you would need to use a different synchronization primitive, such as a semaphore or a message queue. Additionally, the Mutex can be prone to deadlocks if not used carefully. To avoid deadlocks, it's important to always acquire locks in a consistent order and to release them as soon as possible.
