@@ -70,31 +70,31 @@ There are several traits that you can implement to overload operators in Rust. S
 
 Here's the table for the operators and their corresponding traits in Rust:
 
-| Category             | Trait                  | Operator                             |
-| -------------------- | ---------------------- | ------------------------------------ |
-| Unary operators      | `std::ops::Neg`        | `-x`                                 |
-|                      | `std::ops::Not`        | `!x`                                 |
-| Arithmetic operators | `std::ops::Add`        | `x + y`                              |
-|                      | `std::ops::Sub`        | `x - y`                              |
-|                      | `std::ops::Mul`        | `x * y`                              |
-|                      | `std::ops::Div`        | `x / y`                              |
-|                      | `std::ops::Rem`        | `x % y`                              |
-| Bitwise operators    | `std::ops::BitAnd`     | `x & y`                              |
-|                      | `std::ops::BitOr`      | `x`                                  |
-|                      | `std::ops::BitXor`     | `x ^ y`                              |
-|                      | `std::ops::Shl`        | `x << y`                             |
-|                      | `std::ops::Shr`        | `x >> y`                             |
-| Compound assignment  | arithmetic operators   | `std::ops::AddAssign`                |
-|                      |                        | `std::ops::SubAssign`                |
-|                      |                        | `std::ops::MulAssign`                |
-|                      |                        | `std::ops::DivAssign`                |
-|                      |                        | `std::ops::RemAssign`                |
-| Compound assignment  | bitwise operators      | `std::ops::BitAndAssign`             |
-|                      |                        | `std::ops::BitOrAssign`              |
-|                      |                        | `std::ops::BitXorAssign`             |
-|                      |                        | `std::ops::ShlAssign`                |
-|                      |                        | `std::ops::ShrAssign`                |
-| Comparison           | `std::cmp::PartialEq`  | `x == y`, `x != y`                   |
-|                      | `std::cmp::PartialOrd` | `x < y`, `x <= y`, `x > y`, `x >= y` |
-| Indexing             | `std::ops::Index`      | `x[y]`, `&x[y]`                      |
-|                      | `std::ops::IndexMut`   | `x[y] = z`, `&mut x[y]`              |
+| Category             | Trait                    | Operator                             |
+| -------------------- | ------------------------ | ------------------------------------ |
+| Unary operators      | `std::ops::Neg`          | `-x`                                 |
+|                      | `std::ops::Not`          | `!x`                                 |
+| Arithmetic operators | `std::ops::Add`          | `x + y`                              |
+|                      | `std::ops::Sub`          | `x - y`                              |
+|                      | `std::ops::Mul`          | `x * y`                              |
+|                      | `std::ops::Div`          | `x / y`                              |
+|                      | `std::ops::Rem`          | `x % y`                              |
+| Bitwise operators    | `std::ops::BitAnd`       | `x & y`                              |
+|                      | `std::ops::BitOr`        | `x`                                  |
+|                      | `std::ops::BitXor`       | `x ^ y`                              |
+|                      | `std::ops::Shl`          | `x << y`                             |
+|                      | `std::ops::Shr`          | `x >> y`                             |
+| Compound assignment  | `std::ops::AddAssign`    | `x += y`                             |
+| arithmetic operators | `std::ops::SubAssign`    | `x -= y`                             |
+|                      | `std::ops::MulAssign`    | `x *= y`                             |
+|                      | `std::ops::DivAssign`    | `x /= y`                             |
+|                      | `std::ops::RemAssign`    | `x %= y`                             |
+| Compound assignment  | `std::ops::BitAndAssign` | `x &= y`                             |
+| bitwise operators    | `std::ops::BitOrAssign`  | `x \|= y`                            |
+|                      | `std::ops::BitXorAssign` | `x ^= y`                             |
+|                      | `std::ops::ShlAssign`    | `x <<= y`                            |
+|                      | `std::ops::ShrAssign`    | `x >>= y`                            |
+| Comparison           | `std::cmp::PartialEq`    | `x == y`, `x != y`                   |
+|                      | `std::cmp::PartialOrd`   | `x < y`, `x <= y`, `x > y`, `x >= y` |
+| Indexing             | `std::ops::Index`        | `x[y]`, `&x[y]`                      |
+|                      | `std::ops::IndexMut`     | `x[y] = z`, `&mut x[y]`              |
