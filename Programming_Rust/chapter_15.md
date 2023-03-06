@@ -345,3 +345,198 @@ fn main() {
 ```
 
 This will print the first 10 powers of two. The `checked_mul` method is used to avoid integer overflow when computing the next power of two.
+
+### drain Methods
+
+The `drain` method is another way to consume a collection while modifying it. It removes and returns a range of elements specified by a `Range` or `RangeInclusive`, while also modifying the original collection in place. The `drain` method returns an iterator that produces the removed elements, and the original collection is left with the remaining elements after the range is removed.
+
+The `drain` method is defined for many standard collections, including `Vec`, `LinkedList`, and `HashMap`. Here is an example of using the `drain` method on a `Vec`:
+
+```rs
+let mut numbers = vec![1, 2, 3, 4, 5];
+let removed_numbers: Vec<_> = numbers.drain(1..4).collect();
+
+assert_eq!(numbers, vec![1, 5]);
+assert_eq!(removed_numbers, vec![2, 3, 4]);
+```
+
+In this example, the `drain` method is called on `numbers` with the range `1..4`, which removes the second through fourth elements of the vector (`[2, 3, 4]`) and returns them as an iterator. The `collect` method is then called on this iterator to collect the removed elements into a new vector called `removed_numbers`. The resulting `numbers` vector contains the remaining elements (`[1, 5]`).
+
+Note that the `drain` method modifies the original collection in place, so it cannot be used on a shared reference (`&mut`).
+
+### Other Iterator Sources
+
+| Type or trait                                         | Expression                        | Notes                                                                                                                               |
+| ----------------------------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| std::ops::Range                                       | `1..10`                           | Endpoints must be an integer type to be iterable. Range includes start value and excludes end value.                                |
+| std::ops::RangeFrom                                   | `1..`                             | Unbounded iteration. Start must be an integer. May panic or overflow if the value reaches the limit of the type.                    |
+| std::ops::RangeInclusive                              | `1..=10`                          | Like Range, but includes end value.                                                                                                 |
+| Option&lt;T&gt;                                       | `Some(10).iter()`                 | Behaves like a vector whose length is either 0 (None) or 1 (Some(v)).                                                               |
+| Result&lt;T, E&gt;                                    | `Ok("blah").iter()`               | Similar to Option, producing Ok values.                                                                                             |
+| Vec&lt;T&gt;, &\[T\]                                  | `v.windows(16)`                   | Produces every contiguous slice of the given length, from left to right. The windows overlap.                                       |
+|                                                       | `v.chunks(16)`                    | Produces nonoverlapping, contiguous slices of the given length, from left to right.                                                 |
+|                                                       | `v.chunks_mut(1024)`              | Like chunks, but slices are mutable.                                                                                                |
+|                                                       | `v.split(\|byte\| byte & 1 != 0)` | Produces slices separated by elements that match the given predicate.                                                               |
+|                                                       | `v.split_mut(...)`                | As above, but produces mutable slices.                                                                                              |
+|                                                       | `v.rsplit(...)`                   | Like split, but produces slices from right to left.                                                                                 |
+|                                                       | `v.splitn(n, ...)`                | Like split, but produces at most n slices.                                                                                          |
+| String, &str                                          | `s.bytes()`                       | Produces the bytes of the UTF-8 form.                                                                                               |
+|                                                       | `s.chars()`                       | Produces the chars the UTF-8 represents.                                                                                            |
+|                                                       | `s.split_whitespace()`            | Splits string by whitespace, and produces slices of nonspace characters.                                                            |
+|                                                       | `s.lines()`                       | Produces slices of the lines of the string.                                                                                         |
+|                                                       | `s.split('/')`                    | Splits string on a given pattern, producing the slices between matches. Patterns can be many things: characters, strings, closures. |
+|                                                       | `s.matches(char::is_numeric)`     | Produces slices matching the given pattern.                                                                                         |
+| std::collections::HashMap, std::collections::BTreeMap | `map.keys()`                      | Produces shared references to keys of the map.                                                                                      |
+|                                                       | `map.values()`                    | Produces shared references to values of the map.                                                                                    |
+|                                                       | `map.values_mut()`                | Produces mutable references to entries’ values.                                                                                     |
+| std::collections::HashSet, std::collections::BTreeSet | `set1.union(set2)`                | Produces shared references to elements of union of set1 and set2.                                                                   |
+|                                                       | `set1.intersection(set2)`         | Produces shared references to elements of intersection of set1 and set2.                                                            |
+| std::sync::mpsc::Receiver                             | `recv.iter()`                     | Produces values sent from another thread on the corresponding Sender.                                                               |
+| std::io::Read                                         | `stream.bytes()`                  | Produces bytes from an I/O stream.                                                                                                  |
+|                                                       | `stream.chars()`                  | Parses stream as UTF-8 and produces chars.                                                                                          |
+| std::io::BufRead                                      | `bufstream.lines()`               | Parses stream as UTF-8, produces lines as Strings.                                                                                  |
+|                                                       | `bufstream.split(0)`              | Splits stream on given byte, produces inter-byte Vec&lt;u8&gt; buffers.                                                             |
+| std::fs::ReadDir                                      | `std::fs::read_dir(path)`         | Produces directory entries.                                                                                                         |
+| std::net::TcpListener                                 | `listener.incoming()`             | Produces incoming network connections.                                                                                              |
+| Free functions                                        | `std::iter::empty()`              | Returns None immediately. Useful for cases where an iterator is expected but there is no data to be returned.                       |
+|                                                       | `std::iter::once(5)`              | Produces the given value and then ends.                                                                                             |
+|                                                       | `std::iter::repeat("#9")`         | Produces the given value forever.                                                                                                   |
+
+```rs
+use std::collections::{HashMap, HashSet};
+use std::io::{BufRead, Read};
+use std::net::TcpListener;
+
+// std::ops::Range
+for i in 1..10 {
+    println!("{}", i);
+}
+
+// std::ops::RangeFrom
+for i in (1..).take(10) {
+    println!("{}", i);
+}
+
+// std::ops::RangeInclusive
+for i in 1..=10 {
+    println!("{}", i);
+}
+
+// Option<T>
+let maybe_number = Some(42);
+for number in maybe_number {
+    println!("{}", number);
+}
+
+// Result<T, E>
+let result = Result::<&str, &str>::Ok("hello");
+for value in result {
+    println!("{}", value);
+}
+
+// Vec<T>, &[T]
+let numbers = vec![1, 2, 3, 4, 5, 6];
+for window in numbers.windows(3) {
+    println!("{:?}", window);
+}
+for chunk in numbers.chunks(3) {
+    println!("{:?}", chunk);
+}
+for byte in b"hello, world".split(|byte| *byte == b',') {
+    println!("{:?}", byte);
+}
+
+// String, &str
+let text = "hello, world";
+for byte in text.bytes() {
+    println!("{}", byte);
+}
+for char in text.chars() {
+    println!("{}", char);
+}
+for word in text.split_whitespace() {
+    println!("{}", word);
+}
+for line in text.lines() {
+    println!("{}", line);
+}
+for part in text.split(',') {
+    println!("{}", part);
+}
+
+// std::collections::HashMap, std::collections::BTreeMap
+let mut map = HashMap::new();
+map.insert("one", 1);
+map.insert("two", 2);
+for key in map.keys() {
+    println!("{}", key);
+}
+for value in map.values() {
+    println!("{}", value);
+}
+for value in map.values_mut() {
+    *value += 1;
+}
+
+// std::collections::HashSet, std::collections::BTreeSet
+let set1: HashSet<i32> = [1, 2, 3].iter().cloned().collect();
+let set2: HashSet<i32> = [3, 4, 5].iter().cloned().collect();
+for element in set1.union(&set2) {
+    println!("{}", element);
+}
+for element in set1.intersection(&set2) {
+    println!("{}", element);
+}
+
+// std::sync::mpsc::Receiver
+let (sender, receiver) = std::sync::mpsc::channel();
+std::thread::spawn(move || {
+    sender.send(42).unwrap();
+});
+for message in receiver.iter() {
+    println!("{}", message);
+}
+
+// std::io::Read
+let mut buffer = [0; 1024];
+let mut stream = std::io::Cursor::new(b"hello, world");
+while let Ok(n) = stream.read(&mut buffer) {
+    if n == 0 {
+        break;
+    }
+    println!("{:?}", &buffer[..n]);
+}
+
+// std::io::BufRead
+let mut bufstream = std::io::Cursor::new("hello\nworld\n");
+for line in bufstream.lines() {
+    println!("{}", line.unwrap());
+}
+bufstream.set_position(0);
+for byte in bufstream.split(b'\n') {
+    println!("{:?}", byte.unwrap());
+}
+
+// std::fs::ReadDir
+let mut dir = std::fs::read_dir(".").unwrap();
+while let Some(entry) = dir.next() {
+    if let Ok(entry) = entry {
+        println!("{:?}", entry.path());
+    }
+}
+
+fn is_empty<T: Iterator>(mut iter: T) -> bool {
+    iter.next().is_none()  // Returns true if iter produces no values.
+}
+
+// std::iter::empty
+assert!(is_empty(std::iter::empty::<u32>()));
+assert!(!is_empty(std::iter::once(1)));
+
+// std::iter::once
+let mut twos = std::iter::once(2);  // An iterator that produces a single 2.
+
+// std::iter::repeat
+let mut ones = std::iter::repeat(1);  // An infinite sequence of 1s.
+let mut zeroes = std::iter::repeat_with(|| 0);  // An infinite sequence of 0s.
+```
