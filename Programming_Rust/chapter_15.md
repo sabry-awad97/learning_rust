@@ -1532,3 +1532,94 @@ assert_eq!(result, Err("Odd number found!"));
 ```
 
 This will return an error because an odd number was found. If all the closures had returned `Ok(())`, `try_for_each` would have returned `Ok(())`.
+
+### Implementing Your Own Iterators
+
+To implement your own iterator, you need to define a struct that holds any state necessary to produce each element of the sequence. The struct must also implement the Iterator trait. The trait requires two associated types: Item, which specifies the type of the items produced by the iterator, and IntoIter, which specifies the type returned by the into_iter method (more on this in a moment).
+
+The Iterator trait has one method: `next`. This method takes a mutable reference to `self`, and returns an `Option<Self::Item>`. When `next` is called, it must either return `Some(item)`, where item is the next item in the sequence, or None, indicating that there are no more items to produce.
+
+Here is an example of an iterator that produces the Fibonacci sequence:
+
+```rs
+struct Fibonacci {
+    curr: u64,
+    next: u64,
+}
+
+impl Fibonacci {
+    fn new() -> Fibonacci {
+        Fibonacci { curr: 0, next: 1 }
+    }
+}
+
+impl Iterator for Fibonacci {
+    type Item = u64;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let new_next = self.curr + self.next;
+        self.curr = std::mem::replace(&mut self.next, new_next);
+        Some(self.curr)
+    }
+}
+```
+
+This implementation defines a Fibonacci struct with two fields: `curr` and `next`. When the `next` method is called, it calculates the next Fibonacci number, updates `curr` and `next`, and returns the new value of `curr`.
+
+Once you have implemented an iterator, you can use it like any other iterator. For example, to print the first 10 Fibonacci numbers:
+
+```rs
+let fib = Fibonacci::new();
+for i in fib.take(10) {
+    println!("{}", i);
+}
+```
+
+This code creates a new Fibonacci iterator using the new method, then uses the take method to create a new iterator that only produces the first 10 values. The for loop then iterates over this new iterator, printing each value.
+
+```rs
+struct I32Range {
+    start: i32,
+    end: i32
+}
+```
+
+Sure! Here's an example implementation of an iterator that yields all integers between a start and end value:
+
+```rs
+struct I32Range {
+    start: i32,
+    end: i32,
+}
+
+impl I32Range {
+    fn new(start: i32, end: i32) -> Self {
+        Self { start, end }
+    }
+}
+
+impl Iterator for I32Range {
+    type Item = i32;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.start < self.end {
+            let current = self.start;
+            self.start += 1;
+            Some(current)
+        } else {
+            None
+        }
+    }
+}
+```
+
+You can then use this iterator like this:
+
+```rs
+let range = I32Range::new(1, 5);
+for i in range {
+    println!("{}", i);
+}
+```
+
+This will print the integers 1 through 4, one per line.
