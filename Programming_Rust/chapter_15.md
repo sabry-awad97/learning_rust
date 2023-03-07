@@ -1083,3 +1083,452 @@ The program then creates a range from 1 to 99 using the `..` operator and calls 
 The `map()` method is then called on this iterator to transform each tuple into a string. If both `fizz` and `buzz` are empty strings, then the string representation of `i` is returned. Otherwise, the `fizz` and `buzz` strings are concatenated and returned.
 
 Finally, a `for` loop is used to print out each string in the resulting iterator.
+
+## Consuming Iterators
+
+Not all iterator methods return new iterators; some consume the original iterator and produce a final result.
+
+| Method       | Description                                                                                               |
+| ------------ | --------------------------------------------------------------------------------------------------------- |
+| `count()`    | Returns the number of items in the iterator                                                               |
+| `last()`     | Returns the last item in the iterator                                                                     |
+| `nth()`      | Returns the nth item in the iterator                                                                      |
+| `all()`      | Returns true if all items in the iterator satisfy the predicate function, false otherwise                 |
+| `any()`      | Returns true if at least one item in the iterator satisfies the predicate function, false otherwise       |
+| `find()`     | Returns the first item in the iterator that satisfies the predicate function, None otherwise              |
+| `position()` | Returns the index of the first item in the iterator that satisfies the predicate function, None otherwise |
+| `max()`      | Returns the maximum item in the iterator according to the natural order of the items                      |
+| `min()`      | Returns the minimum item in the iterator according to the natural order of the items                      |
+| `sum()`      | Returns the sum of all items in the iterator                                                              |
+| `product()`  | Returns the product of all items in the iterator                                                          |
+
+### Simple Accumulation: count, sum, product
+
+Simple Accumulation methods are used to accumulate values over the elements of an iterator, returning a single accumulated value at the end. The following are some of the commonly used Simple Accumulation methods in Rust:
+
+| Method    | Description                                     |
+| --------- | ----------------------------------------------- |
+| `count`   | Returns the number of elements in the iterator. |
+| `sum`     | Sums all the elements of the iterator.          |
+| `product` | Multiplies all the elements of the iterator.    |
+
+Here are some examples of using these methods:
+
+```rs
+let nums = vec![1, 2, 3, 4, 5];
+
+let count = nums.iter().count();
+assert_eq!(count, 5);
+
+let sum = nums.iter().sum();
+assert_eq!(sum, 15);
+
+let product = nums.iter().product();
+assert_eq!(product, 120);
+```
+
+### max, min
+
+The `max` and `min` methods are consuming iterator adaptors that return the maximum and minimum element of an iterator, respectively. The elements must be comparable and the iterator must not be empty, otherwise these methods will panic.
+
+Here's an example usage:
+
+```rs
+let v = vec![3, 2, 1];
+let max = v.iter().max().unwrap();
+let min = v.iter().min().unwrap();
+assert_eq!(*max, 3);
+assert_eq!(*min, 1);
+```
+
+In this example, `max` returns a reference to the maximum element of the vector `v`, which is 3, and `min` returns a reference to the minimum element, which is 1. The `unwrap` method is used to extract the value from the `Option` returned by `max` and `min`, because these methods return `None` if the iterator is empty.
+
+### max_by, min_by
+
+The `max_by()` and `min_by()` methods are consuming iterator adaptors that take a closure as an argument and return the maximum or minimum element of the iterator based on the result of the closure.
+
+The `max_by()` method returns the element that produces the largest ordering when the closure is applied to each element. If there are ties, it returns the first one encountered.
+
+The `min_by()` method returns the element that produces the smallest ordering when the closure is applied to each element. If there are ties, it returns the first one encountered.
+
+Example usage:
+
+```rs
+let numbers = vec![1, 2, 3, 4, 5];
+
+let max = numbers.iter().max_by(|a, b| a.cmp(b)).unwrap();
+let min = numbers.iter().min_by(|a, b| a.cmp(b)).unwrap();
+
+println!("Max: {}", max); // Max: 5
+println!("Min: {}", min); // Min: 1
+```
+
+In this example, we have a vector of integers and we use the `max_by()` and `min_by()` methods to find the largest and smallest elements, respectively. We pass a closure to both methods that uses the `cmp()` method to compare each pair of elements. The `unwrap()` method is used to extract the maximum and minimum values from the `Option` values returned by the methods.
+
+### max_by_key, min_by_key
+
+`max_by_key` and `min_by_key` are similar to `max_by` and `min_by`, respectively, but instead of taking a comparison function, they take a closure that maps each item to a key that will be used for comparison.
+
+The `max_by_key` method returns the maximum element of the iterator based on a key function. The key function takes an element and returns a key that will be used to determine the maximum element.
+
+Similarly, the `min_by_key` method returns the minimum element of the iterator based on a key function. The key function takes an element and returns a key that will be used to determine the minimum element.
+
+Here is an example usage of `max_by_key` and `min_by_key`:
+
+```rs
+let numbers = vec![10, 20, 30, 40];
+let max = numbers.iter().max_by_key(|&x| *x);
+let min = numbers.iter().min_by_key(|&x| *x);
+println!("max: {:?}", max); // max: Some(40)
+println!("min: {:?}", min); // min: Some(10)
+```
+
+In this example, we have a vector of numbers and we use the `iter` method to get an iterator over the vector. We then use `max_by_key` and `min_by_key` methods to get the maximum and minimum numbers in the vector, respectively, by using the identity function `|&x| *x` as the key function. The output shows that the `max` variable holds `Some(40)` and the `min` variable holds `Some(10)`.
+
+### Comparing Item Sequences
+
+When working with iterators, we may need to compare the items within the sequence to each other in order to determine certain properties or behaviors. There are several methods available that allow us to compare items within the sequence:
+
+| Method             | Description                                                                                                                                                             |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `eq()`             | Returns true if the two iterators contain equal items in the same order.                                                                                                |
+| `cmp()`            | Compares the items of two iterators lexicographically (like a dictionary). Returns `Ordering::Less`, `Ordering::Equal`, or `Ordering::Greater` depending on the result. |
+| `partial_cmp()`    | Compares the items of two iterators lexicographically (like a dictionary) but may return None if the iterators are not of the same length.                              |
+| `eq_by()`          | Returns true if two iterators contain equal items when compared by a given function.                                                                                    |
+| `cmp_by()`         | Compares the items of two iterators using a given function, returning `Ordering::Less`, `Ordering::Equal`, or `Ordering::Greater` depending on the result.              |
+| `partial_cmp_by()` | Compares the items of two iterators using a given function but may return None if the iterators are not of the same length.                                             |
+
+Note that the `_by()` methods take a closure that is used to compare the items within the sequence.
+
+Here's an example that demonstrates the use of some of these methods:
+
+```rs
+let a = vec![1, 2, 3, 4];
+let b = vec![1, 2, 5, 4];
+
+// Compare two iterators for equality
+assert_eq!(a.iter().eq(b.iter()), false);
+
+// Compare two iterators lexicographically
+assert_eq!(a.iter().cmp(b.iter()), std::cmp::Ordering::Less);
+
+// Compare two iterators lexicographically by absolute value
+assert_eq!(
+    a.iter().partial_cmp_by(b.iter(), |x, y| x.abs().cmp(&y.abs())),
+    Some(std::cmp::Ordering::Greater),
+);
+```
+
+In the example, we first compare the iterators `a` and `b` for equality using the `eq()` method, which returns `false` because the iterators have different items. We then use the `cmp()` method to compare the iterators lexicographically, which returns `Ordering::Less` because `a` is "less" than `b` in lexicographic order. Finally, we use the `partial_cmp_by()` method to compare the iterators by absolute value, returning `Some(Ordering::Greater)` because the absolute values of the items in `a` are greater than the absolute values of the items in `b`.
+
+### position, rposition, and ExactSizeIterator
+
+The `position` and `rposition` methods are used to find the index of the first or last occurrence of a given element in an iterator, respectively. Both methods take a closure that tests each element and returns true for the desired element.
+
+For example, consider the following code that finds the index of the first occurrence of the number 5 in a vector:
+
+```rs
+let v = vec![1, 3, 5, 7, 5, 9];
+let index = v.iter().position(|&x| x == 5);
+assert_eq!(index, Some(2));
+```
+
+The `ExactSizeIterator` trait is implemented by iterators that know their exact size. This is useful when you need to ensure that an iterator produces a certain number of elements, or when you want to optimize performance by pre-allocating the right amount of memory.
+
+Some iterators that implement `ExactSizeIterator` are arrays, vectors, and range iterators.
+
+This trait extends the Iterator trait, adding two methods: `len` and `is_empty`.
+
+The `len` method returns the exact size of an iterator that implements this trait and the `is_empty` method returns `true` if iteration is complete
+
+For example, consider the following code that checks if a vector has exactly 6 elements:
+
+```rs
+let v = vec![1, 2, 3, 4, 5, 6];
+assert!(v.iter().len() == 6);
+```
+
+Implementing the `ExactSizeIterator` trait requires that the iterator implement the `size_hint` method, which returns a tuple of the minimum and maximum number of items the iterator will produce.
+
+Iterators that produce a fixed number of items, like an array or a range, are guaranteed to implement `ExactSizeIterator`. On the other hand, iterators that produce an unknown number of items, like the `str::chars` iterator, cannot implement `ExactSizeIterator`.
+
+The `position` and `rposition` methods can only be called on iterators that implement `ExactSizeIterator`, since they rely on knowing the exact number of items produced by the iterator.
+
+### fold and rfold
+
+The `fold` method is a powerful iterator method that can be used to reduce a sequence of items into a single value by repeatedly applying a function to each item and accumulating the result. It takes two arguments: an initial value, and a closure that takes two arguments: an accumulator and an item, and returns the next value of the accumulator. The final value of the accumulator is returned as the result of the `fold` method.
+
+Here's an example:
+
+```rs
+let numbers = vec![1, 2, 3, 4, 5];
+let sum = numbers.iter().fold(0, |acc, x| acc + x);
+println!("sum = {}", sum); // Output: sum = 15
+```
+
+The `rfold` method is similar to `fold`, but it starts from the end of the iterator instead of the beginning. This can be useful in some cases where you want to process the items in reverse order.
+
+Here's an example:
+
+```rs
+let numbers = vec![1, 2, 3, 4, 5];
+let product = numbers.iter().rfold(1, |acc, x| acc * x);
+println!("product = {}", product); // Output: product = 120
+```
+
+In this example, `rfold` is used to compute the product of all the numbers in the vector. The initial value is 1, and the closure multiplies each item by the accumulator. Since `rfold` processes the items in reverse order, it computes the product of the numbers from right to left.
+
+### try_fold and try_rfold
+
+The `try_fold` and `try_rfold` methods are similar to `fold` and `rfold`, respectively, but they allow for early termination of the folding operation if an error is encountered.
+
+The signature for `try_fold` is as follows:
+
+```rs
+fn try_fold<B, F, R>(&mut self, init: B, f: F) -> R
+where
+    F: FnMut(B, Self::Item) -> Result<B, R>,
+```
+
+`try_fold` takes an initial value of type `B`, and a closure `f` that takes a value of type `B` and an item from the iterator, and returns a `Result` that either contains the next accumulator value of type `B`, or an error of type `R`. `try_fold` will continue to apply `f` to the current accumulator value and each item from the iterator until either the iterator is exhausted or `f` returns an error.
+
+The signature for `try_rfold` is the same, except the iterator is folded from right-to-left.
+
+Here is an example of using `try_fold` to calculate the sum of the first 5 even integers from an iterator:
+
+```rs
+let mut iter = (0..).filter(|x| x % 2 == 0).take(5);
+let sum = iter.try_fold(0, |acc, x| {
+    let next = acc.checked_add(x).ok_or("overflow")?;
+    Ok(next)
+});
+assert_eq!(sum, Ok(20));
+```
+
+In this example, we first create an iterator that generates all non-negative integers, then use the `filter` method to keep only the even ones, and finally use `take` to limit the iterator to the first 5 elements. We then call `try_fold` on this iterator with an initial accumulator value of 0, and a closure that attempts to add each element to the accumulator, returning an error if the addition would cause an overflow. Since all 5 even integers can be added without overflowing, `try_fold` returns the final accumulator value of 20.
+
+`try_fold` is a very flexible method that can be used to implement many other consumer methods of the Iterator trait. For example, the sum method is implemented using `try_fold` to sum up the values of an iterator in a safe way, without panicking if the iterator contains a None value. Here is an example:
+
+```rs
+let numbers = vec![1, 2, 3, 4, 5];
+let sum = numbers.iter().try_fold(0, |acc, &num| acc.checked_add(num));
+assert_eq!(sum, Some(15));
+```
+
+In this example, the `try_fold` method is used to add up the numbers in the `numbers` vector, while returning `None` if the sum overflows.
+
+The all method is implemented using try_fold.
+
+```rs
+fn all<P>(&mut self, mut predicate: P) -> bool
+where
+    P: FnMut(Self::Item) -> bool,
+    Self: Sized,
+{
+    self.try_fold((), |_, item| if predicate(item) { Some(()) } else { None })
+        .is_some()
+}
+```
+
+It stops consuming items from the iterator as soon as the predicate returns `false`, unlike `fold`, which always consumes the entire iterator.
+
+If you're implementing your own iterator type, you should consider whether it can implement `try_fold` more efficiently than the default implementation from the Iterator trait. This can improve the performance of all other methods that are built on top of it.
+
+### nth, nth_back
+
+The `nth` method returns the nth element of the iterator. It takes an integer n as an argument, and returns an Option containing the nth element if it exists, or None if it does not.
+
+Here is an example:
+
+```rs
+let mut numbers = vec![1, 2, 3, 4, 5];
+let third_number = numbers.iter().nth(2);
+
+assert_eq!(third_number, Some(&3));
+
+let tenth_number = numbers.iter().nth(9);
+
+assert_eq!(tenth_number, None);
+```
+
+The `nth_back` method works the same way as `nth`, but starts from the back of the iterator instead of the front. It requires a double-ended iterator to be implemented.
+
+### last
+
+The `last` method is a consuming iterator method provided by the `Iterator` trait in Rust. It returns the last element of an iterator.
+
+If the iterator is empty, `None` is returned. If the iterator is not empty, the method returns `Some(item)`, where `item` is the last element of the iterator.
+
+Here's an example:
+
+```rs
+let v = vec![1, 2, 3, 4, 5];
+let last_item = v.iter().last();
+println!("{:?}", last_item); // Output: Some(5)
+
+let empty_vec: Vec<i32> = vec![];
+let last_item = empty_vec.iter().last();
+println!("{:?}", last_item); // Output: None
+```
+
+### find, rfind, and find_map
+
+The `find` method returns the first element of the iterator that satisfies a given predicate, or `None` if no such element is found. It takes a closure that accepts an element of the iterator and returns a boolean value indicating whether the element satisfies the predicate.
+
+Here's an example:
+
+```rs
+let numbers = vec![1, 2, 3, 4, 5];
+
+// Find the first even number in the iterator
+let result = numbers.iter().find(|&x| x % 2 == 0);
+
+// Prints "Some(2)"
+println!("{:?}", result);
+```
+
+The `rfind` method is similar to `find`, but searches the iterator from the back instead of the front.
+
+```rs
+let numbers = vec![1, 2, 3, 4, 5];
+
+// Find the last even number in the iterator
+let result = numbers.iter().rfind(|&x| x % 2 == 0);
+
+// Prints "Some(4)"
+println!("{:?}", result);
+```
+
+The `find_map` method is similar to `find`, but returns the first non-`None` result of the closure instead of a boolean value.
+
+```rslet strings = vec!["foo", "bar", "baz"];
+
+// Find the first string that contains the letter 'a'
+let result = strings.iter().find_map(|s| s.find('a').map(|i| (s, i)));
+
+// Prints "Some(("bar", 1))"
+println!("{:?}", result);
+```
+
+### Building Collections: collect and FromIterator
+
+Sometimes you need to turn an iterator into a collection, for example, to store the result of some computation, or to pass it to a function that expects a collection. The collect method is the standard way to do this in Rust.
+
+The `collect` method is defined on any iterator that implements the `Iterator` trait and returns a collection that implements the `FromIterator` trait. The syntax is as follows:
+
+```rs
+let collection: CollectionType = iterator.collect();
+```
+
+where `CollectionType` is the type of collection you want to create, and `iterator` is any iterator.
+
+For example, let's say we have an iterator of numbers and we want to create a vector containing the square of each number:
+
+```rs
+let numbers = vec![1, 2, 3, 4, 5];
+let squares: Vec<i32> = numbers.into_iter().map(|x| x * x).collect();
+```
+
+Here, we create an iterator over the `numbers` vector using `into_iter()`, then map each element to its square using `map(|x| x * x)`, and finally collect the results into a new `Vec<i32>` using `collect()`.
+
+`collect()` can be used with any collection that implements the `FromIterator` trait, including `Vec`, `HashMap`, `BTreeMap`, `HashSet`, `BTreeSet`, and more. You can even define your own collection types that implement `FromIterator` to use with `collect()`.
+
+The `FromIterator` trait is defined in the `std::iter` module and requires only one method to be implemented:
+
+```rs
+fn from_iter<I: IntoIterator<Item = Self::Item>>(iter: I) -> Self
+```
+
+This method takes an iterator of `Self::Item`s and returns a new instance of the collection. The `IntoIterator` trait is used to convert a type into an iterator, and is implemented for many Rust types, including slices, vectors, and ranges.
+
+In summary, `collect()` is a powerful method in Rust that allows you to convert any iterator into a collection by using the `FromIterator` trait. This makes it easy to store the result of some computation, or to pass it to a function that expects a collection.
+
+### The Extend Trait
+
+The `Extend` trait is used to extend a collection with the items of another collection. It is implemented for all standard collections and can be used to efficiently add items from one collection to another.
+
+The `extend` method defined in the `Extend` trait takes an iterator that produces elements of the same type as the collection and appends them to the collection. The `extend` method can be called on any mutable instance of a type that implements the `Extend` trait.
+
+Here is an example of using `extend` to add items from a vector to another vector:
+
+```rs
+let mut a = vec![1, 2, 3];
+let b = vec![4, 5, 6];
+a.extend(b);
+
+assert_eq!(a, vec![1, 2, 3, 4, 5, 6]);
+```
+
+Note that the `extend` method consumes the second collection, so it can only be used once.
+
+The `Extend` trait is also used by the `Vec::from_iter` method to construct a vector from an iterator. This method creates a new vector and appends the items produced by the iterator using the `extend` method. Here is an example:
+
+```rs
+let v = vec![1, 2, 3];
+let w = Vec::from_iter(v.into_iter().map(|x| x * 2));
+
+assert_eq!(w, vec![2, 4, 6]);
+```
+
+In this example, we use `into_iter` to create an iterator from the original vector, and then we use `map` to double each element. Finally, we use `Vec::from_iter` to create a new vector from the doubled elements.
+
+The `Extend` trait can be implemented for custom types that can efficiently append items from an iterator to the collection.
+
+### partition
+
+The `partition` method is a consumer method of the `Iterator` trait that splits an iterator into two separate iterators based on a predicate function. It returns a tuple of two iterators where the first iterator contains all the items for which the predicate function returned true, and the second iterator contains all the items for which the predicate function returned false.
+
+The method takes a closure that accepts a reference to an item in the iterator and returns a `bool` value indicating whether that item should go into the first iterator (true) or the second iterator (false). The method consumes the original iterator and returns a tuple of two new iterators.
+
+Here is an example usage of `partition`:
+
+```rs
+let nums = vec![1, 2, 3, 4, 5];
+let (even, odd): (Vec<i32>, Vec<i32>) = nums.into_iter().partition(|&x| x % 2 == 0);
+
+assert_eq!(even, vec![2, 4]);
+assert_eq!(odd, vec![1, 3, 5]);
+```
+
+In this example, we use the `partition` method to split the `nums` vector into two new vectors, one containing all the even numbers and the other containing all the odd numbers. We use pattern matching to destructure the resulting tuple of iterators into two separate variables `even` and `odd`.
+
+```rs
+let things = ["doorknob", "mushroom", "noodle", "giraffe", "grapefruit"];
+// Amazing fact: the name of a living thing always starts with an odd-numbered letter.
+let (living, nonliving): (Vec<&str>, Vec<&str>) = things.iter().partition(|name| name.as_bytes()[0] & 1 != 0);
+assert_eq!(living, vec!["mushroom", "giraffe", "grapefruit"]);
+assert_eq!(nonliving, vec!["doorknob", "noodle"]);
+```
+
+In this example, `partition` is applied to an array of strings named things. The predicate function checks whether the first byte of each string has an odd number, and the resulting collections are stored in the variables living and nonliving. The living collection contains all the strings that start with an odd-numbered letter, while the nonliving collection contains all the strings that start with an even-numbered letter.
+
+### for_each and try_for_each
+
+The `for_each` method is a consumer that takes a closure and applies it to each item produced by the iterator. It is a way of iterating over the items without returning a new collection. The closure can be any function or closure that takes the iterator's item type as an argument and returns nothing (`()`).
+
+For example:
+
+```rs
+let numbers = vec![1, 2, 3, 4, 5];
+numbers.iter().for_each(|x| println!("{}", x));
+```
+
+This will print the numbers 1 through 5 to the console.
+
+The `try_for_each` method is similar to `for_each`, but it is used for iterators that may produce errors. The closure provided to `try_for_each` must return a `Result<(), E>`, where `E` is the type of error that the iterator may produce. If any of the closures return an error, the iteration stops and the error is returned.
+
+For example:
+
+```rs
+let numbers = vec![1, 2, 3, 4, 5];
+let result = numbers.iter().try_for_each(|x| {
+    if *x % 2 == 0 {
+        Ok(())
+    } else {
+        Err("Odd number found!")
+    }
+});
+assert_eq!(result, Err("Odd number found!"));
+```
+
+This will return an error because an odd number was found. If all the closures had returned `Ok(())`, `try_for_each` would have returned `Ok(())`.
