@@ -540,3 +540,546 @@ let mut twos = std::iter::once(2);  // An iterator that produces a single 2.
 let mut ones = std::iter::repeat(1);  // An infinite sequence of 1s.
 let mut zeroes = std::iter::repeat_with(|| 0);  // An infinite sequence of 0s.
 ```
+
+## Iterator adapters
+
+Iterator adapters are methods that take an iterator and return a new iterator with a modified behavior.
+Here are some common iterator adapters in Rust:
+
+| Method              | Description                                                                                                              |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `map(f)`            | Transforms each value of an iterator by applying function f to it, returning a new iterator.                             |
+| `filter(p)`         | Produces a new iterator yielding only the elements of the original iterator that satisfy p.                              |
+| `enumerate()`       | Yields tuples containing an index and the value of the original iterator.                                                |
+| `skip(n)`           | Skips the first n elements of the iterator, producing the remaining values.                                              |
+| `take(n)`           | Produces an iterator of the first n elements of the original iterator.                                                   |
+| `skip_while(p)`     | Skips elements of the iterator while the predicate p is true, then produces the remaining values.                        |
+| `take_while(p)`     | Takes elements of the iterator while the predicate p is true, then stops producing values.                               |
+| `peekable()`        | Provides a way to look at the next element of an iterator without consuming it.                                          |
+| `fuse()`            | Wraps an iterator, ensuring that it terminates correctly even if the underlying iterator panics.                         |
+| `chain(iter)`       | Chains two iterators together, producing a new iterator that first produces values from the first, then from the second. |
+| `zip(iter)`         | Pairs up two iterators, producing a new iterator that returns tuples of their next elements.                             |
+| `map_while(f)`      | A version of map that halts when f returns None.                                                                         |
+| `flat_map(f)`       | Flattens nested iterators produced by applying function f to each element of the original iterator.                      |
+| `inspect(f)`        | Calls function f on each element of the iterator, and then returns the original element.                                 |
+| `scan(init, f)`     | Similar to fold, but produces an iterator of intermediate values rather than a final value.                              |
+| `fold(init, f)`     | Accumulates a value over the iterator, starting with the initial value init.                                             |
+| `try_fold(init, f)` | Like fold, but can stop and return None if f returns None.                                                               |
+| `collect()`         | Consumes the iterator and collects all its values into a collection such as a Vec or HashMap.                            |
+| `for_each(f)`       | Calls function f on each element of the iterator, discarding the return value.                                           |
+| `find(p)`           | Searches for an element of the iterator that satisfies the predicate p.                                                  |
+| `position(p)`       | Like find, but returns the index of the element rather than the element itself.                                          |
+| `rposition(p)`      | Like position, but searches from the end of the iterator.                                                                |
+| `find_map(f)`       | Similar to find, but applies function f to the iterator’s elements and returns the first non-None result.                |
+| `partition(p)`      | Splits the iterator into two based on whether each element satisfies predicate p.                                        |
+| `unzip()`           | Transposes a collection of tuples into a tuple of collections.                                                           |
+| `zip_eq(iter)`      | Like zip, but stops when either iterator stops, ensuring that both produce the same number of elements.                  |
+| `step_by(n)`        | Produces an iterator that yields every nth element of the original iterator.                                             |
+| `by_ref()`          | Borrows the iterator, allowing it to be used again later, for example in a loop.                                         |
+| `rev()`             | Produces an iterator that yields the elements of the original iterator in reverse order.                                 |
+| `cloned()`          | Produces an iterator that clones each element of the original iterator.                                                  |
+| `copied()`          | Like cloned, but converts each element to its Copy type first.                                                           |
+
+### map and filter
+
+| Method | Description                                                                          |
+| ------ | ------------------------------------------------------------------------------------ |
+| map    | Transforms each element of the iterator using a closure.                             |
+| filter | Filters the iterator, returning only the elements that satisfy a predicate function. |
+
+These adapters' signatures are as follows:
+
+```rs
+fn map<B, F>(self, f: F) -> impl Iterator<Item = B>
+where
+    Self: Sized,
+    F: FnMut(Self::Item) -> B;
+
+fn filter<P>(self, predicate: P) -> impl Iterator<Item = Self::Item>
+where
+    Self: Sized,
+    P: FnMut(&Self::Item) -> bool;
+```
+
+```rs
+// Using `map` to square each element of the iterator
+let numbers = vec![1, 2, 3];
+let squared_numbers: Vec<i32> = numbers.iter().map(|x| x * x).collect();
+assert_eq!(squared_numbers, vec![1, 4, 9]);
+
+// Using `filter` to select even numbers from the iterator
+let numbers = vec![1, 2, 3, 4, 5];
+let even_numbers: Vec<i32> = numbers.iter().filter(|x| x % 2 == 0).collect();
+assert_eq!(even_numbers, vec![2, 4]);
+```
+
+### filter_map and flat_map
+
+| Method     | Description                                                                                                                                                                                                                                                          |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| filter_map | Applies the given closure to each element of the iterator, producing an iterator over only the values where the closure returns Some.                                                                                                                                |
+| flat_map   | Applies the given closure to each element of the iterator, producing a flattened iterator over the values produced by the closure. The closure should return an iterator, and its output will be flattened. If the closure returns None, its output will be ignored. |
+
+```rs
+fn filter_map<B, F>(self, f: F) -> impl Iterator<Item = B>
+where
+    Self: Sized,
+    F: FnMut(Self::Item) -> Option<B>;
+```
+
+```rs
+let numbers = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+let result = numbers.iter().filter_map(|n| {
+    if n % 2 == 0 {
+        Some((n as f32).sqrt())
+    } else {
+        None
+    }
+});
+
+for n in result {
+    println!("{}", n);
+}
+```
+
+```rs
+fn flat_map<U, F>(self, f: F) -> impl Iterator<Item = U::Item>
+where
+    F: FnMut(Self::Item) -> U,
+    U: IntoIterator;
+```
+
+```rs
+let sentence = "The quick brown fox jumps over the lazy dog";
+let words = sentence.split(' ');
+let chars = words.flat_map(|word| word.chars());
+
+for c in chars {
+    print!("{}", c);
+}
+```
+
+### flatten
+
+| Method  | Description                                                                             |
+| ------- | --------------------------------------------------------------------------------------- |
+| flatten | Converts an iterator of iterators into a single iterator that yields elements directly. |
+
+```rs
+fn flatten(self) -> impl Iterator<Item = Self::Item::Item>
+where
+    Self::Item: IntoIterator;
+
+fn flatten(self) -> Flatten<Self>
+where
+    Self: Sized,
+    Self::Item: IntoIterator,
+```
+
+```rs
+let nested = vec![vec![1, 2], vec![3, 4, 5], vec![6]];
+let flattened: Vec<i32> = nested.into_iter().flatten().collect();
+assert_eq!(flattened, vec![1, 2, 3, 4, 5, 6]);
+```
+
+### take and take_while
+
+| Method     | Description                                                                           |
+| ---------- | ------------------------------------------------------------------------------------- |
+| take       | returns the first `n` items of an iterator, or all items if there are fewer than `n`. |
+| take_while | returns items from the input iterator until the given closure returns `false`.        |
+
+```rs
+fn take(self, n: usize) -> impl Iterator<Item = Self::Item>
+where
+    Self: Sized;
+```
+
+```rs
+let numbers = vec![1, 2, 3, 4, 5];
+let first_three = numbers.iter().take(3);
+for n in first_three {
+    println!("{}", n); // prints 1, 2, 3
+}
+```
+
+```rs
+fn take_while<P>(self, predicate: P) -> impl Iterator<Item = Self::Item>
+where
+    Self: Sized,
+    P: FnMut(&Self::Item) -> bool;
+```
+
+```rs
+let numbers = vec![1, 2, 3, 4, 5];
+let less_than_four = numbers.iter().take_while(|&n| *n < 4);
+for n in less_than_four {
+    println!("{}", n); // prints 1, 2, 3
+}
+```
+
+### skip and skip_while
+
+| Method     | Description                                                                                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| skip       | skips the first `n` elements of an iterator, returning a new iterator that begins with the `n+1`th element.                                                      |
+| skip_while | skips elements of an iterator until a given predicate is `true`, and returns a new iterator beginning with the first element for which the predicate is `false`. |
+
+```rs
+fn skip(self, n: usize) -> Skip<Self>
+
+fn skip_while<P>(self, predicate: P) -> SkipWhile<Self, P>
+where
+    P: FnMut(&Self::Item) -> bool,
+```
+
+```rs
+let numbers = vec![1, 2, 3, 4, 5];
+let new_numbers = numbers.iter().skip(2);
+println!("{:?}", new_numbers.collect::<Vec<&i32>>()); // Output: [&3, &4, &5]
+```
+
+```rs
+let numbers = vec![1, 2, 3, 4, 5];
+let new_numbers = numbers.iter().skip_while(|&x| x < &3);
+println!("{:?}", new_numbers.collect::<Vec<&i32>>()); // Output: [&3, &4, &5]
+```
+
+### peekable
+
+`Peekable` is an iterator adapter that wraps another iterator and allows you to peek at the next item without consuming it. It is used to "look ahead" at the next item in the iterator sequence, without actually consuming that item until it is explicitly requested.
+
+```rs
+fn peekable(self) -> std::iter::Peekable<Self>
+where
+    Self: Sized;
+```
+
+```rs
+let numbers = vec![1, 2, 3, 4, 5];
+let mut iter = numbers.iter().peekable();
+
+while let Some(&num) = iter.next() {
+    println!("Current number: {}", num);
+
+    if let Some(&next_num) = iter.peek() {
+        println!("Next number: {}", next_num);
+    } else {
+        println!("End of sequence");
+    }
+}
+```
+
+Peekable iterators are essential when you can’t decide how many items to consume from an iterator until you've gone too far. For example, if you're parsing numbers from a stream of characters, you can't decide where the number ends until you've seen the first nonnumber character following it:
+
+```rs
+use std::iter::Peekable;
+
+fn parse_number<I>(tokens: &mut Peekable<I>) -> u32
+where
+    I: Iterator<Item = char>,
+{
+    let mut n = 0;
+    loop {
+        match tokens.peek() {
+            Some(r) if r.is_digit(10) => {
+                n = n * 10 + r.to_digit(10).unwrap();
+            }
+            _ => return n,
+        }
+        tokens.next();
+    }
+}
+
+fn main() {
+    let mut chars = "226153980,1766319049".chars().peekable();
+    assert_eq!(parse_number(&mut chars), 226153980);
+    assert_eq!(chars.next(), Some(','));
+    assert_eq!(parse_number(&mut chars), 1766319049);
+    assert_eq!(chars.next(), None);
+}
+```
+
+### fuse
+
+The `fuse` iterator adapter is used to make an iterator "fuseable", which means that once it returns `None` or panics, it will continue to do so on subsequent calls. This is useful for iterators that have a finite length or can only be traversed once, as it ensures that subsequent calls to the iterator do not accidentally modify state or produce unexpected behavior.
+
+```rs
+struct Flaky(bool);
+impl Iterator for Flaky {
+    type Item = &'static str;
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.0 {
+            self.0 = false;
+            Some("totally the last item")
+        } else {
+            self.0 = true;
+            None
+        }
+    }
+}
+
+fn main() {
+    let mut flaky = Flaky(true);
+    assert_eq!(flaky.next(), Some("totally the last item"));
+    assert_eq!(flaky.next(), None);
+    assert_eq!(flaky.next(), Some("totally the last item"));
+    let mut not_flaky = Flaky(true).fuse();
+    assert_eq!(not_flaky.next(), Some("totally the last item"));
+    assert_eq!(not_flaky.next(), None);
+    assert_eq!(not_flaky.next(), None);
+}
+```
+
+### Reversible Iterators and rev
+
+In Rust, an iterator is a unidirectional sequence of values. It starts from the first element, proceeds sequentially through each element, and then terminates at the last element.
+
+However, there are cases where we need to traverse a sequence of elements in reverse order. For example, we might want to traverse a string backward or access the last elements of a vector.
+
+To support iteration in reverse order, Rust provides a "Reversible Iterator" trait called `DoubleEndedIterator`. This trait extends the `Iterator` trait to provide two additional methods, `next_back()` and `peek_back()`, that allow us to iterate backward through the sequence.
+
+In addition to the `DoubleEndedIterator` trait, Rust also provides a `rev()` method that returns a new iterator that produces the elements of the original iterator in reverse order. The `rev()` method can be used with any iterator that implements the `DoubleEndedIterator` trait.
+
+Here is a table of the methods provided by the `DoubleEndedIterator` trait:
+
+| Method        | Description                                                                                               |
+| ------------- | --------------------------------------------------------------------------------------------------------- |
+| `next_back()` | Returns the next element of the iterator in reverse order.                                                |
+| `peek_back()` | Returns a reference to the next element of the iterator in reverse order, without advancing the iterator. |
+
+```rs
+let bee_parts = ["head", "thorax", "abdomen"];
+let mut iter = bee_parts.iter();
+
+assert_eq!(iter.next(), Some(&"head"));
+assert_eq!(iter.next_back(), Some(&"abdomen"));
+assert_eq!(iter.next(), Some(&"thorax"));
+assert_eq!(iter.next_back(), None);
+assert_eq!(iter.next(), None);
+```
+
+Here is an example of using `rev()` method to reverse the order of a vector:
+
+```rs
+let v = vec![1, 2, 3, 4];
+for i in v.iter().rev() {
+    println!("{}", i);
+}
+```
+
+In this example, we first call the `iter()` method on the vector to create an iterator that produces references to its elements. We then call the `rev()` method to create a new iterator that produces the elements in reverse order. Finally, we use a `for` loop to iterate over the elements and print them to the console.
+
+### inspect
+
+`inspect()` is an iterator adapter in Rust that can be used for debugging purposes. It lets you inspect the values produced by the iterator at any point in the iteration process, without changing the output of the iterator.
+
+```rs
+fn main() {
+    let numbers = vec![1, 2, 3, 4, 5];
+    let sum = numbers
+        .iter()
+        .inspect(|x| println!("Inspecting: {}", x))
+        .fold(0, |acc, x| acc + x);
+    println!("Sum: {}", sum);
+}
+```
+
+the `inspect()` method is used to print out each element of the iterator as it is being processed by `fold()`. This can be useful for understanding how the iterator is working, or for debugging if you are having issues with your iterator.
+
+```rs
+fn main() {
+    let upper_case: String = "große"
+        .chars()
+        .inspect(|c| println!("before: {:?}", c))
+        .flat_map(|c| c.to_uppercase())
+        .inspect(|c| println!(" after: {:?}", c))
+        .collect();
+    assert_eq!(upper_case, "GROSSE");
+}
+```
+
+The `inspect()` method is used to print each character before and after the uppercase transformation.
+The `inspect()` method is a way to peek at each element of an iterator as it passes through a pipeline of methods.
+
+### chain
+
+`chain()` is an iterator adapter method in Rust that chains two iterators together to create a new iterator that will first return all the items from the first iterator, and then all the items from the second iterator.
+
+```rs
+fn chain<U>(self, other: U) -> impl Iterator<Item = Self::Item>
+where
+    Self: Sized,
+    U: IntoIterator<Item = Self::Item>;
+```
+
+In other words, you can chain an iterator together with any iterable that produces the same item type.
+
+```rs
+let v: Vec<i32> = (1..4).chain(vec![20, 30, 40]).collect();
+assert_eq!(v, [1, 2, 3, 20, 30, 40]);
+```
+
+### enumerate
+
+`enumerate()` is a method provided by iterators in Rust, which adds a counter to the elements of an iterator and yields them as tuples containing the index and the value. The syntax of `enumerate()` is as follows:
+
+```rs
+fn enumerate(self) -> Enumerate<Self>
+```
+
+Here, `self` represents the iterator on which `enumerate()` is called, and the method returns an `Enumerate` struct, which implements the `Iterator` trait and generates tuples `(usize, T)` where `T` is the element type of the iterator.
+
+Example usage of `enumerate()`:
+
+```rs
+let fruits = vec!["apple", "banana", "cherry"];
+
+for (index, fruit) in fruits.iter().enumerate() {
+    println!("Index {}: {}", index, fruit);
+}
+```
+
+Output:
+
+```yaml
+Index 0: apple
+Index 1: banana
+Index 2: cherry
+```
+
+In this example, `enumerate()` is called on an iterator created from a vector of fruits. The `for` loop iterates over the enumerated iterator, unpacks the tuples into variables `index` and `fruit`, and prints them out. The output shows that the `enumerate()` method has added an index to each fruit.
+
+### zip
+
+`zip()` is a method in Rust that takes two iterators and combines them into a new iterator, producing a sequence of pairs where the i-th pair contains the i-th element from each of the input iterators. The resulting iterator stops when either of the input iterators stops.
+
+Here's an example usage of `zip()` in Rust:
+
+```rs
+let v1 = vec![1, 2, 3];
+let v2 = vec!["one", "two", "three"];
+
+let zipped = v1.iter().zip(v2.iter());
+
+for (i, &s) in zipped {
+    println!("{} is {}", i, s);
+}
+```
+
+Output:
+
+```python
+1 is one
+2 is two
+3 is three
+```
+
+In the example above, `v1.iter()` returns an iterator over the elements of `v1`, while `v2.iter()` returns an iterator over the elements of `v2`. These two iterators are then passed as arguments to the `zip()` method, which returns an iterator that produces pairs of elements, one from `v1` and one from `v2`.
+
+Finally, the resulting iterator is looped through using a `for` loop that destructures each pair into its individual components `(i, &s)` so that they can be printed to the console.
+
+### by_ref
+
+`by_ref` is an iterator adapter method in Rust which converts an iterator into a reference to an iterator. This is useful when we want to consume part of an iterator and then pass the rest of it to another function or closure. `by_ref` creates a new iterator that borrows from the original iterator, and can be used to implement "splitting" an iterator in two parts.
+
+Here's an example of how `by_ref` can be used:
+
+```rs
+fn main() {
+    let nums = vec![1, 2, 3, 4, 5];
+    let mut iter = nums.iter();
+    let first_three = iter.by_ref().take(3);
+
+    for num in first_three {
+        println!("num: {}", num);
+    }
+
+    let rest = iter.take(2);
+    for num in rest {
+        println!("num: {}", num);
+    }
+}
+```
+
+In this example, we create a vector `nums` containing some integers, and create an iterator `iter` over it. We then use `by_ref` to create a new iterator `first_three` that borrows from `iter` and takes the first three elements. We iterate over `first_three` to print out its contents.
+
+After consuming the first three elements of `iter`, we create another iterator `rest` by calling `iter.take(2)`, which will take the next two elements of `iter`. We iterate over `rest` to print out its contents.
+
+Note that if we didn't use `by_ref` to create `first_three`, the call to `iter.take(2)` would consume the first five elements of `iter` instead of just the last two, since `iter` has already been partially consumed by `first_three`.
+
+### cloned, copied
+
+The `cloned()` and `copied()` iterator adapters create a new iterator that clones or copies each item of the original iterator.
+
+The `cloned()` method is used when the original iterator's items are references to objects, and we want to obtain new objects that are cloned from the referenced ones.
+
+For example:
+
+```rs
+let numbers = vec![1, 2, 3];
+let cloned_numbers: Vec<i32> = numbers.iter().cloned().collect();
+assert_eq!(cloned_numbers, vec![1, 2, 3]);
+```
+
+Here, the `iter()` method creates an iterator over references to the elements in the `numbers` vector. The `cloned()` method creates a new iterator that clones each element, yielding a new `i32` value for each original value. The `collect()` method consumes the cloned iterator and creates a new `Vec<i32>` from the cloned values.
+
+The `copied()` method is used when the original iterator's items are primitive values or values that implement the `Copy` trait, and we want to obtain new values that are copied from the original ones.
+
+For example:
+
+```rs
+let numbers = [1, 2, 3];
+let copied_numbers: Vec<i32> = numbers.iter().copied().collect();
+assert_eq!(copied_numbers, vec![1, 2, 3]);
+```
+
+Here, the `iter()` method creates an iterator over references to the elements in the `numbers` array. The `copied()` method creates a new iterator that copies each element, yielding a new `i32` value for each original value. The `collect()` method consumes the copied iterator and creates a new `Vec<i32>` from the copied values.
+
+### cycle
+
+The `cycle` iterator adapter is used to repeat the elements of an iterator infinitely. It creates a new iterator that cycles through the elements of the original iterator repeatedly.
+
+Here is an example of using `cycle` with a vector:
+
+```rs
+let v = vec![1, 2, 3];
+let mut cycle_iter = v.iter().cycle();
+assert_eq!(cycle_iter.next(), Some(&1));
+assert_eq!(cycle_iter.next(), Some(&2));
+assert_eq!(cycle_iter.next(), Some(&3));
+assert_eq!(cycle_iter.next(), Some(&1));
+assert_eq!(cycle_iter.next(), Some(&2));
+assert_eq!(cycle_iter.next(), Some(&3));
+```
+
+In the example, the `iter()` method is used to create an iterator over the elements of the vector `v`. The `cycle()` method is then called on the iterator to create a new iterator that cycles through the elements of `v`. The `next()` method is then used to iterate through the elements of the new iterator. Because `cycle` repeats the elements of the original iterator, the iterator never ends, so `next()` can be called repeatedly without ever returning `None`.
+
+```rs
+use std::iter::{once, repeat};
+
+fn main() {
+    let fizzes = repeat("").take(2).chain(once("fizz")).cycle();
+    let buzzes = repeat("").take(4).chain(once("buzz")).cycle();
+    let fizzes_buzzes = fizzes.zip(buzzes);
+    let fizz_buzz = (1..100).zip(fizzes_buzzes).map(|tuple| match tuple {
+        (i, ("", "")) => i.to_string(),
+        (_, (fizz, buzz)) => format!("{}{}", fizz, buzz),
+    });
+    for line in fizz_buzz {
+        println!("{}", line);
+    }
+}
+```
+
+This code is an implementation of the classic "FizzBuzz" programming problem.
+
+The program creates two infinite iterators using the `repeat()` function, one for "fizzes" and one for "buzzes". The `take()` method is used to limit each iterator to a certain number of elements, and `chain()` is used to append a single "fizz" or "buzz" to the end of each iterator.
+
+The `cycle()` method is then called on each iterator to create an infinite cycle of "fizzes" and "buzzes". The `zip()` method is used to combine the two cycles into a single iterator of tuples.
+
+The program then creates a range from 1 to 99 using the `..` operator and calls `zip()` on that range and the `fizzes_buzzes` iterator. The resulting iterator contains tuples of the form `(i, (fizz, buzz))`, where `i` is the current number and `fizz` and `buzz` are the next values from the "fizzes" and "buzzes" cycles, respectively.
+
+The `map()` method is then called on this iterator to transform each tuple into a string. If both `fizz` and `buzz` are empty strings, then the string representation of `i` is returned. Otherwise, the `fizz` and `buzz` strings are concatenated and returned.
+
+Finally, a `for` loop is used to print out each string in the resulting iterator.
