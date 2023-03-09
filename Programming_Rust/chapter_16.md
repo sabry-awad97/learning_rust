@@ -1475,3 +1475,28 @@ When working with HashSets in Rust, it is recommended to follow these best pract
 | HashSet        | Yes             | Fast      | Fast     | Fast      | Not Applicable  | More than Vec, less than BTreeSet |
 | BTreeSet       | Yes             | Slow      | Slow     | Fast      | Not Applicable  | More than HashSet, less than Vec  |
 | Vec            | No              | Fast      | Slow     | Slow      | Fast            | More than HashSet and BTreeSet    |
+
+## `BTreeSet<T>`
+
+`BTreeSet<T>` is another collection type in Rust that is similar to `HashSet<T>` but uses a balanced binary tree (specifically, a B-tree) to store its elements instead of a hash table. This means that `BTreeSet<T>` has different performance characteristics than `HashSet<T>` and may be more appropriate for certain use cases.
+
+Note that `BTreeSet<T>` provides the same basic set operations as `HashSet<T>` (insertion, removal, containment check), as well as some additional methods that take advantage of the structure of the binary tree. For example, `BTreeSet<T>` provides methods like `range` and `range_mut` that allow you to efficiently iterate over a subset of the set's elements.
+
+One key advantage of `BTreeSet<T>` is that it provides guaranteed worst-case O(log n) time complexity for insertion, removal, and search operations, where n is the number of elements in the set. This is in contrast to `HashSet<T>`, which has average-case O(1) time complexity for these operations but can have worst-case O(n) time complexity in certain situations (such as when there are many hash collisions).
+
+However, `BTreeSet<T>` also has some disadvantages compared to `HashSet<T>`. For example, `BTreeSet<T>` requires more memory to store the same number of elements as a `HashSet<T>`, and it may be slower than `HashSet<T>` for small sets or in situations where hash collisions are unlikely.
+
+```rs
+use std::collections::BTreeSet;
+
+let mut set = BTreeSet::new();
+
+set.insert(5);
+set.insert(2);
+set.insert(8);
+set.insert(3);
+
+for x in set.range(3..6) {
+    println!("{}", x);
+}
+```
