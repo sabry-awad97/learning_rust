@@ -589,3 +589,61 @@ fn main() {
     println!("Numbers after removal: {:?}", numbers);
 }
 ```
+
+### Sorting
+
+#### `sort()`
+
+The `sort()` method sorts a mutable slice or vector in ascending order using the default ordering of its elements. For example:
+
+```rs
+fn main() {
+    let mut numbers = vec![3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
+    numbers.sort();
+
+    println!("{:?}", numbers);
+}
+```
+
+#### `sort_by()`
+
+The `sort_by()` method sorts a mutable slice or vector using a custom ordering defined by a closure. The closure should take two arguments (the elements to compare) and return an Ordering value. For example:
+
+```rs
+fn main() {
+    let mut strings = vec!["rust", "is", "fun", "to", "learn"];
+    strings.sort_by(|a, b| a.len().cmp(&b.len()));
+
+    println!("{:?}", strings);
+}
+```
+
+#### sort_by_key(key)
+
+The `sort_by_key()` method is used to sort a mutable slice or vector based on a key function that is applied to each element. The key function should take an element from the slice or vector as an argument and return a value that can be compared using Rust's default ordering.
+
+```rs
+fn main() {
+    let mut words = vec!["apple", "banana", "cherry", "date", "elderberry"];
+    words.sort_by_key(|w| w.len());
+
+    println!("{:?}", words);
+}
+```
+
+#### `sort_unstable()` and `sort_unstable_by()`
+
+The `sort_unstable()` and `sort_unstable_by()` methods work the same as `sort()` and `sort_by()`, but do not guarantee stability. This means that elements that compare equal may not be in the same order after sorting.
+
+#### reverse()
+
+In Rust, the `reverse()` method is used to reverse the order of the elements in a mutable slice or vector.
+
+```rs
+fn main() {
+    let mut numbers = vec![1, 2, 3, 4, 5];
+    numbers.reverse();
+
+    println!("{:?}", numbers);
+}
+```
