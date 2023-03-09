@@ -1202,3 +1202,34 @@ fn main() {
 - Choose appropriate key types. Keys in a `HashMap` should be hashable and implement the `Eq` and `PartialEq` traits.
 - Use the entry method when adding or updating elements in a `HashMap`. The entry method provides a way to access the value of a key-value pair in a `HashMap`, and allows you to insert or modify the value if it doesn't exist.
 - Use the `get_or_insert` method when accessing or inserting elements in a `HashMap`. The `get_or_insert` method provides a way to access the value of a key-value pair in a `HashMap`, and allows you to insert the key-value pair if it doesn't exist.
+
+## `BTreeMap<K, V>`
+
+BTreeMap is a sorted map data structure in Rust that is based on a B-tree. It stores key-value pairs in sorted order based on the keys. It is useful in situations where you need to quickly find the value associated with a key, and also need the keys to be sorted.
+
+One advantage of using BTreeMap is that it provides fast lookups, inserts, and deletions even when the number of elements is large. It has a logarithmic time complexity for these operations, which means the time it takes to perform these operations increases only logarithmically with the number of elements in the map. Additionally, BTreeMap is sorted, which allows you to iterate through the elements in order.
+
+One disadvantage of using BTreeMap is that it has a higher memory overhead than other data structures like HashMaps, due to the structure of the B-tree. Another disadvantage is that it may be slower than HashMaps for small numbers of elements, due to the overhead of maintaining the B-tree structure.
+
+### Syntax and Usage
+
+```rs
+use std::collections::BTreeMap;
+let mut btree_map = BTreeMap::new();
+btree_map.insert("a", 1);
+btree_map.insert("b", 2);
+btree_map.insert("c", 3);
+if let Some(value) = btree_map.get("a") {
+    println!("value for key 'a' is {}", value);
+}
+btree_map.insert("a", 4);
+btree_map.remove("a");
+```
+
+### Practical Examples and Scenarios
+
+BTreeMap is useful in situations where you need to maintain a collection of key-value pairs in sorted order, such as in a dictionary or a database index. It can also be used for tasks such as finding the nearest neighbor of a point in a multi-dimensional space.
+
+### Performance Considerations
+
+When using BTreeMap, it is important to consider the tradeoff between memory usage and performance. Because of the B-tree structure, BTreeMap has a higher memory overhead than other data structures like HashMaps. Additionally, BTreeMap may be slower than HashMaps for small numbers of elements, due to the overhead of maintaining the B-tree structure.
