@@ -268,3 +268,324 @@ println!("{}", joined);
 ```
 
 Note that `join()` takes ownership of the iterator, so the original vector is moved and can no longer be used. If you want to join elements without consuming the iterator, you can use the `intersperse()` method from the itertools crate, which adds separators between the elements of the iterator.
+
+### Splitting
+
+It’s easy to get many non-mut references into an array, slice, or vector at once:
+
+```rs
+let v = vec![0, 1, 2, 3];
+let a = &v[i];
+let b = &v[j];
+let mid = v.len() / 2;
+let front_half = &v[..mid];
+let back_half = &v[mid..];
+```
+
+Getting multiple mutable references to the same slice or vector is not allowed in Rust, as it violates the borrowing rules that ensure memory safety. If you have a mutable reference to a slice or vector, you cannot get another mutable reference to the same slice or vector until the first mutable reference goes out of scope.
+
+However, there are several ways to work around this restriction depending on your use case.
+
+#### slice.split_at(index), slice.split_at_mut(index)
+
+The `split_at` method can be used to split a slice into two non-overlapping slices at a given index. The first slice will contain elements up to the index (exclusive), while the second slice will contain the elements from the index (inclusive) to the end of the original slice.
+
+Here's an example of using `split_at` to split a slice into two:
+
+```rs
+let v = [1, 2, 3, 4, 5];
+let (left, right) = v.split_at(3);
+assert_eq!(left, [1, 2, 3]);
+assert_eq!(right, [4, 5]);
+```
+
+The `split_at_mut` method is similar, but it returns mutable references to the two slices:
+
+```rs
+let mut v = [1, 2, 3, 4, 5];
+let (left, right) = v.split_at_mut(3);
+left[0] = 0;
+right[0] = 6;
+assert_eq!(v, [0, 2, 3, 6, 5]);
+```
+
+#### slice.split_first(), slice.split_first_mut()
+
+The `split_first()` method returns an optional reference to the first element of a slice, and a slice of the rest of the elements. If the slice is empty, it returns `None`.
+
+Here's an example of using `split_first()`:
+
+```rs
+let v = [1, 2, 3, 4, 5];
+if let Some((first, rest)) = v.split_first() {
+    println!("The first element is {} and the rest is {:?}", first, rest);
+} else {
+    println!("The slice is empty");
+}
+```
+
+The `split_first_mut()` method is similar, but returns a mutable reference to the first element:
+
+```rs
+let mut v = [1, 2, 3, 4, 5];
+if let Some((first, rest)) = v.split_first_mut() {
+    *first = 0;
+    println!("The first element is now {} and the rest is {:?}", first, rest);
+} else {
+    println!("The slice is empty");
+}
+```
+
+#### slice.split_last(), slice.split_last_mut()
+
+The `split_last()` method returns a tuple containing the last element of the slice and all the other elements as a slice. It returns `None` if the slice is empty.
+
+Here's an example:
+
+```rs
+let numbers = [1, 2, 3, 4, 5];
+if let Some((last, elements)) = numbers.split_last() {
+    println!("The last element is {}, and the other elements are {:?}", last, elements);
+} else {
+    println!("The slice is empty");
+}
+```
+
+The `split_last_mut()` method is similar to `split_last()`, but it returns a mutable reference to the last element and a mutable slice of the other elements.
+
+Here's an example:
+
+```rs
+let mut numbers = [1, 2, 3, 4, 5];
+if let Some((last, elements)) = numbers.split_last_mut() {
+    *last = 6;
+    elements[0] = 0;
+    println!("The last element is now {}, and the other elements are {:?}", last, elements);
+} else {
+    println!("The slice is empty");
+}
+```
+
+#### slice.split(is_sep), slice.split_mut(is_sep)
+
+The `split()` and `split_mut()` methods on slices return an iterator over the non-overlapping substrings of the original slice that are delimited by a separator determined by a closure.
+
+The `is_sep` closure takes a single argument of type `&T` (where `T` is the element type of the slice) and returns a boolean indicating whether the given element should be considered a separator or not.
+
+Here's an example of using `split()` to split a slice of integers into sub-slices delimited by odd numbers:
+
+```rs
+let v = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
+let mut iter = v.split(|x| x % 2 != 0);
+while let Some(subslice) = iter.next() {
+    println!("{:?}", subslice);
+}
+```
+
+In this example, the closure `|x| x % 2 != 0` is used to determine the separator. This closure returns `true` for odd numbers and `false` for even numbers, so the slice is split into sub-slices delimited by odd numbers.
+
+The `split_mut()` method works similarly to `split()`, but it returns an iterator over mutable references to the non-overlapping sub-slices of the original slice.
+
+#### slice.rsplit(is_sep), slice.rsplit_mut(is_sep)
+
+The `rsplit` and `rsplit_mut` methods are similar to the `split` and `split_mut` methods, except that they start splitting the slice from the end rather than from the beginning.
+
+```rs
+fn main() {
+    let s = "one two three four five";
+    let words: Vec<&str> = s.split_whitespace().collect();
+    let mut last_word = "";
+    let mut rest = &s[..];
+
+    for word in words.rsplit(|c: &char| c.is_whitespace()) {
+        if word != "" {
+            last_word = word;
+            rest = &rest[..word.as_ptr() as usize - s.as_ptr() as usize];
+            break;
+        }
+    }
+
+    println!("last word: {}", last_word);
+    println!("rest: '{}'", rest);
+}
+```
+
+#### slice.chunks(n), slice.chunks_mut(n)
+
+In Rust, the `chunks()` method and `chunks_mut()` method are used to split a slice into smaller fixed-size chunks.
+
+The `chunks()` method returns an iterator over immutable references to the smaller chunks, while the `chunks_mut()` method returns an iterator over mutable references to the smaller chunks. Both methods take an argument `n` that specifies the size of each chunk.
+
+Here's an example of using the `chunks()` method:
+
+```rs
+let slice = [1, 2, 3, 4, 5, 6];
+let mut iter = slice.chunks(2);
+
+assert_eq!(iter.next(), Some(&[1, 2][..]));
+assert_eq!(iter.next(), Some(&[3, 4][..]));
+assert_eq!(iter.next(), Some(&[5, 6][..]));
+assert_eq!(iter.next(), None);
+```
+
+In this example, we define a slice of integers `slice` and create an iterator over its chunks of size 2 using the `chunks()` method. We then use the `assert_eq!()` macro to compare the iterator's first three elements with their expected values. Note that the `&` operator is used to take a reference to each chunk, and the `[..]` syntax is used to create a slice from the reference.
+
+Here's an example of using the `chunks_mut()` method:
+
+```rs
+let mut slice = [1, 2, 3, 4, 5, 6];
+let mut iter = slice.chunks_mut(2);
+
+if let Some(chunk) = iter.next() {
+    chunk[0] = 7;
+}
+
+assert_eq!(slice, [7, 2, 3, 4, 5, 6]);
+```
+
+In this example, we define a mutable slice of integers `slice` and create an iterator over its mutable chunks of size 2 using the `chunks_mut()` method. We then modify the first element of the first chunk using the index notation. Finally, we use the `assert_eq!()` macro to compare the modified slice with its expected value.
+
+Both `chunks()` and `chunks_mut()` can also be used with slices of other types, such as characters or strings. Note that the size of the slice must be divisible by the chunk size, or the last chunk may have a smaller size.
+
+#### slice.rchunks(n), slice.rchunks_mut(n)
+
+In Rust, the `rchunks()` method and `rchunks_mut()` method are used to split a slice into smaller fixed-size chunks from the end of the slice.
+
+Here's an example of using the `rchunks()` method:
+
+```rs
+let slice = [1, 2, 3, 4, 5, 6];
+let mut iter = slice.rchunks(2);
+
+assert_eq!(iter.next(), Some(&[5, 6][..]));
+assert_eq!(iter.next(), Some(&[3, 4][..]));
+assert_eq!(iter.next(), Some(&[1, 2][..]));
+assert_eq!(iter.next(), None);
+```
+
+Here's an example of using the `rchunks_mut()` method:
+
+```rs
+let mut slice = [1, 2, 3, 4, 5, 6];
+let mut iter = slice.rchunks_mut(2);
+
+if let Some(chunk) = iter.next() {
+chunk[1] = 7;
+}
+
+assert_eq!(slice, [1, 2, 3, 4, 7, 6]);
+```
+
+#### slice.chunks_exact(n), slice.chunks_exact_mut(n)
+
+Here's an example of using the `chunks_exact()` method:
+
+```rs
+let slice = [1, 2, 3, 4, 5, 6];
+let mut iter = slice.chunks_exact(2);
+
+assert_eq!(iter.next(), Some(&[1, 2][..]));
+assert_eq!(iter.next(), Some(&[3, 4][..]));
+assert_eq!(iter.next(), Some(&[5, 6][..]));
+assert_eq!(iter.next(), None);
+```
+
+Here's an example of using the `chunks_exact_mut()` method:
+
+```rs
+let mut slice = [1, 2, 3, 4, 5, 6];
+let mut iter = slice.chunks_exact_mut(2);
+
+if let Some(chunk) = iter.next() {
+    chunk[0] = 7;
+}
+
+assert_eq!(slice, [7, 2, 3, 4, 5, 6]);
+```
+
+Both `chunks_exact()` and `chunks_exact_mut()` can also be used with slices of other types, such as characters or strings. Note that if the size of the slice is not divisible by the chunk size, the last chunk may have a smaller size and can be accessed using the `remainder()` method on the iterator.
+
+#### slice.rchunks_exact(n), slice.rchunks_exact_mut(n)
+
+Here's an example of using the `rchunks_exact()` method:
+
+```rs
+let slice = [1, 2, 3, 4, 5, 6];
+let mut iter = slice.rchunks_exact(2);
+
+assert_eq!(iter.next(), Some(&[5, 6][..]));
+assert_eq!(iter.next(), Some(&[3, 4][..]));
+assert_eq!(iter.next(), Some(&[1, 2][..]));
+assert_eq!(iter.next(), None);
+```
+
+Here's an example of using the `rchunks_exact_mut()` method:
+
+```rs
+let mut slice = [1, 2, 3, 4, 5, 6];
+let mut iter = slice.rchunks_exact_mut(2);
+
+if let Some(chunk) = iter.next() {
+    chunk[1] = 7;
+}
+
+assert_eq!(slice, [1, 2, 3, 7, 5, 6]);
+```
+
+#### slice.windows(n)
+
+In Rust, `slice.windows(n)` returns an iterator over all contiguous windows of length n in the slice.
+
+```rs
+let numbers = [1, 2, 3, 4, 5];
+for window in numbers.windows(3) {
+    println!("{:?}", window);
+}
+```
+
+Note that the slices returned by `windows(n)` are views into the original slice, so they don't allocate any memory. If you need to perform some operation on each window and want to modify the original slice, you can use the `windows_mut(n)` method instead.
+
+### Swapping
+
+`slice.swap(i, j)` is a method on slices that swaps the elements at indices `i` and `j`.
+
+Here's an example:
+
+```rs
+fn main() {
+    let mut numbers = [1, 2, 3, 4, 5];
+    numbers.swap(1, 3);
+
+    println!("{:?}", numbers);
+}
+```
+
+`slice_a.swap(&mut slice_b)` is a method on slices that swaps the elements of two slices. This method requires that the two slices have the same length.
+
+Here's an example:
+
+```rs
+fn main() {
+    let mut slice_a = [1, 2, 3, 4, 5];
+    let mut slice_b = [6, 7, 8, 9, 10];
+
+    slice_a.swap(&mut slice_b);
+
+    println!("slice_a: {:?}", slice_a);
+    println!("slice_b: {:?}", slice_b);
+}
+```
+
+In Rust, `vec.swap_remove(i)` is a method on vectors that removes the element at index `i` and returns it, while preserving the order of the other elements in the vector. This method is more efficient than using `remove` followed by `swap`. It's useful when you don't care about the order of the items left in the vector.
+
+Here's an example:
+
+```rs
+fn main() {
+    let mut numbers = vec![1, 2, 3, 4, 5];
+    let removed = numbers.swap_remove(2);
+
+    println!("Removed element: {}", removed);
+    println!("Numbers after removal: {:?}", numbers);
+}
+```
