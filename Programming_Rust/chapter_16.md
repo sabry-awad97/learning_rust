@@ -828,3 +828,53 @@ fn main() {
 ```
 
 Note that the `gen_range()` method can also take a range of floating-point numbers as an argument, and can generate random numbers of different types, such as `u8`, `i16`, and `f32`.
+
+## `VecDeque<T>`
+
+In Rust, `VecDeque<T>` is a double-ended queue (deque) that provides constant time insertion and removal of elements from both ends of the queue. It is implemented as a dynamic array of chunks, where each chunk is a fixed size array that holds a portion of the deque's elements.
+
+Here is an example that demonstrates how to use `VecDeque<T>` to create a deque, add elements to both ends of the deque, and remove elements from both ends of the deque:
+
+```rs
+use std::collections::VecDeque;
+
+fn main() {
+    // create a new deque
+    let mut deque: VecDeque<i32> = VecDeque::new();
+
+    // add elements to the front of the deque
+    deque.push_front(1);
+    deque.push_front(2);
+    deque.push_front(3);
+
+    // add elements to the back of the deque
+    deque.push_back(4);
+    deque.push_back(5);
+    deque.push_back(6);
+
+    // remove elements from the front of the deque
+    let front = deque.pop_front();
+    let second = deque.pop_front();
+    let third = deque.pop_front();
+
+    // remove elements from the back of the deque
+    let back = deque.pop_back();
+    let second_to_last = deque.pop_back();
+    let third_to_last = deque.pop_back();
+
+    // print the deque
+    println!("Deque: {:?}", deque);
+}
+```
+
+Output:
+
+```css
+deque: VecDeque([4, 5]);
+```
+
+In this example, a new `VecDeque<i32>` is created using the `new()` method from the `std::collections` module. Elements are added to the front of the deque using the `push_front()` method, and elements are added to the back of the deque using the `push_back()` method.
+
+Elements are removed from the front of the deque using the `pop_front()` method, and elements are removed from the back of the deque using the `pop_back()` method. The `pop_front()` and `pop_back()` methods return an `Option<T>` that contains the removed element, or `None` if the deque is empty.
+
+Note that `VecDeque<T>` provides several other methods for working with deques, such as `get()`, `get_mut()`, `split_off()`, and `rotate_left()` and `rotate_right()`, which allow you to access, modify, split, and rotate the elements of the deque.
