@@ -647,3 +647,82 @@ fn main() {
     println!("{:?}", numbers);
 }
 ```
+
+### Searching
+
+#### `binary_search()`
+
+The `binary_search()` method searches a sorted slice or vector for a given element using a binary search algorithm. The method returns a `Result` enum that indicates whether the element was found and at which index.
+
+For example:
+
+```rs
+fn main() {
+    let numbers = vec![1, 3, 4, 5, 7, 9];
+    let index = numbers.binary_search(&5);
+
+    match index {
+        Ok(i) => println!("Found 5 at index {}", i),
+        Err(_) => println!("5 not found"),
+    }
+}
+```
+
+If the element is not found, `binary_search()` returns an `Err` variant.
+
+#### `binary_search_by()`
+
+The `binary_search_by()` method is used to search a sorted slice or vector for a value using a binary search algorithm. The method takes a closure that compares the search value with an element of the slice or vector, and returns an `Ordering` value that indicates whether the search value is less than, equal to, or greater than the element.
+
+```rs
+fn main() {
+    let numbers = vec![1, 2, 3, 4, 5];
+    let search_value = 3;
+
+    let result = numbers.binary_search_by(|&x| x.cmp(&search_value));
+
+    match result {
+        Ok(index) => println!("Found {} at index {}", search_value, index),
+        Err(_) => println!("{} not found", search_value),
+    }
+}
+```
+
+Note that the `binary_search_by()` method assumes that the slice or vector is sorted in ascending order according to Rust's default ordering. If the slice or vector is sorted in a different order, you can pass a custom comparison function to the method using the `binary_search_by_key()` method instead.
+
+#### `binary_search_by_key()`
+
+the `binary_search_by_key()` method is used to search a sorted slice or vector for a value using a binary search algorithm based on a key derived from each element of the slice or vector. The method takes a closure that maps an element of the slice or vector to its key, and a search key, and returns an `Ordering` value that indicates whether the search key is less than, equal to, or greater than the key of the element.
+
+```rs
+fn main() {
+    let words = vec!["apple", "banana", "cherry", "date", "elderberry"];
+    let search_key = "cherry";
+
+    let result = words.binary_search_by_key(&search_key, |word| word);
+
+    match result {
+        Ok(index) => println!("Found {} at index {}", search_key, index),
+        Err(_) => println!("{} not found", search_key),
+    }
+}
+```
+
+#### `contains()`
+
+The `contains()` method checks if a slice or vector contains a given element. The method returns a boolean value.
+
+For example:
+
+```rs
+fn main() {
+    let numbers = vec![1, 3, 4, 5, 7, 9];
+    let has_five = numbers.contains(&5);
+
+    if has_five {
+        println!("The vector contains 5");
+    } else {
+        println!("The vector does not contain 5");
+    }
+}
+```
