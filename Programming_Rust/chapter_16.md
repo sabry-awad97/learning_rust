@@ -878,3 +878,157 @@ In this example, a new `VecDeque<i32>` is created using the `new()` method from 
 Elements are removed from the front of the deque using the `pop_front()` method, and elements are removed from the back of the deque using the `pop_back()` method. The `pop_front()` and `pop_back()` methods return an `Option<T>` that contains the removed element, or `None` if the deque is empty.
 
 Note that `VecDeque<T>` provides several other methods for working with deques, such as `get()`, `get_mut()`, `split_off()`, and `rotate_left()` and `rotate_right()`, which allow you to access, modify, split, and rotate the elements of the deque.
+
+## `BinaryHeap<T>`
+
+In Rust, `BinaryHeap<T>` is a priority queue that stores elements in a binary heap data structure. A binary heap is a complete binary tree where each node's value is greater than or equal to its children's values (for a max heap), or less than or equal to its children's values (for a min heap).
+
+`BinaryHeap<T>` provides a simple interface for inserting elements and removing the top element (the maximum or minimum, depending on the type of heap), while maintaining the heap property. It also provides methods for inspecting the top element and checking whether the heap is empty.
+
+Here is an example that demonstrates how to use `BinaryHeap<T>` to create a max heap, insert elements into the heap, remove the maximum element from the heap, and iterate over the elements in the heap:
+
+```rs
+use std::collections::BinaryHeap;
+
+fn main() {
+    // create a new max heap
+    let mut heap = BinaryHeap::new();
+
+    // insert elements into the heap
+    heap.push(4);
+    heap.push(1);
+    heap.push(7);
+    heap.push(3);
+    heap.push(9);
+    heap.push(2);
+
+    // remove the maximum element from the heap
+    let max = heap.pop();
+
+    // iterate over the elements in the heap
+    while let Some(element) = heap.pop() {
+        println!("Element: {}", element);
+    }
+}
+```
+
+Output:
+
+```yaml
+Element: 7
+Element: 4
+Element: 3
+Element: 2
+Element: 1
+```
+
+In this example, a new `BinaryHeap<i32>` is created using the `new()` method from the `std::collections` module. Elements are inserted into the heap using the `push()` method, and the maximum element is removed from the heap using the `pop()` method, which returns an `Option<T>` that contains the maximum element, or `None` if the heap is empty.
+
+To iterate over the elements in the heap, the `pop()` method is called in a loop until it returns `None`, and each element is printed to the console.
+
+Note that `BinaryHeap<T>` provides several other methods for working with heaps, such as `peek()`, `is_empty()`, `len()`, and `clear()`, which allow you to inspect, check, and modify the elements of the heap.
+
+`BinaryHeap<T>` can hold any type of value that implements the `Ord` trait, which is a built-in trait in Rust that defines a total order on values.
+
+```rs
+use std::collections::BinaryHeap;
+use std::cmp::Ordering;
+
+#[derive(Debug, Eq)]
+struct Person {
+    name: String,
+    age: u32,
+}
+
+impl Ord for Person {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.age.cmp(&other.age)
+    }
+}
+
+impl PartialOrd for Person {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl PartialEq for Person {
+    fn eq(&self, other: &Self) -> bool {
+        self.age == other.age
+    }
+}
+
+fn main() {
+    // create a new max heap of Persons
+    let mut heap = BinaryHeap::new();
+
+    // insert persons into the heap
+    heap.push(Person { name: "Alice".to_string(), age: 35 });
+    heap.push(Person { name: "Bob".to_string(), age: 28 });
+    heap.push(Person { name: "Charlie".to_string(), age: 42 });
+
+    // remove the oldest person from the heap
+    let oldest = heap.pop();
+
+    println!("Oldest person: {:?}", oldest);
+}
+```
+
+Note that `BinaryHeap<T>` can also be used with custom comparator functions, which allows for more flexibility in how elements are ordered within the heap.
+
+```rs
+use std::collections::BinaryHeap;
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+struct Person {
+    name: String,
+    age: u32,
+}
+
+fn main() {
+    // create a new binary heap with a custom comparison function
+    let heap = BinaryHeap::from(vec![
+        Person {
+            name: "Alice".to_string(),
+            age: 35,
+        },
+        Person {
+            name: "Bob".to_string(),
+            age: 28,
+        },
+        Person {
+            name: "Charlie".to_string(),
+            age: 42,
+        },
+    ]);
+
+    // define a custom comparison function that orders persons by name
+    let name_comparator = |a: &Person, b: &Person| a.name.cmp(&b.name);
+
+    // convert the binary heap into a vector sorted by name
+    // obtain the elements of the heap in sorted order using the IntoIter iterator
+    let mut sorted_by_name: Vec<Person> = heap.into_iter().collect();
+
+    // sort the elements of the vector using the name_comparator function
+    sorted_by_name.sort_by(name_comparator);
+
+    println!("Persons sorted by name: {:?}", sorted_by_name);
+}
+```
+
+Note that when defining a custom comparison function, it's important to ensure that the function defines a strict weak ordering on the elements. In other words, the comparison function must satisfy the following properties:
+
+- Reflexivity: The relation must be be reflexive: `cmp(a, a) == Ordering::Equal` for all elements `a`.
+- Transitivity: The relation must be be transitive: if `cmp(a, b) == Ordering::Les`s and `cmp(b, c) == Ordering::Less`, then `cmp(a, c) == Ordering::Less`.
+- Anti-symmetry: The relation must be be anti-symmetric: if `cmp(a, b) == Ordering::Less`, then `cmp(b, a) == Ordering::Greater`.
+- Totality: The relation must be be total: `cmp(a, b)` must return `Ordering::Less`, `Ordering::Equal`, or `Ordering::Greater` for any two elements `a` and `b`.
+
+Reflexivity is a property of a relation that says that for any element A, the relation holds true between A and A. In the context of a comparison function, this means that the function must return Ordering::Equal when comparing the same element to itself.
+
+Transitivity is a property of a relation that says that if the relation holds between A and B, and between B and C, then it must also hold between A and C. In the context of a comparison function, this means that if the function returns Ordering::Less when comparing A to B, and returns Ordering::Less when comparing B to C, then it must return Ordering::Less when comparing A to C.
+
+Anti-symmetry is a property of a relation that says that if the relation holds between A and B, then it must not hold between B and A. In the context of a comparison function, this means that if the function returns Ordering::Less when comparing A to B, then it must return Ordering::Greater when comparing B to A.
+
+Totality is a property of a relation that says that for any two elements A and B, the relation must hold true in one of three ways: A is less than B, A is equal to B, or A is greater than B. In the context of a comparison function, this means that the function must return Ordering::Less, Ordering::Equal, or Ordering::Greater when comparing any two elements.
+
+In the context of a BinaryHeap, these properties are important because the heap relies on the comparison function to determine the order of its elements. If the function doesn't satisfy these properties, the heap may not behave correctly, leading to incorrect results or even runtime errors.
