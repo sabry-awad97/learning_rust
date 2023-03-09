@@ -726,3 +726,52 @@ fn main() {
     }
 }
 ```
+
+### Comparing Slices
+
+In Rust, slices can be compared using the `==` operator, which compares the elements of the slices for equality. Slices are considered equal if they have the same length and their corresponding elements are equal according to the `PartialEq` trait, which is implemented by default for most built-in types and can be implemented for custom types.
+
+Here is an example that demonstrates how to compare two slices of integers for equality:
+
+```rs
+fn main() {
+    let a = &[1, 2, 3];
+    let b = &[1, 2, 3];
+    let c = &[1, 2, 4];
+
+    println!("a == b: {}", a == b);
+    println!("a == c: {}", a == c);
+}
+```
+
+Note that the `==` operator compares the contents of the slices, but not their addresses in memory. Two slices containing the same elements but allocated in different memory locations will still compare as equal.
+
+Also note that the `==` operator compares the entire slice, including any unused elements beyond the end of the slice. If you only want to compare a portion of the slice, you can use the `[..]` syntax to create a sub-slice and compare it instead.
+
+#### starts_with()
+
+The `starts_with()` method is used to check if a slice starts with another slice. The method takes a reference to another slice as an argument, and returns a boolean value indicating whether the first slice starts with the same elements as the second slice.
+
+```rs
+fn main() {
+    let a = &[1, 2, 3, 4, 5];
+    let b = &[1, 2, 3];
+
+    println!("a starts with b: {}", a.starts_with(b));
+}
+```
+
+Note that the `starts_with()` method compares only the first few elements of the slice, up to the length of the second slice. If the second slice is longer than the first slice, the method will always return `false`. Also note that the `starts_with()` method only checks for equality of the elements in the two slices, and does not check if they have the same addresses in memory.
+
+#### ends_with()
+
+The `ends_with()` method is used to check if a slice ends with another slice.
+
+```rs
+fn main() {
+    let a = &[1, 2, 3, 4, 5];
+    let b = &[3, 4, 5];
+
+    println!("a ends with b: {}", a.ends_with(b));
+}
+```
