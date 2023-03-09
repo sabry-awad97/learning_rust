@@ -1233,3 +1233,245 @@ BTreeMap is useful in situations where you need to maintain a collection of key-
 ### Performance Considerations
 
 When using BTreeMap, it is important to consider the tradeoff between memory usage and performance. Because of the B-tree structure, BTreeMap has a higher memory overhead than other data structures like HashMaps. Additionally, BTreeMap may be slower than HashMaps for small numbers of elements, due to the overhead of maintaining the B-tree structure.
+
+## `HashSet<T>`
+
+### Definition and Advantages
+
+- `HashSet` is a data structure that stores a collection of unique elements in no particular order using a hash table. Each element in a `HashSet` is uniquely identified by its hash value. HashSets are useful for their constant time (O(1)) lookups and insertions, making them ideal for applications that require high-performance data structures for large datasets.
+
+- The advantages of using HashSets include their constant time lookups and insertions, efficient memory usage, and their ability to efficiently perform set operations such as union, intersection, and difference. However, HashSets may be less efficient than other data structures, such as arrays or vectors, when iterating over elements in a particular order or performing operations that require comparing elements.
+
+### Basic Syntax && Usage
+
+#### Creating and Modifying HashSets
+
+Creating a `HashSet` in Rust is simple and can be done using the `HashSet::new()` constructor or the `HashSet::from_iter()` method to create a `HashSet` from an iterator. Elements can be added to the `HashSet` using the `insert()` method or removed using the `remove()` method. Example:
+
+```rs
+use std::collections::HashSet;
+let mut hash_set = HashSet::new();
+hash_set.insert(1);
+hash_set.insert(2);
+hash_set.remove(&1);
+```
+
+#### Accessing Elements in HashSets
+
+To access an element in a HashSet, use the `contains(`) method to check for the presence of an element.
+
+```rs
+use std::collections::HashSet;
+let hash_set = [1, 2, 3, 4].iter().cloned().collect::<HashSet<_>>();
+assert!(hash_set.contains(&1));
+```
+
+### Advanced Features && Methods
+
+#### Intersection, Difference, and Union Operations
+
+Intersection, difference, and union operations can be performed on HashSets in Rust using the `intersection()`, `difference()`, and `union()` methods, respectively.
+
+```rs
+fn main() {
+    use std::collections::HashSet;
+    let set1 = [1, 2, 3].iter().cloned().collect::<HashSet<_>>();
+    let set2 = [2, 3, 4].iter().cloned().collect::<HashSet<_>>();
+
+    // Intersection
+    let intersection = set1.intersection(&set2);
+    println!("Intersection: {:?}", intersection);
+
+    // Difference
+    let difference = set1.difference(&set2);
+    println!("Difference: {:?}", difference);
+
+    // Union
+    let union = set1.union(&set2);
+    println!("Union: {:?}", union);
+}
+```
+
+#### Symmetric Difference
+
+The symmetric difference operation returns a new HashSet containing the elements that are unique to each of the two sets being compared.
+
+```rs
+use std::collections::HashSet;
+
+fn main() {
+    let set1: HashSet<i32> = vec![1, 2, 3].into_iter().collect();
+    let set2: HashSet<i32> = vec![2, 3, 4].into_iter().collect();
+
+    // Symmetric difference
+    let symmetric_difference = set1.symmetric_difference(&set2);
+    println!("Symmetric Difference: {:?}", symmetric_difference);
+}
+```
+
+#### Iterating Over Elements
+
+```rs
+use std::collections::HashSet;
+
+fn main() {
+    let set: HashSet<i32> = vec![1, 2, 3].into_iter().collect();
+
+    // Using `iter` method
+    for elem in set.iter() {
+        println!("{}", elem);
+    }
+
+    // Using `into_iter` method
+    for elem in set.into_iter() {
+        println!("{}", elem);
+    }
+
+    // Iterating using an iterator method
+    set.iter().for_each(|element| println!("{}", element));
+}
+```
+
+#### Custom Hashing Functions
+
+```rs
+use std::collections::HashSet;
+use std::hash::{Hash, Hasher};
+
+#[derive(Debug, PartialEq, Eq)]
+struct Person {
+    name: String,
+    age: u32,
+}
+
+impl Hash for Person {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.name.hash(state);
+        self.age.hash(state);
+    }
+}
+
+fn main() {
+    let mut set = HashSet::new();
+
+    set.insert(Person {
+        name: "Alice".to_string(),
+        age: 30,
+    });
+    set.insert(Person {
+        name: "Bob".to_string(),
+        age: 40,
+    });
+
+    assert!(set.contains(&Person {
+        name: "Alice".to_string(),
+        age: 30
+    }));
+    assert!(!set.contains(&Person {
+        name: "Alice".to_string(),
+        age: 40
+    }));
+}
+```
+
+### Practical Usage
+
+1. Finding common elements in two sets.
+
+   ```rs
+   use std::collections::HashSet;
+
+   fn main() {
+       let set1: HashSet<i32> = vec![1, 2, 3].into_iter().collect();
+       let set2: HashSet<i32> = vec![2, 3, 4].into_iter().collect();
+
+       let common_elements: HashSet<&i32> = set1.intersection(&set2).collect();
+
+       println!("{:?}", common_elements); // prints {&2, &3}
+   }
+   ```
+
+1. Removing duplicates from a list.
+
+   ```rs
+   use std::collections::HashSet;
+
+   fn main() {
+       let list = vec![1, 2, 3, 2, 1];
+       let unique_elements: HashSet<i32> = list.into_iter().collect();
+
+       println!("{:?}", unique_elements); // prints {1, 2, 3}
+   }
+   ```
+
+### A summary table of all the methods available in Rust HashSet
+
+| Method                         | Description                                                                                                                                                                |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `new()`                        | Creates a new, empty HashSet.                                                                                                                                              |
+| `with_capacity(n)`             | Creates a new HashSet with space for `n` elements pre-allocated.                                                                                                           |
+| `from_iter(iter)`              | Creates a HashSet from an iterator.                                                                                                                                        |
+| `get(&val)`                    | Check if a value is present in a HashSet and returns a reference to the value if it exists.                                                                                |
+| `insert(val)`                  | Inserts a value into the HashSet.                                                                                                                                          |
+| `remove(val)`                  | Removes a value from the HashSet.                                                                                                                                          |
+| `contains(val)`                | Returns `true` if the HashSet contains a value, `false` otherwise.                                                                                                         |
+| `is_empty()`                   | Returns `true` if the HashSet is empty, `false` otherwise.                                                                                                                 |
+| `len()`                        | Returns the number of elements in the HashSet.                                                                                                                             |
+| `clear()`                      | Removes all elements from the HashSet.                                                                                                                                     |
+| `clone()`                      | Returns a clone of the HashSet.                                                                                                                                            |
+| `difference(&other)`           | Returns a new HashSet with elements that are in the current HashSet but not in `other`.                                                                                    |
+| `intersection(&other)`         | Returns a new HashSet with elements that are common to both the current HashSet and `other`.                                                                               |
+| `union(&other)`                | Returns a new HashSet with all elements from both the current HashSet and `other`.                                                                                         |
+| `symmetric_difference(&other)` | Returns a new HashSet with elements that are in one of the HashSets but not in both.                                                                                       |
+| `is_disjoint(&other)`          | Check if two HashSets are disjoint, meaning they have no elements in common.                                                                                               |
+| `is_subset(&other)`            | Returns `true` if all elements of the HashSet are also in `other`, `false` otherwise.                                                                                      |
+| `is_superset(&other)`          | Returns `true` if all elements of `other` are also in the HashSet, `false` otherwise.                                                                                      |
+| `iter()`                       | Returns an iterator over the elements in the HashSet.                                                                                                                      |
+| `into_iter()`                  | Returns an iterator that takes ownership of the HashSet and consumes it.                                                                                                   |
+| `retain(f)`                    | Retains only the elements that satisfy the given predicate function `f`.                                                                                                   |
+| `drain()`                      | Removes and returns all elements from the HashSet as an iterator.                                                                                                          |
+| `hash_layout(&self)`           | Returns information about the internal layout of the HashSet's data structure for debugging and optimization purposes.                                                     |
+| `for_each(f: impl FnMut(&T))`  | Applies a closure to each element in the HashSet.                                                                                                                          |
+| `take()`                       | Removes all the elements from the HashSet and returns them in a new HashSet.                                                                                               |
+| `replace()`                    | Removes an element from the HashSet and replaces it with another element. If the element being replaced is not present in the HashSet, the new element is simply inserted. |
+
+### Best Practice
+
+When working with HashSets in Rust, it is recommended to follow these best practices:
+
+1. Use immutable references when possible.
+   HashSets are often used to store large amounts of data, and copying that data can be expensive. Therefore, it is recommended to use immutable references whenever possible to avoid unnecessary copies. For example, when iterating over a HashSet, you can use an immutable reference to access the elements:
+
+   ```rs
+   for element in &my_set {
+       println!("{}", element);
+   }
+   ```
+
+1. Avoid unnecessary clones.
+
+   Cloning a HashSet can be expensive, especially if the HashSet contains a large amount of data. Therefore, it is recommended to avoid unnecessary clones. For example, if you need to pass a HashSet to a function, you can use a reference instead of cloning the HashSet:
+
+   ```rs
+   fn process_set(my_set: &HashSet<i32>) {
+       // do something with the HashSet
+   }
+
+   process_set(&my_set);
+   ```
+
+1. Use the capacity method to preallocate space.
+
+   If you know the approximate number of elements that will be stored in a `HashSet`, you can use the `capacity` method to preallocate space for those elements. This can improve performance by reducing the number of times the `HashSet` needs to be resized:
+
+   ```rs
+   let mut my_set = HashSet::with_capacity(10);
+   ```
+
+### Performance Comparison
+
+| Data Structure | Unique Elements | Insertion | Deletion | Searching | Access by Index | Memory Usage                      |
+| -------------- | --------------- | --------- | -------- | --------- | --------------- | --------------------------------- |
+| HashSet        | Yes             | Fast      | Fast     | Fast      | Not Applicable  | More than Vec, less than BTreeSet |
+| BTreeSet       | Yes             | Slow      | Slow     | Fast      | Not Applicable  | More than HashSet, less than Vec  |
+| Vec            | No              | Fast      | Slow     | Slow      | Fast            | More than HashSet and BTreeSet    |
