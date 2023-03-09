@@ -2,16 +2,16 @@
 
 Here's a summary of the standard collections in Rust, along with their equivalents in C++, Java, Python, and JavaScript:
 
-| Collection                                    | Description                               | Similar collection type in C++ | Similar collection type in Java | Similar collection type in Python | Similar collection type in JavaScript |
-| --------------------------------------------- | ----------------------------------------- | ------------------------------ | ------------------------------- | --------------------------------- | ------------------------------------- |
-| `Vec<T>`                                      | Growable array                            | `std::vector<T>`               | `ArrayList<T>`                  | `list`                            | `Array`                               |
-| `VecDeque<T>`                                 | Double-ended queue (growable ring buffer) | `std::deque<T>`                | `ArrayDeque<T>`                 | `collections.deque`               | N/A                                   |
-| `LinkedList<T>`                               | Doubly linked list                        | N/A                            | `LinkedList<T>`                 | `LinkedList`                      | N/A                                   |
-| `BinaryHeap<T>`&lt;br&gt;where `T: Ord`       | Max heap priority queue                   | `std::priority_queue<T>`       | `PriorityQueue<T>`              | `heapq`                           | N/A                                   |
-| `HashMap<K, V>`&lt;br&gt;where `K: Eq + Hash` | Key-value hash table                      | `std::unordered_map<K, V>`     | `HashMap<K, V>`                 | `dict`                            | `Map`                                 |
-| `BTreeMap<K, V>`&lt;br&gt;where `K: Ord`      | Sorted key-value table                    | `std::map<K, V>`               | `TreeMap<K, V>`                 | N/A                               | `Map`                                 |
-| `HashSet<T>`&lt;br&gt;where `T: Eq + Hash`    | Unordered, hash-based set                 | `std::unordered_set<T>`        | `HashSet<T>`                    | `set`                             | `Set`                                 |
-| `BTreeSet<T>`&lt;br&gt;where `T: Ord`         | Sorted set                                | N/A                            | `TreeSet<T>`                    | N/A                               | `Set`                                 |
+| Collection                           | Description                               | Similar collection type in C++ | Similar collection type in Java | Similar collection type in Python | Similar collection type in JavaScript |
+| ------------------------------------ | ----------------------------------------- | ------------------------------ | ------------------------------- | --------------------------------- | ------------------------------------- |
+| `Vec<T>`                             | Growable array                            | `std::vector<T>`               | `ArrayList<T>`                  | `list`                            | `Array`                               |
+| `VecDeque<T>`                        | Double-ended queue (growable ring buffer) | `std::deque<T>`                | `ArrayDeque<T>`                 | `collections.deque`               | N/A                                   |
+| `LinkedList<T>`                      | Doubly linked list                        | N/A                            | `LinkedList<T>`                 | `LinkedList`                      | N/A                                   |
+| `BinaryHeap<T>` where `T: Ord`       | Max heap priority queue                   | `std::priority_queue<T>`       | `PriorityQueue<T>`              | `heapq`                           | N/A                                   |
+| `HashMap<K, V>` where `K: Eq + Hash` | Key-value hash table                      | `std::unordered_map<K, V>`     | `HashMap<K, V>`                 | `dict`                            | `Map`                                 |
+| `BTreeMap<K, V>` where `K: Ord`      | Sorted key-value table                    | `std::map<K, V>`               | `TreeMap<K, V>`                 | N/A                               | `Map`                                 |
+| `HashSet<T>` where `T: Eq + Hash`    | Unordered, hash-based set                 | `std::unordered_set<T>`        | `HashSet<T>`                    | `set`                             | `Set`                                 |
+| `BTreeSet<T>` where `T: Ord`         | Sorted set                                | N/A                            | `TreeSet<T>`                    | N/A                               | `Set`                                 |
 
 Here's a brief summary of each collection:
 
@@ -1032,3 +1032,173 @@ Anti-symmetry is a property of a relation that says that if the relation holds b
 Totality is a property of a relation that says that for any two elements A and B, the relation must hold true in one of three ways: A is less than B, A is equal to B, or A is greater than B. In the context of a comparison function, this means that the function must return Ordering::Less, Ordering::Equal, or Ordering::Greater when comparing any two elements.
 
 In the context of a BinaryHeap, these properties are important because the heap relies on the comparison function to determine the order of its elements. If the function doesn't satisfy these properties, the heap may not behave correctly, leading to incorrect results or even runtime errors.
+
+## HashMap<K, V>
+
+`HashMap` is a data structure in Rust that is used to store key-value pairs. It is useful in situations where you need to quickly access data based on a specific key. HashMaps are commonly used in computer science and programming for tasks such as indexing and searching data.
+
+### Real-world examples
+
+- A phone book application that uses HashMap to store contact information, where each contact name is the key and the phone number is the value.
+- A website that uses HashMap to store user information, where the user ID is the key and the user's information (such as name, email address, and password) is the value.
+- A game that uses HashMap to store player information, where the player's name is the key and the player's score is the value.
+
+### Basic Syntax and Usage
+
+#### Creating a new HashMap
+
+```rs
+use std::collections::HashMap;
+
+let mut my_map = HashMap::new();
+```
+
+#### Adding elements to a HashMap
+
+```rs
+my_map.insert("key1", "value1");
+my_map.insert("key2", "value2");
+```
+
+#### Accessing an element in a HashMap
+
+```rs
+if let Some(value) = my_map.get("key1") {
+    println!("{}", value);
+}
+```
+
+#### Modifying an element in a HashMap
+
+```rs
+my_map.insert("key1", "new_value1");
+```
+
+#### Removing an element from a HashMap
+
+```rs
+my_map.remove("key1");
+```
+
+### Advanced Features and Methods
+
+#### Iterating over keys, values, or both
+
+```rs
+for key in map.keys() {
+    println!("Key: {}", key);
+}
+
+for value in map.values() {
+    println!("Value: {}", value);
+}
+
+for (key, value) in map.iter() {
+    println!("Key: {}, Value: {}", key, value);
+}
+```
+
+#### Combining HashMaps
+
+```rs
+let mut map1 = HashMap::new();
+map1.insert("key1", "value1");
+
+let mut map2 = HashMap::new();
+map2.insert("key2", "value2");
+
+map1.extend(map2);
+```
+
+#### Updating values using closure
+
+```rs
+map.entry("key").and_modify(|value| *value = "new value");
+```
+
+#### Using custom hash functions
+
+```rs
+use std::hash::{Hash, Hasher};
+
+struct CustomHasher(u64);
+
+impl Hasher for CustomHasher {
+    fn write(&mut self, bytes: &[u8]) {
+        // Custom hash function logic
+    }
+
+    fn finish(&self) -> u64 {
+        self.0
+    }
+}
+
+impl Hash for CustomHasher {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.0.hash(state);
+    }
+}
+
+let mut map: HashMap<i32, i32, CustomHasher> = HashMap::with_hasher(CustomHasher(0));
+```
+
+### Most common HashMap methods
+
+| Method                                                               | Description                                                                                                      |
+| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `new()`                                                              | Creates a new, empty HashMap                                                                                     |
+| `with_capacity(capacity: usize)`                                     | Creates a new HashMap with the specified initial capacity                                                        |
+| `insert(key: K, value: V)`                                           | Inserts a key-value pair into the HashMap                                                                        |
+| `get(&key: &K) -> Option<&V>`                                        | Returns a reference to the value associated with the given key, or None if the key is not in the HashMap         |
+| `get_mut(&key: &K) -> Option<&mut V>`                                | Returns a mutable reference to the value associated with the given key, or None if the key is not in the HashMap |
+| `remove(&key: &K) -> Option<V>`                                      | Removes and returns the value associated with the given key, or None if the key is not in the HashMap            |
+| `contains_key(&key: &K) -> bool`                                     | Returns true if the HashMap contains the given key                                                               |
+| `len() -> usize`                                                     | Returns the number of elements in the HashMap                                                                    |
+| `is_empty() -> bool`                                                 | Returns true if the HashMap is empty                                                                             |
+| `clear()`                                                            | Removes all elements from the HashMap                                                                            |
+| `iter() -> Iter<'_, K, V>`                                           | Returns an iterator over the key-value pairs in the HashMap                                                      |
+| `iter_mut() -> IterMut<'_, K, V>`                                    | Returns a mutable iterator over the key-value pairs in the HashMap                                               |
+| `keys() -> Keys<'_, K, V>`                                           | Returns an iterator over the keys in the HashMap                                                                 |
+| `values() -> Values<'_, K, V>`                                       | Returns an iterator over the values in the HashMap                                                               |
+| `entry(&key: K) -> Entry<'_, K, V>`                                  | Returns an Entry for the given key, allowing for more complex operations on the HashMap                          |
+| `reserve(&additional: usize)`                                        | Reserves capacity for at least `additional` more elements to be inserted in the HashMap                          |
+| `drain() -> Drain<'_, K, V>`                                         | Removes all elements from the HashMap and returns an iterator over the removed key-value pairs                   |
+| `retain(predicate: impl FnMut(&K, &mut V) -> bool)`                  | Retains only the key-value pairs that satisfy the given predicate                                                |
+| `merge(key: K, value: V, f: impl FnOnce(V, V) -> V)`                 | Inserts the given key-value pair into the HashMap or updates the existing value using the given closure          |
+| `from_iter(iter: impl IntoIterator<Item = (K, V)>) -> HashMap<K, V>` | Creates a new HashMap from the given iterator of key-value pairs                                                 |
+
+### Entries
+
+The `entry()` method is a feature of Rust's `HashMap` data structure that provides a way to access an entry in the map and modify it if it exists or insert a new entry if it does not. This method returns an Entry enum that represents either an existing or a new entry in the map.
+
+The `entry()` method can be very useful in situations where you need to access or modify entries in a HashMap in a single expression.
+
+```rs
+use std::collections::HashMap;
+fn main() {
+    let mut map = HashMap::new();
+
+    // Insert a new entry
+    let entry = map.entry("foo").or_insert(1);
+    assert_eq!(*entry, 1);
+
+    // Modify an existing entry
+    *map.entry("foo").or_insert(2) += 1;
+    assert_eq!(map.get("foo"), Some(&2));
+
+    // Insert a new entry with a default value
+    let entry = map.entry("bar").or_insert_with(|| 0);
+
+    // Modify an existing entry with a closure
+    map.entry("bar").and_modify(|v| *v = 2);
+}
+```
+
+### Best Practices
+
+- Use immutable references when possible. This helps avoid unintended changes to the `HashMap`.
+- Avoid unnecessary clones. Cloning a `HashMap` can be expensive, so it's best to avoid doing so unless it's absolutely necessary. Instead, use references to access the data in the `HashMap`.
+
+- Choose appropriate key types. Keys in a `HashMap` should be hashable and implement the `Eq` and `PartialEq` traits.
+- Use the entry method when adding or updating elements in a `HashMap`. The entry method provides a way to access the value of a key-value pair in a `HashMap`, and allows you to insert or modify the value if it doesn't exist.
+- Use the `get_or_insert` method when accessing or inserting elements in a `HashMap`. The `get_or_insert` method provides a way to access the value of a key-value pair in a `HashMap`, and allows you to insert the key-value pair if it doesn't exist.
